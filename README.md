@@ -22,6 +22,7 @@ Below is listed a few achievements for this assignment. Each achievement complet
 - [ ] Swap between 2 different cube materials at run-time. <br>
 - [ ] Render 2 cubes side by side with different materials. <br>
 - [ ] Repeat the above with model of the teapot. <br>
+- [ ] Do something cool with the geometry/tesselation' shader <br>
 
 ### File loader
 - [ ] Load a Shader. (vertex & geometry & fragment) <br>
