@@ -1,3 +1,15 @@
+# Important notice! 
+
+**This distribution of GLM has been altered from the original source (https://glm.g-truc.net/0.9.8/index.html) - to fit the
+needs of this specific project.**
+
+Changes include:
+- Removed tests/
+- Removed docs/
+
+Original README.md follows...
+
+
 ![glm](doc/logo.png)
 
 [OpenGL Mathematics](http://glm.g-truc.net/) (*GLM*) is a header only C++ mathematics library for graphics software based on the [OpenGL Shading Language (GLSL) specifications](https://www.opengl.org/registry/doc/GLSLangSpec.4.50.diff.pdf).
