@@ -1,3 +1,15 @@
+# Important notice! 
+
+**This distribution of GLFW has been altered from the original source (http://www.glfw.org) - to fit the
+needs of this specific project.**
+
+Changes include:
+- Removed tests/
+- Removed docs/
+- Removed examples/
+
+Original README.md follows...
+
 # GLFW
 
 [![Build status](https://travis-ci.org/glfw/glfw.svg?branch=master)](https://travis-ci.org/glfw/glfw)
