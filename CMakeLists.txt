@@ -34,6 +34,11 @@ set_target_properties(
     LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
 )
 
+target_sources(
+    cube
+    PRIVATE ${CMAKE_SOURCE_DIR}/src/Init.cpp
+)
+
 ###############################
 # Microsoft Visual studio 2017
 ###############################
