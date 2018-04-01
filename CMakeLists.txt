@@ -3,11 +3,18 @@ cmake_minimum_required (VERSION 3.8 FATAL_ERROR)
 
 # Set global variables
 set(CMAKE_BUILD_TYPE Debug)
+
+
+# Turning off parts of GLFW we do not want
+# Also I have deleted these folders from the repo,
+# so we could not build them anymore if we wanted to - jonasjso 01.04.18
 set(GLFW_BUILD_EXAMPLES OFF) 
 set(GLFW_BUILD_TESTS OFF)
+set(GLFW_BUILD_DOCS OFF)
 
+# Adding subdirectory, building the glfw library which we will
+# link to later on.
 add_subdirectory("${CMAKE_SOURCE_DIR}/lib/glfw-3.2.1")
-
 
 # Find system packages
 find_package(OpenGL REQUIRED)

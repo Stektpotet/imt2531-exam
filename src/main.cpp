@@ -9,14 +9,17 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <GLFW/glfw3.h>
 
-auto init_GLFW_GLEW(
+
+namespace overkill::Init
+{
+
+auto GLFW(
     const int openglMajor, 
     const int openglMinor, 
     const int wwidth, 
     const int wheight, 
     const char* wname) -> GLFWwindow*
 {
-    // init G L F W
     if (!glfwInit()){
         glfwTerminate();
 		exit(-1); //(Init::logtag, "Failed to init GLFW");
@@ -28,8 +31,6 @@ auto init_GLFW_GLEW(
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // To make MacOS happy; should not be needed
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    // OPEN G L F W WINDOW AND HOOK UP THE OPEN GL CONTEXT
-    //
     GLFWwindow* window = glfwCreateWindow(wwidth, wheight, wname, NULL, NULL);
     glfwMakeContextCurrent(window);
     if (window == NULL) {
@@ -38,31 +39,66 @@ auto init_GLFW_GLEW(
     }
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
     glfwSwapInterval(1);
-
-    // init G L E W
-    //
-
-#ifndef WIN32
-    glewExperimental = GL_TRUE;  // MACOS/intel cpu support
-#endif
-
-	if (glewInit() != GLEW_OK) {
-        glfwTerminate();
-		exit(-1); // LOG_ERROR(Init::logtag, "Failed to init GLEW");
-    }
-  //q  glfwSetKeyCallback(window, key_callback);
+    
+    //q  glfwSetKeyCallback(window, key_callback);
     return window;
 }
 
+void GLEW() 
+{
+#ifndef WIN32
+    glewExperimental = GL_TRUE;  // Intel cpu graphics support for macOS/linux 
+#endif
+
+    if (glewInit() != GLEW_OK) {
+        glfwTerminate();
+        exit(-1); // LOG_ERROR(Init::logtag, "Failed to init GLEW");
+    }
+}
+
+void OpenGL(const glm::vec4 background)
+{
+    glEnable(GL_PROGRAM_POINT_SIZE);
+    glClearColor(background.x, background.y, background.z, background.w);
+
+    glCullFace(GL_CCW); // GL_CCW | GL_CW
+
+    glEnable(GL_BLEND);
+    glEnable(GL_DEPTH_TEST);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+}
+
+} // ::Init::overkill
 
 int main() 
 {
-	std::cout << "Hello sailor!\n";
-	
-	auto window = init_GLFW_GLEW(4,1, 800, 600, "Assignment 2");
+    using namespace overkill;
+    using BackgroundColor = glm::vec4;
+    using VersionMajor = int;
+    using VersionMinor = int;
+    using Width        = int;
+    using Height       = int;
 
+	auto window = Init::GLFW(
+        VersionMajor(4), VersionMinor(1), Width(800), Height(600), "Assignment 2 - Cube");
 
+    Init::GLEW();
+    Init::OpenGL( 
+        BackgroundColor{ 1.0f, .8f, .6f, 1.0f});
+
+    for(;;) 
+    {
+        if ((glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS || glfwWindowShouldClose(window) != 0))
+            break;
+
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glfwPollEvents();
+
+        glfwSwapBuffers(window);
+    }
+
+    glfwDestroyWindow(window);
+    glfwTerminate();
 	
-	std::cin.get();
 	return 0;
 }
