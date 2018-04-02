@@ -1,4 +1,4 @@
-#include "elementBuffer.hpp"
+#include <overkill/ElementBuffer.hpp>
 
 
 ElementBuffer::ElementBuffer(const unsigned int* data, unsigned int count) : m_Count(count)
