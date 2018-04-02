@@ -37,6 +37,7 @@ set_target_properties(
 target_sources(
     cube
     PRIVATE ${CMAKE_SOURCE_DIR}/src/Init.cpp
+	PRIVATE ${CMAKE_SOURCE_DIR}/src/gl_caller.cpp
 )
 
 ###############################

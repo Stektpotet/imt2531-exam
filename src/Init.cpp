@@ -48,14 +48,16 @@ void Init::GLEW()
 
 void Init::OpenGL(const glm::vec4 background)
 {
-    glEnable(GL_PROGRAM_POINT_SIZE);
-    glClearColor(background.x, background.y, background.z, background.w);
+    GLCall(glEnable(GL_PROGRAM_POINT_SIZE));
+    GLCall(glClearColor(background.x, background.y, background.z, background.w));
 
-    glCullFace(GL_CCW); // GL_CCW | GL_CW
+    GLCall(glEnable(GL_CULL_FACE));
+    GLCall(glFrontFace(GL_CCW)); // the direction in which faces are defined (determins back/front): GL_CCW | GL_CW
+    GLCall(glCullFace(GL_BACK));// the face side to cull away: GL_FRONT | GL_BACK | GL_FRONT_AND_BACK 
 
-    glEnable(GL_BLEND);
-    glEnable(GL_DEPTH_TEST);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    GLCall(glEnable(GL_BLEND));
+    GLCall(glEnable(GL_DEPTH_TEST)); //enabled to avoid ugly artifacts that depend on the angle of view and drawing order
+    GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 }
 
 } // ::overkill

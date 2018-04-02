@@ -3,6 +3,7 @@
 #include <vector>
 
 #include <overkill/Init.hpp>
+#include <overkill/gl_caller.hpp>
 
 int main() 
 {
@@ -18,14 +19,14 @@ int main()
 
     Init::GLEW();
     Init::OpenGL( 
-        BackgroundColor{ 1.0f, .8f, .6f, 1.0f});
+        BackgroundColor{ 1.0f, .8f, .6f, 1.0f}); //(0.05f, 0.06f, 0.075f, 1.0f) for sexy dark blue-grey
 
     for(;;) 
     {
         if ((glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS || glfwWindowShouldClose(window) != 0))
             break;
 
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
         glfwPollEvents();
 
         glfwSwapBuffers(window);
