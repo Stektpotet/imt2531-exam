@@ -1,4 +1,4 @@
-#include <overkill/VertexBuffer.hpp>
+#include <overkill/vertexBuffer.hpp>
 
 VertexBuffer::VertexBuffer(const void * data, unsigned int size)
 {

@@ -1,5 +1,7 @@
 #pragma once
-#include <gl/glew.h>
+#include <GL/glew.h>
 #include <iostream>
 
-GLuint GLTypeSize(GLenum type);
+
+GLuint GLTypeSize(const GLenum type);
+char* ShaderTypeName(const GLenum typeID);

@@ -1,5 +1,5 @@
-#include <vertexArray.hpp>
-#include <gl_util.hpp>
+#include <overkill/vertexArray.hpp>
+#include <overkill/gl_util.hpp>
 
 VertexArray::VertexArray()
 {
@@ -34,7 +34,7 @@ void VertexArray::addBuffer(const VertexBuffer& vb, const VertexBufferAttribLayo
         offset += attrib.count * GLTypeSize(attrib.type);
         i++;
     }
-    
+
 }
 
 void VertexArray::bind() const

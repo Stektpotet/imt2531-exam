@@ -15,6 +15,7 @@ set(GLFW_BUILD_DOCS OFF)
 # Adding subdirectory, building the glfw library which we will
 # link to later on.
 add_subdirectory("${CMAKE_SOURCE_DIR}/lib/glfw-3.2.1")
+add_subdirectory("${CMAKE_SOURCE_DIR}/lib/SOIL")
 
 # Find system packages
 find_package(OpenGL REQUIRED)
@@ -30,7 +31,7 @@ set_target_properties(
     PROPERTIES
     CXX_STANDARD 17
     CXX_STANDARD_REQUIRED ON
-    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
     LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
 )
 
@@ -103,8 +104,15 @@ target_link_libraries(
     PRIVATE ${OPENGL_LIBRARIES}
     PRIVATE glfw ${glfw_LIBRARIES}
     PRIVATE ${GLEW_LIBRARY}
+    PRIVATE SOIL ${SOIL_LIBRARIES}
+
 )
 endif()
 
+add_custom_command(
+    TARGET cube POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_SOURCE_DIR}/assets $<TARGET_FILE_DIR:cube>/assets
+)
 
 message("CMAKE_BINARY_DIR: " ${CMAKE_BINARY_DIR})
