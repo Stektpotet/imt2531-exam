@@ -8,7 +8,7 @@ set(CMAKE_BUILD_TYPE Debug)
 # Turning off parts of GLFW we do not want
 # Also I have deleted these folders from the repo,
 # so we could not build them anymore if we wanted to - jonasjso 01.04.18
-set(GLFW_BUILD_EXAMPLES OFF) 
+set(GLFW_BUILD_EXAMPLES OFF)
 set(GLFW_BUILD_TESTS OFF)
 set(GLFW_BUILD_DOCS OFF)
 
@@ -38,6 +38,13 @@ target_sources(
     cube
     PRIVATE ${CMAKE_SOURCE_DIR}/src/Init.cpp
 	PRIVATE ${CMAKE_SOURCE_DIR}/src/gl_caller.cpp
+    PRIVATE ${CMAKE_SOURCE_DIR}/src/vertexArray.cpp
+    PRIVATE ${CMAKE_SOURCE_DIR}/src/vertexBuffer.cpp
+    PRIVATE ${CMAKE_SOURCE_DIR}/src/renderer.cpp
+    PRIVATE ${CMAKE_SOURCE_DIR}/src/texture.cpp
+    PRIVATE ${CMAKE_SOURCE_DIR}/src/shader.cpp
+    PRIVATE ${CMAKE_SOURCE_DIR}/src/gl_util.cpp
+    PRIVATE ${CMAKE_SOURCE_DIR}/src/elementBuffer.cpp
 )
 
 ###############################
@@ -46,27 +53,28 @@ target_sources(
 if(MSVC)
 
 target_include_directories(
-    cube 
+    cube
     PRIVATE ${CMAKE_SOURCE_DIR}
     PRIVATE ${CMAKE_SOURCE_DIR}/include
     PRIVATE ${CMAKE_SOURCE_DIR}/lib/glew-2.1.0/include
     PRIVATE ${CMAKE_SOURCE_DIR}/lib/glm-0.9.8.5
     PRIVATE ${CMAKE_SOURCE_DIR}/lib/glfw-3.2.1/include
+    PRIVATE ${CMAKE_SOURCE_DIR}/lib/SOIL/src
 )
 
 file(
-    COPY ${CMAKE_SOURCE_DIR}/lib/glew-2.1.0/bin/glew32.dll 
+    COPY ${CMAKE_SOURCE_DIR}/lib/glew-2.1.0/bin/glew32.dll
     DESTINATION ${PROJECT_BINARY_DIR}/bin
 )
 file(
-    COPY ${CMAKE_SOURCE_DIR}/lib/glew-2.1.0/lib/glew32.lib 
+    COPY ${CMAKE_SOURCE_DIR}/lib/glew-2.1.0/lib/glew32.lib
     DESTINATION ${PROJECT_BINARY_DIR}
 )
 
 target_link_libraries(
     cube
     PRIVATE ${OPENGL_LIBRARIES}
-    PRIVATE glfw ${glfw_LIBRARIES} 
+    PRIVATE glfw ${glfw_LIBRARIES}
     PRIVATE glew32
 )
 
@@ -87,12 +95,13 @@ target_include_directories(
     PRIVATE ${CMAKE_SOURCE_DIR}/include
     PRIVATE ${CMAKE_SOURCE_DIR}/lib/glm-0.9.8.5
     PRIVATE ${CMAKE_SOURCE_DIR}/lib/glfw-3.2.1/include
+    PRIVATE ${CMAKE_SOURCE_DIR}/lib/SOIL/src
 )
 
 target_link_libraries(
     cube
     PRIVATE ${OPENGL_LIBRARIES}
-    PRIVATE glfw ${glfw_LIBRARIES} 
+    PRIVATE glfw ${glfw_LIBRARIES}
     PRIVATE ${GLEW_LIBRARY}
 )
 endif()
