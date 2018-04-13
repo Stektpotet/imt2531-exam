@@ -126,9 +126,9 @@ target_include_directories(
 target_link_libraries(
     cube
     PRIVATE ${OPENGL_LIBRARIES}
-    PRIVATE glfw ${glfw_LIBRARIES}
     PRIVATE ${GLEW_LIBRARY}
-    PRIVATE SOIL ${SOIL_LIBRARIES}
+    PRIVATE glfw
+    PRIVATE SOIL
 
 )
 endif()
@@ -143,7 +143,5 @@ add_custom_command(
 
 message("CMAKE_BINARY_DIR: " ${BINDIR})
 message("OPENGL_LIBRARIES"   ${OPENGL_LIBRARIES})
-message("GLFW_LIBRARIES"     ${GLFW_LIBRARIES})
 message("GLEW_LIBRARY"       ${GLEW_LIBRARY})
-message("SOIL_LIBRARIES"     ${SOIL_LIBRARIES})
 
