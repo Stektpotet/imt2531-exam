@@ -25,7 +25,7 @@ set(GLFW_BUILD_DOCS 0)
 # Adding subdirectory, building the glfw library which we will
 # link to later on.
 add_subdirectory("${SRCDIR}/lib/glfw-3.2.1")
-add_subdirectory("${SRCDIR}/lib/SOIL")
+add_subdirectory("${SRCDIR}/lib/SOIL-1.07")
 
 
 # Configure main executeable
@@ -71,7 +71,7 @@ target_include_directories(
     PRIVATE ${SRCDIR}/lib/glew-2.1.0/include
     PRIVATE ${SRCDIR}/lib/glm-0.9.8.5
     PRIVATE ${SRCDIR}/lib/glfw-3.2.1/include
-    PRIVATE ${SRCDIR}/lib/SOIL/src
+    PRIVATE ${SRCDIR}/lib/SOIL-1.07/src
 )
 
 file(
@@ -107,7 +107,7 @@ target_include_directories(
     PRIVATE ${SRCDIR}/include
     PRIVATE ${SRCDIR}/lib/glm-0.9.8.5
     PRIVATE ${SRCDIR}/lib/glfw-3.2.1/include
-    PRIVATE ${SRCDIR}/lib/SOIL/src
+    PRIVATE ${SRCDIR}/lib/SOIL-1.07/src
 )
 
 target_link_libraries(
