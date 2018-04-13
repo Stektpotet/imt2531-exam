@@ -2,14 +2,14 @@
 
 namespace overkill::C
 {
-    const int VersionMajor = 4;
-    const int VersionMinor = 1;
-    const int WinWidth = 800;
-    const int WinHeight = 600;
-    const char* WinName = "Assignment 2 - Cube";
-    const float FOV = 90.0f;
-    const float AspectRatio = (float)WinWidth / (float)WinHeight;
-    const float NearClip = 0.1f;
-    const float FarClip  = 100.0f;
+    constexpr int VersionMajor = 4;
+    constexpr int VersionMinor = 1;
+    constexpr int WinWidth = 800;
+    constexpr int WinHeight = 600;
+    constexpr char* WinName = "Assignment 2 - Cube";
+    constexpr float FOV = 90.0f;
+    constexpr float AspectRatio = (float)WinWidth / (float)WinHeight;
+    constexpr float NearClip = 0.1f;
+    constexpr float FarClip  = 100.0f;
     const glm::vec4 ClearColor { 1.0f, .8f, .6f, 1.0f};
 }
