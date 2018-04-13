@@ -60,7 +60,7 @@ int main()
     GLint uniformMVP, uniformTime;
     GLint uniformMVP2, uniformTime2;
 
-    ShaderProgram shader("assets/shaders/base.shader");
+    ShaderProgram shader(C::PathBaseShader);
 
     shader.bind({});
     uniformMVP  = shader.getUniformLocation("projection");
@@ -68,7 +68,7 @@ int main()
 
     GLCall(glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(projection)));
 
-    auto tex = Texture("assets/textures/Checkers.jpg");
+    auto tex = Texture(C::PathBaseTexture);
     tex.bind();
     GLint uniformTex;
     shader.bind({});
