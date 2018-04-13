@@ -10,7 +10,7 @@ ElementBuffer::ElementBuffer(const unsigned int* data, unsigned int count) : m_C
     GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(unsigned int), data, GL_STATIC_DRAW));
 }
 
-ElementBuffer::~ElementBuffer()
+void ElementBuffer::clean()
 {
     GLCall(glDeleteBuffers(1, &m_rendererID));
 }

@@ -43,12 +43,13 @@ set_target_properties(
 target_sources(
     cube
     PRIVATE ${SRCDIR}/src/Init.cpp
+    PRIVATE ${SRCDIR}/src/mesh.cpp
 	PRIVATE ${SRCDIR}/src/gl_caller.cpp
     PRIVATE ${SRCDIR}/src/vertexArray.cpp
     PRIVATE ${SRCDIR}/src/vertexBuffer.cpp
     PRIVATE ${SRCDIR}/src/renderer.cpp
     PRIVATE ${SRCDIR}/src/texture.cpp
-    PRIVATE ${SRCDIR}/src/shader.cpp
+    PRIVATE ${SRCDIR}/src/ShaderProgram.cpp
     PRIVATE ${SRCDIR}/src/gl_util.cpp
     PRIVATE ${SRCDIR}/src/elementBuffer.cpp
 )
@@ -89,7 +90,7 @@ target_include_directories(
 
 file(
     COPY ${SRCDIR}/lib/glew-2.1.0/bin/glew32.dll
-    DESTINATION ${PROJECT_BINARY_DIR}/bin
+    DESTINATION ${PROJECT_BINARY_DIR}
 )
 file(
     COPY ${SRCDIR}/lib/glew-2.1.0/lib/glew32.lib
@@ -101,6 +102,7 @@ target_link_libraries(
     PRIVATE ${OPENGL_LIBRARIES}
     PRIVATE glfw ${glfw_LIBRARIES}
     PRIVATE glew32
+	PRIVATE SOIL
 )
 
 ################################

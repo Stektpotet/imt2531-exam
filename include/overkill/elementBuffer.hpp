@@ -8,8 +8,11 @@ private:
     unsigned int m_rendererID;
     unsigned int m_Count;
 public:
+    ElementBuffer() = default;
     ElementBuffer(const unsigned int* data, unsigned int count);
-    ~ElementBuffer();
+    
+    
+    void clean();
 
     void bind() const;
     void unbind() const;

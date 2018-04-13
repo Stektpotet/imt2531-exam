@@ -1,7 +1,7 @@
-#include <overkill/shader.hpp>
+#include <overkill/ShaderProgram.hpp>
 #include <overkill/gl_util.hpp>
 
-void Shader::construct(const std::string& vert, const std::string& frag, const std::string& geom)
+void ShaderProgram::construct(const std::string& vert, const std::string& frag, const std::string& geom)
 {
     GLCall(id = glCreateProgram());
     const auto attachShader = [this](const std::string& src, GLuint type)
@@ -69,44 +69,43 @@ void Shader::construct(const std::string& vert, const std::string& frag, const s
         uniforms.insert({ name, location});
     }
 
-
     GLCall(glValidateProgram(id));
 }
 
-Shader::Shader(const std::string& vert, const std::string& frag, const std::string& geom)
+ShaderProgram::ShaderProgram(const std::string& vert, const std::string& frag, const std::string& geom)
 {
     construct(vert, frag, geom);
 }
 
-Shader::Shader(const std::string& filePath)
+ShaderProgram::ShaderProgram(const std::string& filePath)
 {
     auto[vert, frag, geom] = ParseProgram(filePath);
     construct(vert, frag, geom);
 }
 
-Shader::~Shader()
+void ShaderProgram::clean()
 {
     unbind();
-    GLCall(glDeleteShader(id));
+    GLCall(glDeleteProgram(id));
 }
 
-Shader::operator GLuint() const
+ShaderProgram::operator GLuint() const
 {
     return id;
 }
 
-void Shader::bind(const Material& mat) const
+void ShaderProgram::bind(const Material& mat) const
 {
     GLCall(glUseProgram(id));
 
 }
 
-void Shader::unbind() const
+void ShaderProgram::unbind() const
 {
     GLCall(glUseProgram(0));
 }
 
-GLint Shader::getUniformLocation(const std::string& name) const
+GLint ShaderProgram::getUniformLocation(const std::string& name) const
 {
     return uniforms.at(name);
 }

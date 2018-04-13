@@ -12,7 +12,9 @@ private:
     GLuint id;
 public:
     VertexArray();
-    ~VertexArray();
+    
+    
+    void clean();
 
     void addBuffer(const VertexBuffer& vb, const VertexBufferAttribLayout& layout);
 

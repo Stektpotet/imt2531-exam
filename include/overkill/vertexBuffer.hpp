@@ -5,10 +5,13 @@
 class VertexBuffer
 {
 private:
-    unsigned int m_rendererID;
+    GLuint m_rendererID;
 public:
-    VertexBuffer(const void* data, unsigned int size);
-    ~VertexBuffer();
+    VertexBuffer() = default;
+    VertexBuffer(const void* data, GLuint size);
+    
+    
+    void clean();
 
     void update(GLintptr start, GLuint size, const void * data);
     void bind() const;

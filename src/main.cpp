@@ -19,8 +19,9 @@
 #include <overkill/vertexArray.hpp>
 #include <overkill/vertexBuffer.hpp>
 #include <overkill/elementBuffer.hpp>
-#include <overkill/shader.hpp>
+#include <overkill/ShaderProgram.hpp>
 #include <overkill/texture.hpp>
+#include <overkill/mesh.hpp>
 
 static void OnInputKeyPress(GLFWwindow* window, int keyCode, int scanCode, int mods)
 {
@@ -191,9 +192,13 @@ int main()
     };
 
 
-    auto renderer = new EdgeRenderer();
-    auto va = new VertexArray();
-    auto vbuf = VertexBuffer(vertices, 14*2 * sizeof(Vertex));
+    auto renderer = EdgeRenderer();
+
+    Mesh mesh;
+    
+    mesh.m_vbo = VertexBuffer(vertices, 14 * 2 * sizeof(Vertex));
+    //mesh.m_vao = VertexArray();
+    //auto vbo;
     //TODO
     // VetexBufferLayout
     // glVertexAttribPointer(location, items, type, normalized, stride, start);
@@ -203,11 +208,11 @@ int main()
     vbufLayout.push(2, GL_SHORT);                       //uv
     vbufLayout.push(4, GL_UNSIGNED_BYTE, GL_TRUE);      //color;
 
-    Shader shader("assets/shaders/base.shader");
+    ShaderProgram shader("assets/shaders/base.shader");
 
     //auto vbufLayout = CreateFromProgram(GLuint(shader));
-    va->addBuffer(vbuf, vbufLayout);
-    auto ebuf = new ElementBuffer(indicies, 36*2);
+    mesh.m_vao.addBuffer(mesh.m_vbo, vbufLayout);
+    auto ebuf = ElementBuffer(indicies, 36*2);
 
 
     //SCALE -> ROTATE -> TRANSLATE
@@ -240,8 +245,8 @@ int main()
         if ((glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS || glfwWindowShouldClose(window) != 0))
             break;
 
-        renderer->clear();
-        renderer->draw(*va, *ebuf, shader);
+        renderer.clear();
+        renderer.draw(mesh.m_vao, ebuf, shader);
 
         projection = glm::perspective(fovy, aspect, 0.1f, -100.0f);
         shader.bind({});
@@ -254,8 +259,5 @@ int main()
 
     glfwDestroyWindow(window);
     glfwTerminate();
-    delete va;
-    delete ebuf;
-    delete renderer;
 	return 0;
 }
