@@ -32,11 +32,7 @@
 int main()
 {
     using namespace overkill;
-    using BackgroundColor = glm::vec4;
-    using VersionMajor = int;
-    using VersionMinor = int;
-    using Width        = int;
-    using Height       = int;
+
     float fovy = 90;
 
 	auto window = Init::GLFW(
