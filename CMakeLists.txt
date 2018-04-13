@@ -53,10 +53,23 @@ target_sources(
     PRIVATE ${SRCDIR}/src/elementBuffer.cpp
 )
 
-# Asssets which frequently updates
-configure_file(${SRCDIR}/assets/shaders/base.shader ${BINDIR}/assets/shaders/base.shader)
-configure_file(${SRCDIR}/assets/shaders/edge.shader ${BINDIR}/assets/shaders/edge.shader)
-configure_file(${SRCDIR}/assets/models/cube-inside-cube.yml ${BINDIR}/assets/models/cube-inside-cube.yml)
+#
+# CONFIGURE DIRECTORIES (configure_file())
+#
+function(configure_directory src dest)
+
+    file(GLOB files ${src}/*)
+    foreach(absolutepath ${files})
+        get_filename_component(filename ${absolutepath} NAME)
+        message("Conf file: " ${src}/${filename} " -> " ${dest}/${filename})
+        configure_file(${src}/${filename} ${dest}/${filename})
+    endforeach(absolutepath)
+
+endfunction()
+
+configure_directory(${SRCDIR}/assets/shaders ${BINDIR}/assets/shaders)
+configure_directory(${SRCDIR}/assets/models ${BINDIR}/assets/models)
+
 
 
 ###############################
@@ -133,3 +146,4 @@ message("OPENGL_LIBRARIES"   ${OPENGL_LIBRARIES})
 message("GLFW_LIBRARIES"     ${GLFW_LIBRARIES})
 message("GLEW_LIBRARY"       ${GLEW_LIBRARY})
 message("SOIL_LIBRARIES"     ${SOIL_LIBRARIES})
+
