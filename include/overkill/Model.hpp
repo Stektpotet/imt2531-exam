@@ -36,7 +36,7 @@ struct Mesh
 
 struct Model 
 {
-    Model(const std::vector<Vertex>& vertices);
+    Model(std::vector<Vertex> vertices);
     void pushMesh(const std::vector<GLuint> indices, const int shaderID, const int materialID);
 
     VertexArray       m_vao;

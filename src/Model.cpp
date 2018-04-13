@@ -7,7 +7,7 @@ Mesh::Mesh(const std::vector<GLuint>& indices, const int shaderID, const int mat
     m_ebo = ElementBuffer(indices.data(), indices.size());
 }
 
-Model::Model(const std::vector<Vertex>& vertices) 
+Model::Model(std::vector<Vertex> vertices) 
 {
     m_vbo = VertexBuffer(vertices.data(), vertices.size() * sizeof(Vertex));
     
@@ -21,5 +21,5 @@ Model::Model(const std::vector<Vertex>& vertices)
 
 void Model::pushMesh(const std::vector<GLuint> indices, const int shaderID, const int materialID)
 {
-    m_meshes.emplace_back(Mesh (indices, shaderID, materialID));
+    m_meshes.emplace_back( Mesh(indices, shaderID, materialID) );
 }
