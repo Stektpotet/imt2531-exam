@@ -17,17 +17,16 @@ class EntitySystem
 {
 private:
     static std::vector<Model> m_models;
-    static std::unordered_map<std::string, int> m_tagmodel;
+    static std::unordered_map<std::string, int> m_mapModelID;
 
 public:
-    // Load all models into memory
-    static void   init();
+    // <summary> Load all models into memory </summary>
+    static void   load();
     static Entity make(int modelID);
-    static Entity make(const std::string& tag);
+    static Entity make(const std::string& modeltag);
     static Entity clone(const Entity& entity);
 
     static const Model& getModel(const Entity& entity);
 };
-
 
 }

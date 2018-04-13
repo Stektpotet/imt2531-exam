@@ -4,7 +4,7 @@ namespace overkill
 {
 
 std::vector<Model> EntitySystem::m_models;
-std::unordered_map<std::string, int> EntitySystem::m_tagmodel;
+std::unordered_map<std::string, int> EntitySystem::m_mapModelID;
 
 
 Entity EntitySystem::make(int modelID)
@@ -13,7 +13,7 @@ Entity EntitySystem::make(int modelID)
 }
 Entity EntitySystem::make(const std::string& tag)
 {
-    return Entity{ m_tagmodel[tag] };
+    return Entity{ m_mapModelID[tag] };
 }
 Entity EntitySystem::clone(const Entity& entity)
 {
@@ -25,7 +25,7 @@ const Model& EntitySystem::getModel(const Entity& entity)
     return EntitySystem::m_models[entity.m_modelID];
 }
 
-void EntitySystem::init()
+void EntitySystem::load()
 {
     auto vertices = std::vector<Vertex> {
 
@@ -119,7 +119,7 @@ void EntitySystem::init()
     Model model{vertices};
     model.pushMesh(indicies, 0,0);
 
-    m_tagmodel["cube"] = m_models.size();
+    m_mapModelID["cube"] = m_models.size();
     m_models.push_back(model);
 }
 

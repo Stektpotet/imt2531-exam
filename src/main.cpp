@@ -47,7 +47,7 @@ int main()
 
     auto renderer = EdgeRenderer();
     
-    EntitySystem::init();
+    EntitySystem::load();
     
     auto entity = EntitySystem::make("cube");
     auto model  = EntitySystem::getModel(entity);
