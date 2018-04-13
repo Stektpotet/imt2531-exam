@@ -24,23 +24,22 @@ struct Vertex
     GLubyte  color[4];
 };
 
-//@NOTE:    It would make sense to move buffers(VBO/VAO) outside of the mesh to fully 
-//          utilize the buffers (and thereby optimize performance.. I guess?)
-//          @date 13.04.2018
-class Mesh
+struct Mesh
 {
-public:
-    //Mesh(const std::vector<Vertex>& vertices, const std::vector<GLuint>& indices, const int shaderID, const int materialID = 0);
-    ~Mesh();
-    //Mesh(const VertexBuffer& vbo);
-    void DrawMePles(const Renderer& renderer);
+    Mesh(const std::vector<GLuint>& indices, const int shaderID, const int materialID);
 
-    //std::vector<Vertex> m_vertices;
-    //std::vector<GLuint> m_indices;
-public:
-    VertexBuffer m_vbo;
-    VertexArray m_vao;
     ElementBuffer m_ebo;
     int m_shaderID;
     int m_materialID;
+};
+
+
+struct Model 
+{
+    Model(const std::vector<Vertex>& vertices);
+    void pushMesh(const std::vector<GLuint> indices, const int shaderID, const int materialID);
+
+    VertexArray       m_vao;
+    VertexBuffer      m_vbo;
+    std::vector<Mesh> m_meshes;
 };

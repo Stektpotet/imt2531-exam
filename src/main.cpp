@@ -9,9 +9,12 @@
 #include <sstream>
 #include <string>
 
+#include <GL/glew.h>
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
 
 #include <overkill/Init.hpp>
 #include <overkill/Input.hpp>
@@ -22,7 +25,7 @@
 #include <overkill/elementBuffer.hpp>
 #include <overkill/ShaderProgram.hpp>
 #include <overkill/texture.hpp>
-#include <overkill/mesh.hpp>
+#include <overkill/Model.hpp>
 
 
 int main()
@@ -149,11 +152,9 @@ int main()
 
     auto renderer = EdgeRenderer();
 
-    Mesh mesh;
-    
-    mesh.m_vbo = VertexBuffer(vertices, 14 * 2 * sizeof(Vertex));
-    //mesh.m_vao = VertexArray();
-    //auto vbo;
+
+    auto vbuff = VertexBuffer(vertices, 14 * 2 * sizeof(Vertex));
+    auto vao = VertexArray();
     //TODO
     // VetexBufferLayout
     // glVertexAttribPointer(location, items, type, normalized, stride, start);
@@ -166,7 +167,7 @@ int main()
     ShaderProgram shader("assets/shaders/base.shader");
 
     //auto vbufLayout = CreateFromProgram(GLuint(shader));
-    mesh.m_vao.addBuffer(mesh.m_vbo, vbufLayout);
+    vao.addBuffer(vbuff, vbufLayout);
     auto ebuf = ElementBuffer(indicies, 36*2);
 
 
@@ -201,7 +202,7 @@ int main()
             break;
 
         renderer.clear();
-        renderer.draw(mesh.m_vao, ebuf, shader);
+        renderer.draw(vao, ebuf, shader);
 
         projection = glm::perspective(Input::fovy, Input::aspect, 0.1f, -100.0f);
         shader.bind({});
