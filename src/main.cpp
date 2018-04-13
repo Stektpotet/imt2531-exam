@@ -44,7 +44,11 @@ int main()
     struct Vertex
     {
         GLfloat position[3];
-        GLuint  normal;//normalized integers (decimal floating point number): https://www.khronos.org/opengl/wiki/Normalized_Integer + https://stackoverflow.com/questions/14036892/using-gl-int-2-10-10-10-rev-in-glvertexattribpointer
+        
+        // @note normalized integers (decimal floating point number): 
+        // @ref  https://www.khronos.org/opengl/wiki/Normalized_Integer
+        // @ref  https://stackoverflow.com/questions/14036892/using-gl-int-2-10-10-10-rev-in-glvertexattribpointer
+        GLuint  normal;
         GLshort  uv_1[2];
         //GLhalf  uv_2[2];
         //GLhalf  uv_3[2];
@@ -53,6 +57,8 @@ int main()
     };
 
     Vertex vertices[] = {
+
+        // Cube 1
         { { -0.5f, -0.5f,  0.5f },  1,  { 0, 0 }, { 255,     255-96,  255-192, 255 } },
         { {  0.5f, -0.5f,  0.5f },  1,  { 1, 0 }, { 255-16,  255-112, 255-208, 255 } },
         { {  0.5f,  0.5f,  0.5f },  1,  { 1, 1 }, { 255-32,  255-128, 255-224, 255 } },
@@ -74,8 +80,7 @@ int main()
         { {  0.5f,  0.5f,  0.5f },  1,  { 1, 1 }, { 255-208, 255-32,   255-128, 255 } },
 
 
-
-
+        // Cube 2
         { { -1.0f, -1.0f,  1.0f },  1,  { 0, 0 }, { 255, 255, 255, 80 } },
         { {  1.0f, -1.0f,  1.0f },  1,  { 1, 0 }, { 255, 255, 255, 80 } },
         { {  1.0f,  1.0f,  1.0f },  1,  { 1, 1 }, { 255, 255, 255, 80 } },
@@ -99,6 +104,8 @@ int main()
     };
 
     unsigned int indicies[] = {
+
+        // Cube 1
         0, 1, 2,
         2, 3, 0,
 
@@ -118,8 +125,7 @@ int main()
         11, 10, 12,
 
 
-
-
+        // Cube 2
         14, 15, 16,
         16, 17, 14,
 

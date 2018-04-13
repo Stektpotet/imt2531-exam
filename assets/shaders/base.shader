@@ -75,7 +75,7 @@ void main() {
 #shader fragment
 #version 410
 in vec4 gl_FragCoord;
-in vec2 gl_PointCoord;
+// in vec2 gl_PointCoord; // @NOTE Not supported on [macos, openGL 4.1]
 noperspective in vec2 texCoord;
 smooth in vec4 vertex_color_out;
 in vec4 pos;
