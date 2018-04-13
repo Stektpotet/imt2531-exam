@@ -53,6 +53,7 @@ target_sources(
     PRIVATE ${SRCDIR}/src/gl_util.cpp
     PRIVATE ${SRCDIR}/src/elementBuffer.cpp
     PRIVATE ${SRCDIR}/src/Input.cpp
+    PRIVATE ${SRCDIR}/src/EntitySystem.cpp
 )
 
 #
