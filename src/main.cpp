@@ -16,6 +16,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 
+#include <overkill/Config.hpp>
 #include <overkill/Init.hpp>
 #include <overkill/Input.hpp>
 #include <overkill/gl_caller.hpp>
@@ -39,10 +40,14 @@ int main()
     float fovy = 90;
 
 	auto window = Init::GLFW(
-        VersionMajor(4), VersionMinor(1), Width(800), Height(600), "Assignment 2 - Cube");
+        C::VersionMajor, 
+        C::VersionMinor, 
+        C::WinWidth, 
+        C::WinHeight,
+        C::WinName);
 
     Init::GLEW();
-    Init::OpenGL(BackgroundColor{ 1.0f, .8f, .6f, 1.0f}); //(0.05f, 0.06f, 0.075f, 1.0f) for sexy dark blue-grey
+    Init::OpenGL(C::ClearColor); //(0.05f, 0.06f, 0.075f, 1.0f) for sexy dark blue-grey
 
 
     auto renderer = EdgeRenderer();
@@ -53,7 +58,7 @@ int main()
     auto model  = EntitySystem::getModel(entity);
 
     //SCALE -> ROTATE -> TRANSLATE
-    glm::mat4 projection = glm::perspective(90.0f, (GLfloat)1024 / (GLfloat)1024, 0.1f, 100.0f);
+    glm::mat4 projection = glm::perspective(C::FOV, C::AspectRatio, C::NearClip, C::FarClip);
 
     //GLCall(glSetUn)
     GLint uniformMVP, uniformTime;
