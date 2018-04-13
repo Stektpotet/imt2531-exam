@@ -46,6 +46,7 @@ target_sources(
     PRIVATE ${CMAKE_SOURCE_DIR}/src/shader.cpp
     PRIVATE ${CMAKE_SOURCE_DIR}/src/gl_util.cpp
     PRIVATE ${CMAKE_SOURCE_DIR}/src/elementBuffer.cpp
+    PRIVATE ${CMAKE_SOURCE_DIR}/src/Input.cpp
 )
 
 ###############################
