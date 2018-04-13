@@ -14,6 +14,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <overkill/Init.hpp>
+#include <overkill/Input.hpp>
 #include <overkill/gl_caller.hpp>
 #include <overkill/renderer.hpp>
 #include <overkill/vertexArray.hpp>
@@ -23,52 +24,7 @@
 #include <overkill/texture.hpp>
 #include <overkill/mesh.hpp>
 
-static void OnInputKeyPress(GLFWwindow* window, int keyCode, int scanCode, int mods)
-{
-    printf("Pressing %i, as char: %c\n", keyCode, char(keyCode));
-    if (keyCode == GLFW_KEY_ESCAPE)
-    {
-        glfwSetWindowShouldClose(window, 1);
-    }
 
-}
-static void OnInputKeyHold(GLFWwindow* window, int keyCode, int scanCode, int mods)
-{
-    printf("Holding %i, as char: %c\n", keyCode, char(keyCode));
-    if (keyCode == GLFW_KEY_W)
-    {
-
-    }
-    if (keyCode == GLFW_KEY_S)
-    {
-
-    }
-}
-static void OnInputKeyUnpress(GLFWwindow* window, int keyCode, int scanCode, int mods)
-{
-    printf("Unpressed %i, as char: %c\n", keyCode, char(keyCode));
-}
-static void OnInputKey(GLFWwindow* window, int keyCode, int scanCode, int action, int mods)
-{
-    switch (action)
-    {
-    case GLFW_PRESS:
-        OnInputKeyPress(window, keyCode, scanCode, mods);
-        break;
-    case GLFW_REPEAT:
-        OnInputKeyHold(window, keyCode, scanCode, mods);
-        break;
-    case GLFW_RELEASE:
-        OnInputKeyUnpress(window, keyCode, scanCode, mods);
-        break;
-    }
-}
-
-static float fovy = 90, aspect = 1;
-static void OnCursorHover(GLFWwindow* window, double x, double y)
-{
-    fovy = (y / 512) + 32;
-}
 int main()
 {
     using namespace overkill;
@@ -77,14 +33,13 @@ int main()
     using VersionMinor = int;
     using Width        = int;
     using Height       = int;
+    float fovy = 90;
 
 	auto window = Init::GLFW(
         VersionMajor(4), VersionMinor(1), Width(800), Height(600), "Assignment 2 - Cube");
 
     Init::GLEW();
-    Init::OpenGL(
-        BackgroundColor{ 1.0f, .8f, .6f, 1.0f}); //(0.05f, 0.06f, 0.075f, 1.0f) for sexy dark blue-grey
-
+    Init::OpenGL(BackgroundColor{ 1.0f, .8f, .6f, 1.0f}); //(0.05f, 0.06f, 0.075f, 1.0f) for sexy dark blue-grey
 
 
     struct Vertex
@@ -236,8 +191,8 @@ int main()
     //GLCall(uniformTex = glGetUniformLocation(GLuint(shader), "mainTex"));
     GLCall(glUniform1i(uniformTex, 0));
 
-    glfwSetKeyCallback(window, OnInputKey); //set upp callbacks
-    glfwSetCursorPosCallback(window, OnCursorHover);
+    glfwSetKeyCallback(window, Input::OnInputKey); //set upp callbacks
+    glfwSetCursorPosCallback(window, Input::OnCursorHover);
 
 
     for(;;)
@@ -248,7 +203,7 @@ int main()
         renderer.clear();
         renderer.draw(mesh.m_vao, ebuf, shader);
 
-        projection = glm::perspective(fovy, aspect, 0.1f, -100.0f);
+        projection = glm::perspective(Input::fovy, Input::aspect, 0.1f, -100.0f);
         shader.bind({});
         GLCall(glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(projection)));
         GLCall(glUniform1f(uniformTime, (float)glfwGetTime()));

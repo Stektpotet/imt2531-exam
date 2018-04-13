@@ -52,6 +52,7 @@ target_sources(
     PRIVATE ${SRCDIR}/src/ShaderProgram.cpp
     PRIVATE ${SRCDIR}/src/gl_util.cpp
     PRIVATE ${SRCDIR}/src/elementBuffer.cpp
+    PRIVATE ${SRCDIR}/src/Input.cpp
 )
 
 #
@@ -134,14 +135,6 @@ target_link_libraries(
 
 )
 endif()
-
-
-
-add_custom_command(
-    TARGET cube POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-    ${SRCDIR}/assets $<TARGET_FILE_DIR:cube>/assets
-)
 
 message("CMAKE_BINARY_DIR: " ${BINDIR})
 message("OPENGL_LIBRARIES"   ${OPENGL_LIBRARIES})
