@@ -49,7 +49,9 @@ int main()
     auto renderer = EdgeRenderer();
     
     ModelSystem::load();
-    auto model = ModelSystem::getByTag("cube");
+    const C::ID  modelid      = ModelSystem::getIdByTag("cube");
+    const Model& model        = ModelSystem::getById(modelid);
+    const Model& modelFromTag = ModelSystem::getByTag("cube");
 
 
     //SCALE -> ROTATE -> TRANSLATE

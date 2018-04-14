@@ -16,7 +16,7 @@ auto ModelSystem::getByTag(const C::Tag& tag) -> const Model&
     return ModelSystem::m_models[m_mapModelID[tag]];
 }
 
-auto ModelSystem::get(C::ID modelID) -> const Model&
+auto ModelSystem::getById(C::ID modelID) -> const Model&
 {
     return ModelSystem::m_models[modelID];
 }

@@ -22,7 +22,7 @@ public:
     static void load();
     static auto getIdByTag(const C::Tag& modeltag) -> C::ID;
     static auto getByTag(const C::Tag& tag) -> const Model&;
-    static auto get(const C::ID modelID) -> const Model&;
+    static auto getById(const C::ID modelID) -> const Model&;
 };
 
 }
