@@ -1,9 +1,13 @@
+#pragma once
+
 #include <vector>
 #include <string>
 #include <unordered_map>
 
 #include <overkill/Config.hpp>
+#include <overkill/texture.hpp>
 #include <overkill/material.hpp>
+#include <overkill/TextureSystem.hpp>
 
 namespace overkill
 {

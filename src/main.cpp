@@ -21,11 +21,10 @@
 #include <overkill/Input.hpp>
 #include <overkill/gl_caller.hpp>
 #include <overkill/renderer.hpp>
-#include <overkill/vertexArray.hpp>
-#include <overkill/vertexBuffer.hpp>
-#include <overkill/elementBuffer.hpp>
-#include <overkill/ShaderProgram.hpp>
-#include <overkill/texture.hpp>
+
+#include <overkill/TextureSystem.hpp>
+#include <overkill/ShaderSystem.hpp>
+#include <overkill/MaterialSystem.hpp>
 #include <overkill/ModelSystem.hpp>
 
 
@@ -46,13 +45,18 @@ int main()
     Init::OpenGL(C::ClearColor); //(0.05f, 0.06f, 0.075f, 1.0f) for sexy dark blue-grey
 
 
+    TextureSystem::load();
+    ShaderSystem::load();
+    MaterialSystem::load();
+    ModelSystem::load();
+
+    auto shader   = ShaderSystem::getByTag("base");
+    auto material = MaterialSystem::getByTag("brickwall");
+    auto model    = ModelSystem::getByTag("cube");
+
+
     auto renderer = EdgeRenderer();
     
-    ModelSystem::load();
-    const C::ID  modelid      = ModelSystem::getIdByTag("cube");
-    const Model& model        = ModelSystem::getById(modelid);
-    const Model& modelFromTag = ModelSystem::getByTag("cube");
-
 
     //SCALE -> ROTATE -> TRANSLATE
     glm::mat4 projection = glm::perspective(C::FOV, C::AspectRatio, C::NearClip, C::FarClip);
@@ -61,33 +65,12 @@ int main()
     GLint uniformMVP, uniformTime;
     GLint uniformMVP2, uniformTime2;
 
-    ShaderProgram shader(C::PathBaseShader);
 
     shader.bind({});
     uniformMVP  = shader.getUniformLocation("projection");
     uniformTime = shader.getUniformLocation("time");
 
     GLCall(glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(projection)));
-
-	Material material;
-
-	material.maps.push_back(
-		UniformTexture
-		{
-			"mainTex",
-			Texture(C::PathBaseTexture)
-		}
-	);
-	material.maps.push_back(
-		UniformTexture
-		{
-			"specularTex",
-			Texture("assets/textures/BrickWall_nrm.jpg")
-		}
-	);
-	material.floats.push_back(
-		{ "test", 0.5f }
-	);
 
     shader.bind(material);
 	

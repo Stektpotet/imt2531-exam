@@ -4,7 +4,7 @@ namespace overkill
 {
 
 std::vector<Model> ModelSystem::m_models;
-std::unordered_map<std::string, C::ID> ModelSystem::m_mapModelID;
+std::unordered_map<C::Tag, C::ID> ModelSystem::m_mapModelID;
 
 auto ModelSystem::getIdByTag(const C::Tag& tag) -> C::ID
 {
