@@ -1,31 +1,28 @@
-#include <overkill/EntitySystem.hpp>
+#include <overkill/ModelSystem.hpp>
 
 namespace overkill
 {
 
-std::vector<Model> EntitySystem::m_models;
-std::unordered_map<std::string, int> EntitySystem::m_mapModelID;
+std::vector<Model> ModelSystem::m_models;
+std::unordered_map<std::string, C::ID> ModelSystem::m_mapModelID;
 
-
-Entity EntitySystem::make(int modelID)
+auto ModelSystem::getIdByTag(const C::Tag& tag) -> C::ID
 {
-    return Entity{ modelID };
-}
-Entity EntitySystem::make(const std::string& tag)
-{
-    return Entity{ m_mapModelID[tag] };
-}
-Entity EntitySystem::clone(const Entity& entity)
-{
-    return Entity{ entity.m_modelID };
-} 
-
-const Model& EntitySystem::getModel(const Entity& entity)
-{
-    return EntitySystem::m_models[entity.m_modelID];
+    return m_mapModelID[tag];
 }
 
-void EntitySystem::load()
+auto ModelSystem::getByTag(const C::Tag& tag) -> const Model&
+{
+    return ModelSystem::m_models[m_mapModelID[tag]];
+}
+
+auto ModelSystem::get(C::ID modelID) -> const Model&
+{
+    return ModelSystem::m_models[modelID];
+}
+
+
+void ModelSystem::load()
 {
     auto vertices = std::vector<Vertex> {
 

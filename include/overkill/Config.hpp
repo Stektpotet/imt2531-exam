@@ -1,7 +1,12 @@
+#pragma once
 #include <glm/glm.hpp>
+#include <string>
 
 namespace overkill::C
 {
+    using Tag = std::string;
+    using ID  = int;
+
     constexpr int VersionMajor = 4;
     constexpr int VersionMinor = 1;
     constexpr int WinWidth = 800;

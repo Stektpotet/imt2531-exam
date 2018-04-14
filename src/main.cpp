@@ -26,7 +26,7 @@
 #include <overkill/elementBuffer.hpp>
 #include <overkill/ShaderProgram.hpp>
 #include <overkill/texture.hpp>
-#include <overkill/EntitySystem.hpp>
+#include <overkill/ModelSystem.hpp>
 
 
 int main()
@@ -48,10 +48,9 @@ int main()
 
     auto renderer = EdgeRenderer();
     
-    EntitySystem::load();
-    
-    auto entity = EntitySystem::make("cube");
-    auto model  = EntitySystem::getModel(entity);
+    ModelSystem::load();
+    auto model = ModelSystem::getByTag("cube");
+
 
     //SCALE -> ROTATE -> TRANSLATE
     glm::mat4 projection = glm::perspective(C::FOV, C::AspectRatio, C::NearClip, C::FarClip);
