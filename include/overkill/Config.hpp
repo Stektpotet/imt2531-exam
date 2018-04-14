@@ -17,7 +17,6 @@ namespace overkill::C
     constexpr float NearClip = 0.1f;
     constexpr float FarClip  = 100.0f;
     const glm::vec4 ClearColor { 1.0f, .8f, .6f, 1.0f};
-
     constexpr char PathBaseShader[] = "assets/shaders/base.shader";
     constexpr char PathBaseTexture[] = "assets/textures/Checkers.jpg";
 }

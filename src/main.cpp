@@ -33,6 +33,9 @@ int main()
     using namespace overkill;
 
     float fovy = 90;
+    float cursorX = 0;
+    float cursorY = 0;
+
 
 	auto window = Init::GLFW(
         C::VersionMajor, 
@@ -60,15 +63,21 @@ int main()
 
     //SCALE -> ROTATE -> TRANSLATE
     glm::mat4 projection = glm::perspective(C::FOV, C::AspectRatio, C::NearClip, C::FarClip);
+    glm::mat4 camera = glm::mat4(1); 
+    glm::mat4 pivot = glm::translate(glm::mat4(1),glm::vec3(0, 0, 0));  //Camera pos in world.
+    glm::mat4 view = glm::mat4(1);
+
 
     //GLCall(glSetUn)
     GLint uniformMVP, uniformTime;
     GLint uniformMVP2, uniformTime2;
+    GLint uniformView;                                  //Will communicate camera orientation to shader.
 
 
     shader.bind({});
     uniformMVP  = shader.getUniformLocation("projection");
     uniformTime = shader.getUniformLocation("time");
+    uniformView = shader.getUniformLocation("view");
 
     GLCall(glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(projection)));
 
@@ -87,9 +96,16 @@ int main()
         renderer.draw(model.m_vao, model.m_meshes[0].m_ebo, shader);
 
 		//@TODO shader.bindDynamic()
-        projection = glm::perspective(Input::fovy, Input::aspect, 0.1f, -100.0f);
+        projection = glm::perspective(C::FOV, Input::aspect, 0.1f, -100.0f);
+        camera = glm::rotate(glm::mat4(1), 1.0f + (5* Input::cursorX / 800.0f), glm::vec3(0.0f, -1.0f, 0.0f));
+        camera = glm::rotate(glm::mat4(1), 1.0f + (5* Input::cursorY / 600.0f), glm::vec3(1.0f, 0.0f, 0.0f)) * camera;
+        
+        view = pivot * camera;
+        glm::inverse(view); //To reverse both axis, so controls are not reverse.
+
         shader.bind({});
         GLCall(glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(projection)));
+        GLCall(glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(view)));
         GLCall(glUniform1f(uniformTime, (float)glfwGetTime()));
 
         glfwSwapBuffers(window);

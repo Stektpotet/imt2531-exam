@@ -3,6 +3,8 @@
 namespace overkill
 {
     extern float Input::fovy = 90;
+    extern float Input::cursorX = 0;
+    extern float Input::cursorY = 0;
 
 
     void Input::OnInputKeyPress(GLFWwindow* window, int keyCode, int scanCode, int mods)
@@ -52,6 +54,8 @@ namespace overkill
     void Input::OnCursorHover(GLFWwindow* window, double x, double y)
     {
         fovy = (y / 512) + 32;
+        cursorX = x;
+        cursorY = y;
     }
 
 }
