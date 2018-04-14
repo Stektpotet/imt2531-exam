@@ -2,10 +2,9 @@
 
 namespace overkill
 {
-    extern float Input::fovy = 90;
-    extern float Input::cursorX = 0;
-    extern float Input::cursorY = 0;
-
+    float Input::fovy = C::FOV;
+    float Input::cursorX = 0;
+    float Input::cursorY = 0;
 
     void Input::OnInputKeyPress(GLFWwindow* window, int keyCode, int scanCode, int mods)
     {
@@ -34,7 +33,7 @@ namespace overkill
     {
         printf("Unpressed %i, as char: %c\n", keyCode, char(keyCode));
     }
-    
+
     void Input::OnInputKey(GLFWwindow* window, int keyCode, int scanCode, int action, int mods)
     {
         switch (action)
@@ -59,7 +58,8 @@ namespace overkill
 
     void Input::OnScrollChange(GLFWwindow* window, double x, double y)
     {
-        fovy += (x / 512) + 32;
+        // fovy += (y / 512) + 32;
+        fovy -= y * C::ZoomSensitivity;
+        printf("\nScroll: x: %f,\ty:%f\t\tfovy:%f", x, y, fovy);
     }
-
 }

@@ -27,15 +27,11 @@
 #include <overkill/MaterialSystem.hpp>
 #include <overkill/ModelSystem.hpp>
 
+using namespace overkill;
+
 
 int main()
 {
-    using namespace overkill;
-
-    float fovy = 90;
-    float cursorX = 0;
-    float cursorY = 0;
-
 
 	auto window = Init::GLFW(
         C::VersionMajor, 
@@ -92,7 +88,7 @@ int main()
         renderer.draw(model.m_vao, model.m_meshes[0].m_ebo, shader);
 
 		//@TODO shader.bindDynamic()
-        projection = glm::perspective(C::FOV, Input::aspect, 0.1f, -100.0f);
+        projection = glm::perspective(Input::fovy, C::AspectRatio, 0.1f, -100.0f);
         camera = glm::rotate(glm::mat4(1), 1.0f + (5* Input::cursorX / 800.0f), glm::vec3(0.0f, -1.0f, 0.0f));
         camera = glm::rotate(glm::mat4(1), 1.0f + (5* Input::cursorY / 600.0f), glm::vec3(1.0f, 0.0f, 0.0f)) * camera;
         

@@ -13,6 +13,7 @@ namespace overkill::C
     constexpr int WinHeight = 600;
     constexpr char WinName[] = "Assignment 2 - Cube";
     constexpr float FOV = 90.0f;
+    constexpr float ZoomSensitivity = 0.1f;
     constexpr float AspectRatio = (float)WinWidth / (float)WinHeight;
     constexpr float NearClip = 0.1f;
     constexpr float FarClip  = 100.0f;
