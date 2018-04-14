@@ -9,10 +9,14 @@
 #include <sstream>
 #include <string>
 
+#include <GL/glew.h>
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+
+#include <overkill/Config.hpp>
 #include <overkill/Init.hpp>
 #include <overkill/Input.hpp>
 #include <overkill/gl_caller.hpp>
@@ -22,160 +26,41 @@
 #include <overkill/elementBuffer.hpp>
 #include <overkill/ShaderProgram.hpp>
 #include <overkill/texture.hpp>
-#include <overkill/mesh.hpp>
+#include <overkill/EntitySystem.hpp>
 
 
 int main()
 {
     using namespace overkill;
-    using BackgroundColor = glm::vec4;
-    using VersionMajor = int;
-    using VersionMinor = int;
-    using Width        = int;
-    using Height       = int;
+
     float fovy = 90;
 
 	auto window = Init::GLFW(
-        VersionMajor(4), VersionMinor(1), Width(2560), Height(1440), "Assignment 2 - Cube");
+        C::VersionMajor, 
+        C::VersionMinor, 
+        C::WinWidth, 
+        C::WinHeight,
+        C::WinName);
 
     Init::GLEW();
-    Init::OpenGL(BackgroundColor{ 1.0f, .8f, .6f, 1.0f}); //(0.05f, 0.06f, 0.075f, 1.0f) for sexy dark blue-grey
-
-
-    struct Vertex
-    {
-        GLfloat position[3];
-        
-        // @note normalized integers (decimal floating point number): 
-        // @ref  https://www.khronos.org/opengl/wiki/Normalized_Integer
-        // @ref  https://stackoverflow.com/questions/14036892/using-gl-int-2-10-10-10-rev-in-glvertexattribpointer
-        GLuint  normal;
-        GLshort  uv_1[2];
-        //GLhalf  uv_2[2];
-        //GLhalf  uv_3[2];
-        // etc.
-        GLubyte  color[4];
-    };
-
-    Vertex vertices[] = {
-
-        // Cube 1
-        { { -0.5f, -0.5f,  0.5f },  1,  { 0, 0 }, { 255,     255-96,  255-192, 255 } },
-        { {  0.5f, -0.5f,  0.5f },  1,  { 1, 0 }, { 255-16,  255-112, 255-208, 255 } },
-        { {  0.5f,  0.5f,  0.5f },  1,  { 1, 1 }, { 255-32,  255-128, 255-224, 255 } },
-        { { -0.5f,  0.5f,  0.5f },  1,  { 0, 1 }, { 255-48,  255-144, 255-240, 255 } },
-
-        { { -0.5f, -0.5f, -0.5f },  1,  { 1, 0 }, { 255-64,  255-160, 255-255, 255 } },
-        { { -0.5f,  0.5f, -0.5f },  1,  { 1, 1 }, { 255-80,  255-176, 255, 255 } },
-
-        { {  0.5f, -0.5f, -0.5f },  1,  { 0, 0 }, { 255-96,  255-192, 255-16, 255 } },
-        { {  0.5f,  0.5f, -0.5f },  1,  { 0, 1 }, { 255-112, 255-208, 255-32, 255 } },
-
-        { { -0.5f, -0.5f, -0.5f },  1,  { 0, 1 }, { 255-128, 255-224, 255-48, 255 } },
-        { {  0.5f, -0.5f, -0.5f },  1,  { 1, 1 }, { 255-144, 255-240, 255-64, 255 } },
-
-        { { -0.5f,  0.5f, -0.5f },  1,  { 0, 0 }, { 255-160, 255-255,  255-80, 255 } },
-        { {  0.5f,  0.5f, -0.5f },  1,  { 1, 0 }, { 255-176, 255,      255-96, 255 } },
-
-        { { -0.5f,  0.5f,  0.5f },  1,  { 0, 1 }, { 255-192, 255-16,   255-112, 255 } },
-        { {  0.5f,  0.5f,  0.5f },  1,  { 1, 1 }, { 255-208, 255-32,   255-128, 255 } },
-
-
-        // Cube 2
-        { { -1.0f, -1.0f,  1.0f },  1,  { 0, 0 }, { 255, 255, 255, 80 } },
-        { {  1.0f, -1.0f,  1.0f },  1,  { 1, 0 }, { 255, 255, 255, 80 } },
-        { {  1.0f,  1.0f,  1.0f },  1,  { 1, 1 }, { 255, 255, 255, 80 } },
-        { { -1.0f,  1.0f,  1.0f },  1,  { 0, 1 }, { 255, 255, 255, 80 } },
-
-        { { -1.0f, -1.0f, -1.0f },  1,  { 1, 0 }, { 255, 255, 255, 80 } },
-        { { -1.0f,  1.0f, -1.0f },  1,  { 1, 1 }, { 255, 255, 255, 80 } },
-
-        { {  1.0f, -1.0f, -1.0f },  1,  { 0, 0 }, { 255, 255, 255, 80 } },
-        { {  1.0f,  1.0f, -1.0f },  1,  { 0, 1 }, { 255, 255, 255, 80 } },
-
-        { { -1.0f, -1.0f, -1.0f },  1,  { 0, 1 }, { 255, 255, 255, 80 } },
-        { {  1.0f, -1.0f, -1.0f },  1,  { 1, 1 }, { 255, 255, 255, 80 } },
-
-        { { -1.0f,  1.0f, -1.0f },  1,  { 0, 0 }, { 255, 255, 255, 80 } },
-        { {  1.0f,  1.0f, -1.0f },  1,  { 1, 0 }, { 255, 255, 255, 80 } },
-
-        { { -1.0f,  1.0f,  1.0f },  1,  { 0, 1 }, { 255, 255, 255, 80 } },
-        { {  1.0f,  1.0f,  1.0f },  1,  { 1, 1 }, { 255, 255, 255, 80 } },
-
-    };
-
-    unsigned int indicies[] = {
-
-        // Cube 1
-        0, 1, 2,
-        2, 3, 0,
-
-        4, 0, 3,
-        3, 5, 4,
-
-        1, 6, 7,
-        7, 2, 1,
-
-        8, 9, 1,
-        1, 0, 8,
-
-        10, 11, 9,
-        9,  8,  10,
-
-        12, 13, 11,
-        11, 10, 12,
-
-
-        // Cube 2
-        14, 15, 16,
-        16, 17, 14,
-
-        18, 14, 3+14,
-        3 + 14, 5 + 14, 4 + 14,
-
-        1+14, 6+14, 7+14,
-        7+14, 2+14, 1+14,
-
-        8+14, 9+14, 1+14,
-        1+14, 0+14, 8+14,
-
-        10 + 14, 11 + 14, 9 + 14,
-        9 + 14,  8 + 14,  10 + 14,
-
-        12+14, 13+14, 11+14,
-        11+14, 10+14, 12+14,
-    };
+    Init::OpenGL(C::ClearColor); //(0.05f, 0.06f, 0.075f, 1.0f) for sexy dark blue-grey
 
 
     auto renderer = EdgeRenderer();
-
-    Mesh mesh;
     
-    mesh.m_vbo = VertexBuffer(vertices, 14 * 2 * sizeof(Vertex));
-    //mesh.m_vao = VertexArray();
-    //auto vbo;
-    //TODO
-    // VetexBufferLayout
-    // glVertexAttribPointer(location, items, type, normalized, stride, start);
-    auto vbufLayout = VertexBufferAttribLayout();
-    vbufLayout.push(3, GL_FLOAT);                       //position;
-    vbufLayout.push(1, GL_UNSIGNED_INT);                //normal
-    vbufLayout.push(2, GL_SHORT);                       //uv
-    vbufLayout.push(4, GL_UNSIGNED_BYTE, GL_TRUE);      //color;
-
-    ShaderProgram shader("assets/shaders/base.shader");
-
-    //auto vbufLayout = CreateFromProgram(GLuint(shader));
-    mesh.m_vao.addBuffer(mesh.m_vbo, vbufLayout);
-    auto ebuf = ElementBuffer(indicies, 36*2);
-
+    EntitySystem::load();
+    
+    auto entity = EntitySystem::make("cube");
+    auto model  = EntitySystem::getModel(entity);
 
     //SCALE -> ROTATE -> TRANSLATE
-    glm::mat4 projection = glm::perspective(90.0f, (GLfloat)1024 / (GLfloat)1024, 0.1f, 100.0f);
+    glm::mat4 projection = glm::perspective(C::FOV, C::AspectRatio, C::NearClip, C::FarClip);
 
     //GLCall(glSetUn)
     GLint uniformMVP, uniformTime;
     GLint uniformMVP2, uniformTime2;
+
+    ShaderProgram shader(C::PathBaseShader);
 
     shader.bind({});
     uniformMVP  = shader.getUniformLocation("projection");
@@ -189,7 +74,7 @@ int main()
 		UniformTexture
 		{
 			"mainTex",
-			Texture("assets/textures/BrickWall.jpg")
+			Texture(C::PathBaseTexture)
 		}
 	);
 	material.maps.push_back(
@@ -215,7 +100,7 @@ int main()
             break;
 
         renderer.clear();
-        renderer.draw(mesh.m_vao, ebuf, shader);
+        renderer.draw(model.m_vao, model.m_meshes[0].m_ebo, shader);
 
 		//@TODO shader.bindDynamic()
         projection = glm::perspective(Input::fovy, Input::aspect, 0.1f, -100.0f);

@@ -43,7 +43,7 @@ set_target_properties(
 target_sources(
     cube
     PRIVATE ${SRCDIR}/src/Init.cpp
-    PRIVATE ${SRCDIR}/src/mesh.cpp
+    PRIVATE ${SRCDIR}/src/Model.cpp
 	PRIVATE ${SRCDIR}/src/gl_caller.cpp
     PRIVATE ${SRCDIR}/src/vertexArray.cpp
     PRIVATE ${SRCDIR}/src/vertexBuffer.cpp
@@ -53,6 +53,7 @@ target_sources(
     PRIVATE ${SRCDIR}/src/gl_util.cpp
     PRIVATE ${SRCDIR}/src/elementBuffer.cpp
     PRIVATE ${SRCDIR}/src/Input.cpp
+    PRIVATE ${SRCDIR}/src/EntitySystem.cpp
 )
 
 #
@@ -64,13 +65,15 @@ function(configure_directory src dest)
     foreach(absolutepath ${files})
         get_filename_component(filename ${absolutepath} NAME)
         message("Conf file: " ${src}/${filename} " -> " ${dest}/${filename})
-        configure_file(${src}/${filename} ${dest}/${filename})
+        configure_file(${src}/${filename} ${dest}/${filename} COPYONLY)
     endforeach(absolutepath)
 
 endfunction()
 
 configure_directory(${SRCDIR}/assets/shaders ${BINDIR}/assets/shaders)
 configure_directory(${SRCDIR}/assets/models ${BINDIR}/assets/models)
+configure_directory(${SRCDIR}/assets/textures ${BINDIR}/assets/textures)
+
 
 
 
@@ -135,6 +138,7 @@ target_link_libraries(
 
 )
 endif()
+
 
 message("CMAKE_BINARY_DIR: " ${BINDIR})
 message("OPENGL_LIBRARIES"   ${OPENGL_LIBRARIES})
