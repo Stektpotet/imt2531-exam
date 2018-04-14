@@ -34,6 +34,7 @@ auto Init::GLFW(
     glfwSetKeyCallback(window, Input::OnInputKey); //set upp callbacks
     glfwSetCursorPosCallback(window, Input::OnCursorHover);
     glfwSetScrollCallback(window, Input::OnScrollChange);
+    glfwSetMouseButtonCallback(window, Input::OnLeftClick);
 
     return window;
 }

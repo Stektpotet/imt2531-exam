@@ -5,6 +5,9 @@ namespace overkill
     float Input::fovy = C::FOV;
     float Input::cursorX = 0;
     float Input::cursorY = 0;
+    float Input::mouseX = 0;
+    float Input::mouseY = 0;
+    bool Input::leftButtonDown = false;
 
     void Input::OnInputKeyPress(GLFWwindow* window, int keyCode, int scanCode, int mods)
     {
@@ -52,6 +55,11 @@ namespace overkill
 
     void Input::OnCursorHover(GLFWwindow* window, double x, double y)
     {
+        if (leftButtonDown) //Click and drag to rotate.
+        {
+            mouseX += x - cursorX;
+            mouseY += y - cursorY;
+        }
         cursorX = x;
         cursorY = y;
     }
@@ -60,6 +68,20 @@ namespace overkill
     {
         // fovy += (y / 512) + 32;
         fovy -= y * C::ZoomSensitivity;
-        printf("\nScroll: x: %f,\ty:%f\t\tfovy:%f", x, y, fovy);
+        printf("Scroll: x: %f,\ty:%f\t\tfovy:%f\n", x, y, fovy);
+    }
+
+    void Input::OnLeftClick(GLFWwindow* window, int button, int action, int mods)
+    {
+        if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+        {
+            printf("Left button pressed.\n");
+            leftButtonDown = true;
+        }
+        else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE)
+        {
+            printf("Left button released.\n");       
+            leftButtonDown = false;
+        }
     }
 }

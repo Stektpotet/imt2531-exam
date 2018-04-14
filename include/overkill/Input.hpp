@@ -17,6 +17,7 @@ public:
     static float cursorX;
     static float mouseX;        // MouseX and Y can be bigger than the window size.
     static float mouseY;
+    static bool leftButtonDown;
 
 
     static void OnInputKeyPress(GLFWwindow* window, int keyCode, int scanCode, int mods);
@@ -25,4 +26,5 @@ public:
     static void OnInputKey(GLFWwindow* window, int keyCode, int scanCode, int action, int mods);
     static void OnCursorHover(GLFWwindow* window, double x, double y);
     static void OnScrollChange(GLFWwindow* window, double x, double y);
+    static void OnLeftClick(GLFWwindow* window, int button, int action, int mods);
 };
