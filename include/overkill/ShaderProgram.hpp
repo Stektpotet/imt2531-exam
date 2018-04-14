@@ -8,7 +8,9 @@
 #include <GL/glew.h>
 
 #include <overkill/gl_caller.hpp>
-#include <overkill/material.hpp>
+#include <overkill/gl_util.hpp>
+#include <overkill/texture.hpp>
+#include <overkill/Material.hpp>
 
 // using ShaderSource = std::tuple<std::string, std::string, std::string>;
 
@@ -18,7 +20,7 @@ struct ShaderSource
     std::string fragment;
     std::string geometry;
 };
-class Shader
+class ShaderProgram
 {
     struct Uniform
     {
@@ -36,9 +38,11 @@ public:
 
     explicit operator GLuint() const;
 
-    Shader(const std::string& vert, const std::string& frag, const std::string& geom);
-    Shader(const std::string& filePath);
-    ~Shader();
+    ShaderProgram(const std::string& vert, const std::string& frag, const std::string& geom);
+    ShaderProgram(const std::string& filePath);
+    
+    
+    void clean();
 
     void bind(const Material& mat) const; // const; - can't be const as uniform cache might be updated
     void unbind() const;

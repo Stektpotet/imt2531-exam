@@ -1,13 +1,13 @@
 #include <overkill/vertexBuffer.hpp>
 
-VertexBuffer::VertexBuffer(const void * data, unsigned int size)
+VertexBuffer::VertexBuffer(const void * data, GLuint size)
 {
     GLCall(glGenBuffers(1, &m_rendererID));
     bind();
     GLCall(glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW));
 }
 
-VertexBuffer::~VertexBuffer()
+void VertexBuffer::clean()
 {
     GLCall(glDeleteBuffers(1, &m_rendererID));
 }
@@ -15,7 +15,7 @@ VertexBuffer::~VertexBuffer()
 void VertexBuffer::update(GLintptr start, GLuint size, const void * data)
 {
     bind();
-    glBufferSubData(GL_ARRAY_BUFFER, start, size, data);
+    GLCall(glBufferSubData(GL_ARRAY_BUFFER, start, size, data));
 }
 
 void VertexBuffer::bind() const

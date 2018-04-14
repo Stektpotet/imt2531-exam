@@ -1,0 +1,7 @@
+
+maps: 2
+  mainTex: brickwall
+  specularTex: brickwall-nrm
+
+values: 1
+  test: 0.5

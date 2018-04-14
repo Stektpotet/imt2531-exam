@@ -85,7 +85,9 @@ uniform float time = 0;
 
 uniform sampler2D mainTex;
 
+uniform float test = 0;
+
 void main() {
-    out_color = vec4(texture(mainTex, texCoord).rgb * vertex_color_out.rgb, vertex_color_out.a);
+    out_color = test*vec4(texture(mainTex, texCoord).rgb * vertex_color_out.rgb, vertex_color_out.a);
 }
 //out_color = vec4(texture(mainTex, texCoord).rgb * vertex_color_out.rgb, vertex_color_out.a);

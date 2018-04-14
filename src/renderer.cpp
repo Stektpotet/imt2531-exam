@@ -7,7 +7,7 @@ void Renderer::clear() const
 }
 
 //void Renderer::draw(const VertexArray& va, const ElementBuffer& eb, const ShaderProgram& shader) const
-void Renderer::draw(const VertexArray& va, const ElementBuffer& eb, const Shader& shader) const
+void Renderer::draw(const VertexArray& va, const ElementBuffer& eb, const ShaderProgram& shader) const
 {
     va.bind();
     eb.bind();
@@ -17,7 +17,7 @@ void Renderer::draw(const VertexArray& va, const ElementBuffer& eb, const Shader
     // UNBIND [optional]... discuss
 }
 
-void EdgeRenderer::drawEdged(const VertexArray & va, const ElementBuffer & eb, const Shader& shader, const Shader& edgeShader) const
+void EdgeRenderer::drawEdged(const VertexArray & va, const ElementBuffer & eb, const ShaderProgram& shader, const ShaderProgram& edgeShader) const
 {
     va.bind();
     eb.bind();

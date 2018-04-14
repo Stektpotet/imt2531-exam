@@ -1,7 +1,8 @@
-#include <overkill/shader.hpp>
-#include <overkill/gl_util.hpp>
+#include <overkill/ShaderProgram.hpp>
 
-void Shader::construct(const std::string& vert, const std::string& frag, const std::string& geom)
+
+
+void ShaderProgram::construct(const std::string& vert, const std::string& frag, const std::string& geom)
 {
     GLCall(id = glCreateProgram());
     const auto attachShader = [this](const std::string& src, GLuint type)
@@ -69,48 +70,70 @@ void Shader::construct(const std::string& vert, const std::string& frag, const s
         uniforms.insert({ name, location});
     }
 
-
     GLCall(glValidateProgram(id));
 }
 
-Shader::Shader(const std::string& vert, const std::string& frag, const std::string& geom)
+ShaderProgram::ShaderProgram(const std::string& vert, const std::string& frag, const std::string& geom)
 {
     construct(vert, frag, geom);
 }
 
-Shader::Shader(const std::string& filePath)
+ShaderProgram::ShaderProgram(const std::string& filePath)
 {
     auto[vert, frag, geom] = ParseProgram(filePath);
     construct(vert, frag, geom);
 }
 
-Shader::~Shader()
+void ShaderProgram::clean()
 {
     unbind();
-    GLCall(glDeleteShader(id));
+    GLCall(glDeleteProgram(id));
 }
 
-Shader::operator GLuint() const
+ShaderProgram::operator GLuint() const
 {
     return id;
 }
 
-void Shader::bind(const Material& mat) const
+void ShaderProgram::bind(const Material& mat) const
 {
-    GLCall(glUseProgram(id));
+	GLCall(glUseProgram(id));
+	std::size_t i = 0;
+	for (const auto texUniform : mat.maps)
+	{
+		GLint location = getUniformLocation(texUniform.tag);
+		if (location == -1) {
+			continue;
+		}
+		texUniform.texture.bind(i);
+		GLCall(glUniform1i(location, i));
+		i++;
+	}
+	for (const auto floatUniform : mat.floats)
+	{
+		GLint location = getUniformLocation(floatUniform.tag);
+		if (location == -1) {
+			continue;
+		}
+		GLCall(glUniform1f(location, floatUniform.value));
+	}
 
 }
 
-void Shader::unbind() const
+void ShaderProgram::unbind() const
 {
     GLCall(glUseProgram(0));
 }
 
-GLint Shader::getUniformLocation(const std::string& name) const
+GLint ShaderProgram::getUniformLocation(const std::string& name) const
 {
-    return uniforms.at(name);
+	const auto locationIter = uniforms.find(name);
+	if (locationIter == uniforms.end())
+	{
+		return -1;
+	}
+    return (*locationIter).second;
 }
-
 
 static GLuint CompileShader(GLuint type, const std::string& source)
 {
@@ -137,7 +160,6 @@ static GLuint CompileShader(GLuint type, const std::string& source)
     }
     return id;
 }
-
 
 static ShaderSource ParseProgram(const std::string& file)
 {

@@ -42,16 +42,22 @@ set_target_properties(
 
 target_sources(
     cube
-    PRIVATE ${CMAKE_SOURCE_DIR}/src/Init.cpp
-	PRIVATE ${CMAKE_SOURCE_DIR}/src/gl_caller.cpp
-    PRIVATE ${CMAKE_SOURCE_DIR}/src/vertexArray.cpp
-    PRIVATE ${CMAKE_SOURCE_DIR}/src/vertexBuffer.cpp
-    PRIVATE ${CMAKE_SOURCE_DIR}/src/renderer.cpp
-    PRIVATE ${CMAKE_SOURCE_DIR}/src/texture.cpp
-    PRIVATE ${CMAKE_SOURCE_DIR}/src/shader.cpp
-    PRIVATE ${CMAKE_SOURCE_DIR}/src/gl_util.cpp
-    PRIVATE ${CMAKE_SOURCE_DIR}/src/elementBuffer.cpp
-    PRIVATE ${CMAKE_SOURCE_DIR}/src/Input.cpp
+    PRIVATE ${SRCDIR}/src/Init.cpp
+    PRIVATE ${SRCDIR}/src/Model.cpp
+	PRIVATE ${SRCDIR}/src/gl_caller.cpp
+    PRIVATE ${SRCDIR}/src/vertexArray.cpp
+    PRIVATE ${SRCDIR}/src/vertexBuffer.cpp
+    PRIVATE ${SRCDIR}/src/renderer.cpp
+    PRIVATE ${SRCDIR}/src/texture.cpp
+    PRIVATE ${SRCDIR}/src/ShaderProgram.cpp
+    PRIVATE ${SRCDIR}/src/gl_util.cpp
+    PRIVATE ${SRCDIR}/src/elementBuffer.cpp
+    PRIVATE ${SRCDIR}/src/Input.cpp
+    PRIVATE ${SRCDIR}/src/Parser.cpp
+    PRIVATE ${SRCDIR}/src/ModelSystem.cpp
+    PRIVATE ${SRCDIR}/src/MaterialSystem.cpp
+    PRIVATE ${SRCDIR}/src/TextureSystem.cpp
+    PRIVATE ${SRCDIR}/src/ShaderSystem.cpp
 )
 
 #
@@ -63,13 +69,15 @@ function(configure_directory src dest)
     foreach(absolutepath ${files})
         get_filename_component(filename ${absolutepath} NAME)
         message("Conf file: " ${src}/${filename} " -> " ${dest}/${filename})
-        configure_file(${src}/${filename} ${dest}/${filename})
+        configure_file(${src}/${filename} ${dest}/${filename} COPYONLY)
     endforeach(absolutepath)
 
 endfunction()
 
 configure_directory(${SRCDIR}/assets/shaders ${BINDIR}/assets/shaders)
 configure_directory(${SRCDIR}/assets/models ${BINDIR}/assets/models)
+configure_directory(${SRCDIR}/assets/textures ${BINDIR}/assets/textures)
+
 
 
 
@@ -90,7 +98,7 @@ target_include_directories(
 
 file(
     COPY ${SRCDIR}/lib/glew-2.1.0/bin/glew32.dll
-    DESTINATION ${PROJECT_BINARY_DIR}/bin
+    DESTINATION ${PROJECT_BINARY_DIR}
 )
 file(
     COPY ${SRCDIR}/lib/glew-2.1.0/lib/glew32.lib
@@ -102,6 +110,7 @@ target_link_libraries(
     PRIVATE ${OPENGL_LIBRARIES}
     PRIVATE glfw ${glfw_LIBRARIES}
     PRIVATE glew32
+	PRIVATE SOIL
 )
 
 ################################
@@ -134,13 +143,6 @@ target_link_libraries(
 )
 endif()
 
-
-
-add_custom_command(
-    TARGET cube POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-    ${SRCDIR}/assets $<TARGET_FILE_DIR:cube>/assets
-)
 
 message("CMAKE_BINARY_DIR: " ${BINDIR})
 message("OPENGL_LIBRARIES"   ${OPENGL_LIBRARIES})
