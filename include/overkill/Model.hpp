@@ -11,17 +11,22 @@
 
 struct Vertex
 {
-    GLfloat position[3];
+    GLfloat x,y,z;
 
     // @note normalized integers (decimal floating point number): 
     // @ref  https://www.khronos.org/opengl/wiki/Normalized_Integer
     // @ref  https://stackoverflow.com/questions/14036892/using-gl-int-2-10-10-10-rev-in-glvertexattribpointer
     GLuint  normal;
-    GLshort  uv_1[2];
+    GLshort  u,v;
     //GLhalf  uv_2[2];
     //GLhalf  uv_3[2];
     // etc.
-    GLubyte  color[4];
+    GLubyte  r,g,b,a;
+};
+
+struct Triangle 
+{
+    int a, b, c;
 };
 
 struct Mesh
