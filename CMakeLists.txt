@@ -53,7 +53,7 @@ target_sources(
     PRIVATE ${SRCDIR}/src/gl_util.cpp
     PRIVATE ${SRCDIR}/src/elementBuffer.cpp
     PRIVATE ${SRCDIR}/src/Input.cpp
-    
+    PRIVATE ${SRCDIR}/src/Parser.cpp
     PRIVATE ${SRCDIR}/src/ModelSystem.cpp
     PRIVATE ${SRCDIR}/src/MaterialSystem.cpp
     PRIVATE ${SRCDIR}/src/TextureSystem.cpp
