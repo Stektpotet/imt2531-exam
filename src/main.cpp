@@ -89,8 +89,8 @@ int main()
 
 		//@TODO shader.bindDynamic()
         projection = glm::perspective(Input::fovy, C::AspectRatio, 0.1f, -100.0f);
-        camera = glm::rotate(glm::mat4(1), 1.0f + (5* Input::cursorX / 800.0f), glm::vec3(0.0f, -1.0f, 0.0f));
-        camera = glm::rotate(glm::mat4(1), 1.0f + (5* Input::cursorY / 600.0f), glm::vec3(1.0f, 0.0f, 0.0f)) * camera;
+        camera = glm::rotate(glm::mat4(1), 1.0f + (C::LookSensitivity * Input::cursorX / C::WinWidth), glm::vec3(0.0f, -1.0f, 0.0f));
+        camera = glm::rotate(glm::mat4(1), 1.0f + (C::LookSensitivity * Input::cursorY / C::WinHeight), glm::vec3(1.0f, 0.0f, 0.0f)) * camera;
         
         view = pivot * camera;
         glm::inverse(view); //To reverse both axis, so controls are not reverse.
