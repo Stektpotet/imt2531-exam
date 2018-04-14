@@ -12,7 +12,9 @@ class Texture
         GLsizei     width, height, channels;
     public:
         Texture(const std::string& filePath);
-        ~Texture();
+		
+		
+		void clean();
 
         void bind(GLuint slot = 0) const;
         void unbind() const;

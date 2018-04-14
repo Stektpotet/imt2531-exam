@@ -3,27 +3,19 @@
 #include <vector>
 #include <overkill/gl_caller.hpp>
 
-struct Uniform
+struct UniformTexture
 {
-    GLenum type;
+	std::string tag;
+	Texture		texture;
+};
+struct UniformFloat
+{
+	std::string tag;
+	float		value;
 };
 
-class Material
+struct Material
 {
-private:
-    std::vector<Uniform> properties;
-
-public:
-
-    //template<GLenum type>
-    void push(GLenum type)
-    {
-        properties.push_back({type});
-    }
-
-    //template<>
-    //void push<GL_SAMPLER_2D>()
-    //{
-    //    properties.push_back({ GL_SAMPLER_2D });
-    //}
+	std::vector<UniformTexture>	maps;
+	std::vector<UniformFloat>	floats;
 };

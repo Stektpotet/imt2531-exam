@@ -1,5 +1,5 @@
 #include <overkill/texture.hpp>
-
+#include <fstream>
 Texture::Texture(const std::string& filePath)
     :id(0), filePath(filePath), localBuffer(nullptr),
     width(0), height(0), channels(0)
@@ -7,7 +7,7 @@ Texture::Texture(const std::string& filePath)
     localBuffer = SOIL_load_image(filePath.c_str(), &width, &height, &channels, SOIL_LOAD_AUTO);
     if (!localBuffer)
     {
-        printf("failed to load %s", filePath.c_str());
+        printf("failed to load \"%s\"\n", filePath.c_str());
     }
     GLCall(glGenTextures(1, &id));
     GLCall(glBindTexture(GL_TEXTURE_2D, id));
@@ -27,9 +27,9 @@ Texture::Texture(const std::string& filePath)
         SOIL_free_image_data(localBuffer);
     }
 }
-Texture::~Texture()
+void Texture::clean()
 {
-    //GLCall(glDeleteTextures(1, id));
+    GLCall(glDeleteTextures(1, &id));
 }
 
 void Texture::bind(GLuint slot) const

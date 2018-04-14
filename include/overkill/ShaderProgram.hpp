@@ -8,6 +8,8 @@
 #include <GL/glew.h>
 
 #include <overkill/gl_caller.hpp>
+#include <overkill/gl_util.hpp>
+#include <overkill/texture.hpp>
 #include <overkill/material.hpp>
 
 // using ShaderSource = std::tuple<std::string, std::string, std::string>;

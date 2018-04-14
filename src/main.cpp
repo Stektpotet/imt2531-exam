@@ -36,7 +36,7 @@ int main()
     float fovy = 90;
 
 	auto window = Init::GLFW(
-        VersionMajor(4), VersionMinor(1), Width(800), Height(600), "Assignment 2 - Cube");
+        VersionMajor(4), VersionMinor(1), Width(2560), Height(1440), "Assignment 2 - Cube");
 
     Init::GLEW();
     Init::OpenGL(BackgroundColor{ 1.0f, .8f, .6f, 1.0f}); //(0.05f, 0.06f, 0.075f, 1.0f) for sexy dark blue-grey
@@ -183,14 +183,28 @@ int main()
 
     GLCall(glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(projection)));
 
-    auto tex = Texture("assets/textures/Checkers.jpg");
-    tex.bind();
-    GLint uniformTex;
-    shader.bind({});
-    uniformTex = shader.getUniformLocation("mainTex");
-    //GLCall(uniformTex = glGetUniformLocation(GLuint(shader), "mainTex"));
-    GLCall(glUniform1i(uniformTex, 0));
+	Material material;
 
+	material.maps.push_back(
+		UniformTexture
+		{
+			"mainTex",
+			Texture("assets/textures/BrickWall.jpg")
+		}
+	);
+	material.maps.push_back(
+		UniformTexture
+		{
+			"specularTex",
+			Texture("assets/textures/BrickWall_nrm.jpg")
+		}
+	);
+	material.floats.push_back(
+		{ "test", 0.5f }
+	);
+
+    shader.bind(material);
+	
     glfwSetKeyCallback(window, Input::OnInputKey); //set upp callbacks
     glfwSetCursorPosCallback(window, Input::OnCursorHover);
 
@@ -203,6 +217,7 @@ int main()
         renderer.clear();
         renderer.draw(mesh.m_vao, ebuf, shader);
 
+		//@TODO shader.bindDynamic()
         projection = glm::perspective(Input::fovy, Input::aspect, 0.1f, -100.0f);
         shader.bind({});
         GLCall(glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(projection)));
