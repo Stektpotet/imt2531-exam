@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <overkill/texture.hpp>
 #include <overkill/gl_caller.hpp>
 
 struct UniformTexture
