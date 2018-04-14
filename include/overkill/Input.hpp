@@ -12,9 +12,11 @@ namespace overkill
 class overkill::Input
 {
 public:
-    static float fovy;
-    static float cursorY;
+    static float fovy;          // The camera's field of view on Y axis. Used for zoom.
+    static float cursorY;       // CursorX and Y is 0 to window size.
     static float cursorX;
+    static float mouseX;        // MouseX and Y can be bigger than the window size.
+    static float mouseY;
 
 
     static void OnInputKeyPress(GLFWwindow* window, int keyCode, int scanCode, int mods);
