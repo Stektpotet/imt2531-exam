@@ -15,8 +15,11 @@ struct UniformFloat
 	float		value;
 };
 
-struct Material
+class Material
 {
+public:
 	std::vector<UniformTexture>	maps;
 	std::vector<UniformFloat>	floats;
+    Material()=default;
+    Material(const char* filepath);
 };

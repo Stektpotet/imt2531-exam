@@ -10,7 +10,7 @@
 #include <overkill/gl_caller.hpp>
 #include <overkill/gl_util.hpp>
 #include <overkill/texture.hpp>
-#include <overkill/material.hpp>
+#include <overkill/Material.hpp>
 
 // using ShaderSource = std::tuple<std::string, std::string, std::string>;
 

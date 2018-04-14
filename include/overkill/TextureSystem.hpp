@@ -24,9 +24,7 @@ public:
     static auto getIdByTag(const C::Tag& textureTag) -> C::ID;
     static auto getByTag(const C::Tag& textureTag) -> const Texture&;
     static auto getById(const C::ID textureID) -> const Texture&;
-
     static auto copyByTag(const C::Tag& tag) -> Texture;
-
 };
 
 }

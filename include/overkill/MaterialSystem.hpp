@@ -6,7 +6,7 @@
 
 #include <overkill/Config.hpp>
 #include <overkill/texture.hpp>
-#include <overkill/material.hpp>
+#include <overkill/Material.hpp>
 #include <overkill/TextureSystem.hpp>
 
 namespace overkill
