@@ -3,7 +3,7 @@
 #include <stdio.h>
 
 #include <GLFW/glfw3.h>
-
+#include <overkill/Input.hpp>
 
 namespace overkill::Input
 {
@@ -19,4 +19,5 @@ namespace overkill::Input
     void OnInputKeyUnpress(GLFWwindow* window, int keyCode, int scanCode, int mods);
     void OnInputKey(GLFWwindow* window, int keyCode, int scanCode, int action, int mods);
     void OnCursorHover(GLFWwindow* window, double x, double y);
+    void OnScrollChange(GLFWwindow* window, double x, double y);
 }

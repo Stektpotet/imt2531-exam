@@ -53,9 +53,13 @@ namespace overkill
 
     void Input::OnCursorHover(GLFWwindow* window, double x, double y)
     {
-        fovy = (y / 512) + 32;
         cursorX = x;
         cursorY = y;
+    }
+
+    void Input::OnScrollChange(GLFWwindow* window, double x, double y)
+    {
+        fovy += (x / 512) + 32;
     }
 
 }

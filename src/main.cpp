@@ -82,10 +82,6 @@ int main()
     GLCall(glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(projection)));
 
     shader.bind(material);
-	
-    glfwSetKeyCallback(window, Input::OnInputKey); //set upp callbacks
-    glfwSetCursorPosCallback(window, Input::OnCursorHover);
-
 
     for(;;)
     {

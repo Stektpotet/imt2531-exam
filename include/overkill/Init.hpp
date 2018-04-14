@@ -8,6 +8,8 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <overkill/gl_caller.hpp>
+#include <overkill/Input.hpp>
+
 
 namespace overkill::Init
 {

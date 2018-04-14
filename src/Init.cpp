@@ -30,6 +30,11 @@ auto Init::GLFW(
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
     glfwSwapInterval(1);
     //q  glfwSetKeyCallback(window, key_callback);
+
+    glfwSetKeyCallback(window, Input::OnInputKey); //set upp callbacks
+    glfwSetCursorPosCallback(window, Input::OnCursorHover);
+    glfwSetScrollCallback(window, Input::OnScrollChange);
+
     return window;
 }
 
