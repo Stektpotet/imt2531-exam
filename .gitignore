@@ -1,2 +1,4 @@
 .vs/
 build/
+enc_temp_folder/
+CMakeSettings.json
