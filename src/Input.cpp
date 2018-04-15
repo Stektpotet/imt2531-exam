@@ -60,8 +60,8 @@ namespace overkill
             mouseX += x - cursorX;
             mouseY += y - cursorY;
 
-            if (mouseX / C::WinWidth > M_PI/2) mouseX = 0;
-            if (mouseX < 0) mouseX = C::WinWidth * M_PI/2;
+            if (mouseX / C::WinWidth > C::PI/2) mouseX = 0;
+            if (mouseX < 0) mouseX = C::WinWidth * C::PI/2;
 
             if (mouseY / C::WinHeight < -0.4f) mouseY = C::WinHeight * -0.4f;   // Lock Y axis on camera to 90deg up, and down,
             if (mouseY / C::WinHeight > 0.4f)  mouseY = C::WinHeight * 0.4f;    // no looping the camera around.

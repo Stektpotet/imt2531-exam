@@ -24,4 +24,5 @@ namespace overkill::C
     const glm::vec4 ClearColor { 1.0f, .8f, .6f, 1.0f};
     constexpr char PathBaseShader[] = "assets/shaders/base.shader";
     constexpr char PathBaseTexture[] = "assets/textures/Checkers.jpg";
+    constexpr float PI = 3.14159265359f;
 }
