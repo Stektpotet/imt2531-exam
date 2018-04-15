@@ -59,6 +59,15 @@ namespace overkill
         {
             mouseX += x - cursorX;
             mouseY += y - cursorY;
+
+            if (mouseX / C::WinWidth > M_PI/2) mouseX = 0;
+            if (mouseX < 0) mouseX = C::WinWidth * M_PI/2;
+
+            if (mouseY / C::WinHeight < -0.4f) mouseY = C::WinHeight * -0.4f;   // Lock Y axis on camera to 90deg up, and down,
+            if (mouseY / C::WinHeight > 0.4f)  mouseY = C::WinHeight * 0.4f;    // no looping the camera around.
+
+            printf("mouseX:%f,  \tmouseY:%f \tmouseX / C::WinWidth:%f   \tmouseY / C::WinWidth:%f\n",
+                    mouseX,     mouseY,     mouseX / C::WinWidth,       mouseY / C::WinHeight);
         }
         cursorX = x;
         cursorY = y;
@@ -68,6 +77,9 @@ namespace overkill
     {
         // fovy += (y / 512) + 32;
         fovy -= y * C::ZoomSensitivity;
+        if (fovy < C::MinFOV) fovy = C::MinFOV;
+        if (fovy > C::MaxFOV) fovy = C::MaxFOV;
+
         printf("Scroll: x: %f,\ty:%f\t\tfovy:%f\n", x, y, fovy);
     }
 

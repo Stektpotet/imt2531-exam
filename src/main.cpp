@@ -60,7 +60,7 @@ int main()
     //SCALE -> ROTATE -> TRANSLATE
     glm::mat4 projection = glm::perspective(C::FOV, C::AspectRatio, C::NearClip, C::FarClip);
     glm::mat4 camera = glm::mat4(1); 
-    glm::mat4 pivot = glm::translate(glm::mat4(1),glm::vec3(0, 0, 0));  //Camera pos in world.
+    glm::mat4 pivot = glm::translate(glm::mat4(1),glm::vec3(0, 0, C::CameraOffset));  //Camera pos in world.
     glm::mat4 view = glm::mat4(1);
 
 
@@ -89,10 +89,11 @@ int main()
 
 		//@TODO shader.bindDynamic()
         projection = glm::perspective(Input::fovy, C::AspectRatio, 0.1f, -100.0f);
-        camera = glm::rotate(glm::mat4(1), 1.0f + (C::LookSensitivity * Input::mouseX / C::WinWidth), glm::vec3(0.0f, 1.0f, 0.0f));
-        camera = glm::rotate(glm::mat4(1), 1.0f + (C::LookSensitivity * Input::mouseY / C::WinHeight), glm::vec3(1.0f, 0.0f, 0.0f)) * camera;
-        
+        camera = glm::rotate(glm::mat4(1), (C::LookSensitivity * Input::mouseX / C::WinWidth), glm::vec3(0.0f, 1.0f, 0.0f));
+        camera = glm::rotate(glm::mat4(1), (C::LookSensitivity * Input::mouseY / C::WinHeight), glm::vec3(1.0f, 0.0f, 0.0f)) * camera;
+
         view = pivot * camera;
+        // view = pivot;
         glm::inverse(view); //To reverse both axis, so controls are not reverse.
 
         shader.bind({});
