@@ -14,6 +14,9 @@ Material::Material(const std::string& tag)
 
 
     auto file = Util::fileToString("assets/materials/"+tag+".yml");
+    auto parser = Parser(file);
+
+
 
     std::cout << file;
 

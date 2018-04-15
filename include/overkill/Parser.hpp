@@ -3,12 +3,13 @@
 #include <string>
 #include <string_view>
 
+#include <PMS/logger.h>
 #include <overkill/Model.hpp>
+
 
 namespace overkill 
 {
 
-using Line = std::string;
 struct KeyInteger  { std::string key; int i;             };
 struct KeyFloat    { std::string key; float fp;          };
 struct KeyString   { std::string key; std::string str;   };
@@ -26,12 +27,13 @@ class Parser
 
 public:
     Parser(std::string_view _strview);
-    auto nextLine()        -> Line;
+    auto nextLine()        -> std::string;
     auto nextKeyString()   -> KeyString;
     auto nextKeyInteger()  -> KeyInteger;
     auto nextKeyFloat()    -> KeyFloat;
     auto nextKeyVertex()   -> KeyVertex;
     auto nextKeyTriangle() -> KeyTriangle;
+    auto nextKeyFilepath() -> KeyString;
 };
 
 

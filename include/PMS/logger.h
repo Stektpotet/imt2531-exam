@@ -49,6 +49,7 @@
 #include <Windows.h>
 #endif
 
+
 #define LOG_COLOR_RESET "\033[0m"
 #define LOG_COLOR_FG_BLACK "\033[0;30m"
 #define LOG_COLOR_FG_RED "\033[0;31m"
@@ -230,3 +231,4 @@ log_internal(std::FILE* file,
 
     std::fflush(file);
 }
+
