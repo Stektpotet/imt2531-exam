@@ -9,6 +9,9 @@
 
 #include <vector>
 
+namespace overkill 
+{
+
 struct Vertex
 {
     GLfloat x,y,z;
@@ -48,3 +51,5 @@ struct Model
     VertexBuffer      m_vbo;
     std::vector<Mesh> m_meshes;
 };
+
+}

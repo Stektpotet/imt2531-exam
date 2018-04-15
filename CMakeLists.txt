@@ -43,21 +43,28 @@ set_target_properties(
 target_sources(
     cube
     PRIVATE ${SRCDIR}/src/Init.cpp
-    PRIVATE ${SRCDIR}/src/Model.cpp
 	PRIVATE ${SRCDIR}/src/gl_caller.cpp
     PRIVATE ${SRCDIR}/src/vertexArray.cpp
     PRIVATE ${SRCDIR}/src/vertexBuffer.cpp
     PRIVATE ${SRCDIR}/src/renderer.cpp
-    PRIVATE ${SRCDIR}/src/texture.cpp
-    PRIVATE ${SRCDIR}/src/ShaderProgram.cpp
     PRIVATE ${SRCDIR}/src/gl_util.cpp
     PRIVATE ${SRCDIR}/src/elementBuffer.cpp
     PRIVATE ${SRCDIR}/src/Input.cpp
     PRIVATE ${SRCDIR}/src/Parser.cpp
+
+    PRIVATE ${SRCDIR}/src/Model.cpp
     PRIVATE ${SRCDIR}/src/ModelSystem.cpp
+
+    PRIVATE ${SRCDIR}/src/Material.cpp
     PRIVATE ${SRCDIR}/src/MaterialSystem.cpp
+
+    PRIVATE ${SRCDIR}/src/Texture.cpp
     PRIVATE ${SRCDIR}/src/TextureSystem.cpp
+
+    PRIVATE ${SRCDIR}/src/ShaderProgram.cpp
     PRIVATE ${SRCDIR}/src/ShaderSystem.cpp
+
+    PRIVATE ${SRCDIR}/src/Util.cpp
 )
 
 #
@@ -74,6 +81,8 @@ function(configure_directory src dest)
 
 endfunction()
 
+configure_directory(${SRCDIR}/assets/scenes ${BINDIR}/assets/scenes)
+configure_directory(${SRCDIR}/assets/materials ${BINDIR}/assets/materials)
 configure_directory(${SRCDIR}/assets/shaders ${BINDIR}/assets/shaders)
 configure_directory(${SRCDIR}/assets/models ${BINDIR}/assets/models)
 configure_directory(${SRCDIR}/assets/textures ${BINDIR}/assets/textures)

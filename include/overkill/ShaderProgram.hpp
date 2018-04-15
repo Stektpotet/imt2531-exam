@@ -12,6 +12,9 @@
 #include <overkill/texture.hpp>
 #include <overkill/Material.hpp>
 
+namespace overkill 
+{
+
 // using ShaderSource = std::tuple<std::string, std::string, std::string>;
 
 struct ShaderSource
@@ -53,3 +56,5 @@ public:
 
 static ShaderSource ParseProgram(const std::string& file);
 static GLuint CompileShader(GLuint type, const std::string& source);
+
+}

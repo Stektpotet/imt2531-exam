@@ -1,6 +1,7 @@
 #include <overkill/ShaderProgram.hpp>
 
-
+namespace overkill 
+{
 
 void ShaderProgram::construct(const std::string& vert, const std::string& frag, const std::string& geom)
 {
@@ -99,23 +100,23 @@ void ShaderProgram::bind(const Material& mat) const
 {
 	GLCall(glUseProgram(id));
 	std::size_t i = 0;
-	for (const auto texUniform : mat.maps)
+	for (const auto unimap : mat.m_unimaps)
 	{
-		GLint location = getUniformLocation(texUniform.tag);
+		GLint location = getUniformLocation(unimap.tag);
 		if (location == -1) {
 			continue;
 		}
-		texUniform.texture.bind(i);
+        unimap.texture.bind(i);
 		GLCall(glUniform1i(location, i));
 		i++;
 	}
-	for (const auto floatUniform : mat.floats)
+	for (const auto unival : mat.m_univalues)
 	{
-		GLint location = getUniformLocation(floatUniform.tag);
+		GLint location = getUniformLocation(unival.tag);
 		if (location == -1) {
 			continue;
 		}
-		GLCall(glUniform1f(location, floatUniform.value));
+		GLCall(glUniform1f(location, unival.value));
 	}
 
 }
@@ -207,4 +208,6 @@ static ShaderSource ParseProgram(const std::string& file)
         ss[(int)FRAG].str(),
         ss[(int)GEOM].str()
     };
+}
+
 }

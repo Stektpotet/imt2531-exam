@@ -3,6 +3,10 @@
 #include <vector>
 #include <overkill/gl_util.hpp>
 
+
+namespace overkill 
+{
+
 struct VertexBufferAttrib
 {
     GLuint      count;
@@ -32,3 +36,5 @@ public:
     inline const std::vector<VertexBufferAttrib> getAttributes() const { return m_attributes; }
     inline GLuint getStride() const { return m_stride; }
 };
+
+}

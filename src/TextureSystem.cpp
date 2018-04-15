@@ -35,8 +35,8 @@ void TextureSystem::push(const C::Tag tag, const char* path)
 
 void TextureSystem::load() 
 {
-    TextureSystem::push("BrickWall", "assets/textures/Checkers.jpg");
-    TextureSystem::push("BrickWall_nrm", "assets/textures/BrickWall_nrm.jpg");
+    TextureSystem::push("brickwall", "assets/textures/checkers.jpg");
+    TextureSystem::push("brickwall-nrm", "assets/textures/brickwall-nrm.jpg");
 }
 
 

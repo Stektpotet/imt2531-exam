@@ -5,6 +5,10 @@
 #include <overkill/vertexBuffer.hpp>
 #include <overkill/vertexBufferAttribLayout.hpp>
 
+
+namespace overkill 
+{
+
 class VertexArray
 {
 
@@ -21,3 +25,5 @@ public:
     void bind() const;
     void unbind() const;
 };
+
+}

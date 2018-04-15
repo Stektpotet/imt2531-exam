@@ -1,5 +1,9 @@
 #include <overkill/vertexBuffer.hpp>
 
+
+namespace overkill 
+{
+
 VertexBuffer::VertexBuffer(const void * data, GLuint size)
 {
     GLCall(glGenBuffers(1, &m_rendererID));
@@ -26,4 +30,6 @@ void VertexBuffer::bind() const
 void VertexBuffer::unbind() const
 {
     GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
+}
+
 }

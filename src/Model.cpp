@@ -1,5 +1,9 @@
 #include <overkill/Model.hpp>
 
+
+namespace overkill 
+{
+
 Mesh::Mesh(const std::vector<GLuint>& indices, const int shaderID, const int materialID)
 {
     m_shaderID = shaderID;
@@ -22,4 +26,7 @@ Model::Model(std::vector<Vertex> vertices)
 void Model::pushMesh(const std::vector<GLuint> indices, const int shaderID, const int materialID)
 {
     m_meshes.emplace_back( Mesh(indices, shaderID, materialID) );
+}
+
+
 }

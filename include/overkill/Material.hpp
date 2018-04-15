@@ -4,6 +4,10 @@
 #include <overkill/texture.hpp>
 #include <overkill/gl_caller.hpp>
 
+
+namespace overkill 
+{
+    
 struct UniformTexture
 {
 	std::string tag;
@@ -18,8 +22,11 @@ struct UniformFloat
 class Material
 {
 public:
-	std::vector<UniformTexture>	maps;
-	std::vector<UniformFloat>	floats;
+	std::vector<UniformTexture>	m_unimaps;
+	std::vector<UniformFloat>	m_univalues;
     Material()=default;
-    Material(const char* filepath);
+    Material(const std::string& tag);
+
 };
+
+}

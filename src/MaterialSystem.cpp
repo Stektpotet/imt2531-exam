@@ -26,28 +26,8 @@ auto MaterialSystem::getById(C::ID materialID) -> const Material&
 
 void MaterialSystem::load()
 {
-    Material material;
-
-    material.maps.push_back(
-        UniformTexture
-        {
-            "mainTex",
-            TextureSystem::copyByTag("BrickWall")
-        }
-    );
-    material.maps.push_back(
-        UniformTexture
-        {
-            "specularTex",
-            TextureSystem::copyByTag("BrickWall_nrm")        
-        }
-    );
-    material.floats.push_back(
-        { "test", 0.5f }
-    );
-
-    MaterialSystem::m_mapMaterialID["brickwall"] = MaterialSystem::m_materials.size();
-    MaterialSystem::m_materials.push_back(material);
+    MaterialSystem::m_mapMaterialID["brick"] = MaterialSystem::m_materials.size();
+    MaterialSystem::m_materials.emplace_back(Material("brick"));
 }
 
 

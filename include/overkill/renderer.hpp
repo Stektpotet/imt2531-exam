@@ -5,6 +5,9 @@
 #include <overkill/elementBuffer.hpp>
 #include <overkill/ShaderProgram.hpp>
 
+namespace overkill
+{
+
 class Renderer
 {
 public:
@@ -17,3 +20,5 @@ class EdgeRenderer : public Renderer
 public:
     void drawEdged(const VertexArray& va, const ElementBuffer& eb, const ShaderProgram& shader, const ShaderProgram& edgeShader) const;
 };
+
+}

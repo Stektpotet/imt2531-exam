@@ -1,6 +1,10 @@
 #include <overkill/vertexArray.hpp>
 #include <overkill/gl_util.hpp>
 
+
+namespace overkill 
+{
+
 VertexArray::VertexArray()
 {
     GLCall(glGenVertexArrays(1, &id));
@@ -45,4 +49,6 @@ void VertexArray::bind() const
 void VertexArray::unbind() const
 {
     GLCall(glBindVertexArray(0));
+}
+
 }

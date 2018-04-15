@@ -1,5 +1,10 @@
 #include <overkill/texture.hpp>
 #include <fstream>
+
+
+namespace overkill 
+{
+
 Texture::Texture(const std::string& filePath)
     :id(0), filePath(filePath), localBuffer(nullptr),
     width(0), height(0), channels(0)
@@ -41,4 +46,6 @@ void Texture::bind(GLuint slot) const
 void Texture::unbind() const
 {
     GLCall(glBindTexture(GL_TEXTURE_2D, 0));
+}
+
 }

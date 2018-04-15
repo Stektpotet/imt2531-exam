@@ -2,6 +2,10 @@
 
 #include <overkill/gl_caller.hpp>
 
+
+namespace overkill 
+{
+
 class VertexBuffer
 {
 private:
@@ -17,3 +21,5 @@ public:
     void bind() const;
     void unbind() const;
 };
+
+}

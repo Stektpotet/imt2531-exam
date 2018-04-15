@@ -2,6 +2,9 @@
 
 #include <overkill/gl_caller.hpp>
 
+namespace overkill 
+{
+
 class ElementBuffer
 {
 private:
@@ -20,3 +23,5 @@ public:
 
     inline unsigned int count() const { return m_Count; }
 };
+
+}

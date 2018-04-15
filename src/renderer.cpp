@@ -1,5 +1,7 @@
 #include <overkill/renderer.hpp>
 
+namespace overkill
+{
 
 void Renderer::clear() const
 {
@@ -28,5 +30,7 @@ void EdgeRenderer::drawEdged(const VertexArray & va, const ElementBuffer & eb, c
 
     edgeShader.bind({});
     GLCall(glLineWidth(1.0f))
-    GLCall(glDrawElements(GL_LINE_STRIP, eb.count(), GL_UNSIGNED_INT, nullptr));
+        GLCall(glDrawElements(GL_LINE_STRIP, eb.count(), GL_UNSIGNED_INT, nullptr));
+}
+
 }

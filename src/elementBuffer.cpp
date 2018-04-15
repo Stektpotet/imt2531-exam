@@ -1,6 +1,9 @@
 #include "overkill/elementBuffer.hpp"
 
 
+namespace overkill 
+{
+
 ElementBuffer::ElementBuffer(const unsigned int* data, unsigned int count) : m_Count(count)
 {
     ASSERT(sizeof(unsigned int) == sizeof(GLuint));
@@ -23,4 +26,6 @@ void ElementBuffer::bind() const
 void ElementBuffer::unbind() const
 {
     GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
+}
+
 }

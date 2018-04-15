@@ -18,15 +18,14 @@ struct KeyTriangle { std::string key; Triangle triangle; };
 /// <summary> Translates files into internal datastructure </summary>
 class Parser
 {
-    static auto fileToString(const char* filepath) -> std::string;
-
-public:
     std::string_view strview;
     int startofline =  0;
     int endofline = 9999999;
     int linecount = 0;
     const std::string whitelistedCharacters = "0123456789abcdefghijklmnopqrstuvwxyzæøåABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅ-:";
 
+public:
+    Parser(std::string_view _strview);
     auto nextLine()        -> Line;
     auto nextKeyString()   -> KeyString;
     auto nextKeyInteger()  -> KeyInteger;

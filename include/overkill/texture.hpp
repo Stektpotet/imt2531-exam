@@ -3,6 +3,10 @@
 #include <SOIL.h>
 #include <overkill/gl_caller.hpp>
 
+
+namespace overkill 
+{
+
 class Texture
 {
     private:
@@ -22,3 +26,5 @@ class Texture
         inline GLsizei getWidth() const { return width; }
         inline GLsizei getHeight() const { return height; }
 };
+
+}
