@@ -19,7 +19,7 @@ struct Vertex
     // @note normalized integers (decimal floating point number): 
     // @ref  https://www.khronos.org/opengl/wiki/Normalized_Integer
     // @ref  https://stackoverflow.com/questions/14036892/using-gl-int-2-10-10-10-rev-in-glvertexattribpointer
-    GLuint  normal;
+    GLint  normal;
     GLshort  u,v;
     //GLhalf  uv_2[2];
     //GLhalf  uv_3[2];

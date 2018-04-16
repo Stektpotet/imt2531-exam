@@ -195,7 +195,7 @@ static ShaderSource ParseProgram(const std::string& file)
             }
             getline(fileStream, line);
             ss[(int)currentlyReading] << line << '\n';
-            ss[(int)currentlyReading] << "#line " << ++lineNr << '\n'; //inject line number to get the line as is in the shader file
+            ss[(int)currentlyReading] << "#line " << ++lineNr+1 << '\n'; //inject line number to get the line as is in the shader file
         }
         else
         {
