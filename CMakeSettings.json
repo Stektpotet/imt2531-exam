@@ -8,7 +8,7 @@
       "inheritEnvironments": [ "msvc_x64_x64" ],
       "buildRoot": "${env.USERPROFILE}\\CMakeBuilds\\${workspaceHash}\\build\\${name}",
       "installRoot": "${env.USERPROFILE}\\CMakeBuilds\\${workspaceHash}\\install\\${name}",
-      "cmakeCommandArgs": "-DCMAKE_C_COMPILER=cl.exe -DCMAKE_CXX_COMPILER=cl.exe -DBOOST_ROOT:PATH=C:/local/boost_1_66_0 -DBOOST_INCLUDEDIR:PATH=C:/local/boost_1_66_0/boost -DBOOST_LIBRARYDIR:PATH=C:/local/boost_1_66_0/lib64",
+      "cmakeCommandArgs": "-DCMAKE_C_COMPILER=cl.exe -DCMAKE_CXX_COMPILER=cl.exe",
       "buildCommandArgs": "-v",
       "ctestCommandArgs": ""
     },
@@ -19,7 +19,7 @@
       "inheritEnvironments": [ "msvc_x64_x64" ],
       "buildRoot": "${env.USERPROFILE}\\CMakeBuilds\\${workspaceHash}\\build\\${name}",
       "installRoot": "${env.USERPROFILE}\\CMakeBuilds\\${workspaceHash}\\install\\${name}",
-      "cmakeCommandArgs": "-DCMAKE_C_COMPILER=cl.exe -DCMAKE_CXX_COMPILER=cl.exe -DBOOST_ROOT:PATH=C:/local/boost_1_66_0 -DBOOST_INCLUDEDIR:PATH=C:/local/boost_1_66_0/boost -DBOOST_LIBRARYDIR:PATH=C:/local/boost_1_66_0/lib64",
+      "cmakeCommandArgs": "-DCMAKE_C_COMPILER=cl.exe -DCMAKE_CXX_COMPILER=cl.exe",
       "buildCommandArgs": "-v",
       "ctestCommandArgs": ""
     }
