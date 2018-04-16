@@ -1,4 +1,4 @@
-#include <overkill/vertexBuffer.hpp>
+#include <overkill/VertexBuffer.hpp>
 
 
 namespace overkill 

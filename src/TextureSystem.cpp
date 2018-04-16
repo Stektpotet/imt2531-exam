@@ -1,5 +1,5 @@
 #include <overkill/TextureSystem.hpp>
-#include <PMS/logger.h>
+// #include <PMS/logger.h>
 namespace overkill 
 {
 
@@ -47,7 +47,7 @@ void TextureSystem::load()
 
         const auto filepath = C::TexturesFolder + tag + C::TexturesExtension;
 
-        LOG_DEBUG("Texture from file: %s", filepath.data());
+        // LOG_DEBUG("Texture from file: %s", filepath.data());
         TextureSystem::push(tag, C::TexturesFolder + tag + C::TexturesExtension);
     }
 }

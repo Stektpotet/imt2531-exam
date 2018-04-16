@@ -4,7 +4,7 @@
 
 #include <PMS/logger.h>
 #include <overkill/Config.hpp>
-#include <overkill/texture.hpp>
+#include <overkill/Texture.hpp>
 #include <overkill/gl_caller.hpp>
 
 

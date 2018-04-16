@@ -1,4 +1,4 @@
-#include <overkill/texture.hpp>
+#include <overkill/Texture.hpp>
 #include <fstream>
 
 #include <PMS/logger.h>
