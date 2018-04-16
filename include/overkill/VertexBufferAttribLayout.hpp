@@ -27,6 +27,11 @@ private:
 public:
     VertexBufferAttribLayout() : m_stride(0) {}
 
+    /// <summary>
+    /// <param name="count">The number of components the attribute has in the shaderprogram</param> 
+    /// <param name="type">The number of components the attribute has in the shaderprogram</param> 
+    /// <param name="normalized">wether or not the values should be normalized</param> 
+    /// </summary>
     void push(GLuint count, GLenum type, bool normalized = false)
     {
         m_attributes.push_back({ count, type, normalized });

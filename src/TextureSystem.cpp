@@ -40,6 +40,7 @@ void TextureSystem::load()
         "checkers",
         "brickwall",
         "brickwall-nrm",
+        "nrm_test",
     };
 
     for (const auto tag : tags) {

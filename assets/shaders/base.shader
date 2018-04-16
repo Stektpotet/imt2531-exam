@@ -4,10 +4,10 @@
 layout(location = 0) in vec4 position;
 layout(location = 1) in vec3 normal;
 layout(location = 2) in vec2 uv;
-layout(location = 3) in vec4 vertex_color_from_program;
+layout(location = 3) in vec4 vertex_color;
 
 out vec2 texCoord;
-smooth out vec4 vertex_color_out;
+out vec4 vertex_color_out;
 out vec4 pos;
 
 uniform mat4 projection = mat4(1, 0, 0, 0,
@@ -56,8 +56,13 @@ out vec3 fragVert;
 out vec3 fragNormal;
 
 void main() {
+
+    float F = sqrt(position.x*position.x + position.y*position.y + position.z*position.z);
+    mat4 rot = rotate(time*0.1*F, time*0.333334*F, time*0.1666666667*F);
+
+    vec4 rotatedNormal = rot * vec4(normal, 1);
 	// Pass some variables to the fragment shader
-	fragNormal = normal;
+	fragNormal = vec3(rotatedNormal);
 	fragVert = vec3(position);
 
 	// model to world space transformations = transform
@@ -68,14 +73,10 @@ void main() {
                                 0,0,1,0,
                                 0,0,0,0);
 
-    mat4 rot = mat4(0.525322, 0.000000, -0.850904, 0.000000,
-                    0.000000, 1.000000, 0.000000, 0.000000,
-                    0.850904, 0.000000, 0.525322, 0.000000,
-                    0.000000, 0.000000, 0.000000, 1.000000);
-
-    //float F = sqrt(position.x*position.x + position.y*position.y + position.z*position.z);
-    gl_Position = projection * translation * view * /* rotate(time*0.1*F, time*0.333334*F, time*0.1666666667*F) **/ position;
-    vertex_color_out = vertex_color_from_program;
+   
+    
+    gl_Position = projection * translation * view * rot * position;
+    vertex_color_out = rotatedNormal;
     texCoord = uv;
 }
 
@@ -84,7 +85,7 @@ void main() {
 in vec4 gl_FragCoord;
 // in vec2 gl_PointCoord; // @NOTE Not supported on [macos, openGL 4.1]
 in vec2 texCoord;
-smooth in vec4 vertex_color_out;
+in vec4 vertex_color_out;
 in vec4 pos;
 in vec3 fragNormal;
 in vec3 fragVert;
@@ -94,20 +95,25 @@ out vec4 out_color;
 uniform float time = 0;
 
 uniform sampler2D mainTex;
+uniform sampler2D bumpTex;
 
-uniform float test = 0;
+uniform float opacity = 0;
 
 uniform struct Light {
 	vec3 position;
 	vec3 intensities; //a.k.a the color of the light
-} light = Light(vec3(1,10,10), vec3(1,1,1));
+} light = Light(vec3(10,10,6), vec3(1,0.5,0));
 
 uniform mat4 model = mat4(1);
 
 void main() {
+
+    vec4 tex = texture(mainTex, texCoord);
+    vec4 bump = texture(bumpTex, texCoord);
+
 	mat3 normalMatrix = transpose(inverse(mat3(model)));
 	vec3 normal = normalize(normalMatrix * fragNormal);
-
+    normal = normal + normalize(bump.rgb*2.0 - 1.0);
 	//calculate the location of this fragment (pixel) in world coordinates
 	vec3 fragPosition = vec3(model * vec4(fragVert, 1));
 
@@ -118,9 +124,15 @@ void main() {
 	float brightness = dot(normal, surfaceToLight) / (length(surfaceToLight) * length(normal));
 	brightness = clamp(brightness, 0, 1);
 
-	vec4 surfaceColor = texture(mainTex, texCoord);
-	//out_color = vec4(brightness * light.intensities * surfaceColor.rgb, surfaceColor.a);
-    out_color = vec4(fragNormal, 1);
+	out_color = vec4(vec3(0.25, 0.125, 0) + brightness * light.intensities * tex.rgb, opacity);
+    //out_color = vec4(normal, 1);
+    /*out_color = vec4(
+        tex.r*vertex_color_out.r,
+        tex.g*vertex_color_out.g,
+        tex.b*vertex_color_out.b,
+        vertex_color_out.a
+    );*/
+
     //out_color = vec4(texture(mainTex, texCoord).rgb , vertex_color_out.a);
 }
 //out_color = vec4(texture(mainTex, texCoord).rgb * vertex_color_out.rgb, vertex_color_out.a);

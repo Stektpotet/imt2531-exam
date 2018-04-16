@@ -9,8 +9,8 @@ namespace overkill::C
 
     constexpr int VersionMajor = 4;
     constexpr int VersionMinor = 1;
-    constexpr int WinWidth = 800;
-    constexpr int WinHeight = 600;
+    constexpr int WinWidth = 1600;
+    constexpr int WinHeight = 900;
     constexpr char WinName[] = "Assignment 2 - Cube";
     constexpr float FOV = 90.0f;
     constexpr float MaxFOV = 90.8f;
@@ -21,7 +21,7 @@ namespace overkill::C
     constexpr float NearClip = 0.1f;
     constexpr float FarClip  = 100.0f;
     constexpr float CameraOffset = -3;      //How far back the camera is from the center of the scene.
-    const glm::vec4 ClearColor { 1.0f, .8f, .6f, 1.0f};
+    const glm::vec4 ClearColor { 0.0f, 0.0f, 0.0f, 1.0f};
     constexpr char PathBaseShader[] = "assets/shaders/base.shader";
     constexpr char PathBaseTexture[] = "assets/textures/Checkers.jpg";
     constexpr float PI = 3.14159265359f;
