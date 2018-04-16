@@ -12,15 +12,16 @@ namespace overkill::C
     constexpr int WinWidth = 800;
     constexpr int WinHeight = 600;
     constexpr char WinName[] = "Assignment 2 - Cube";
-    constexpr float FOV = 90.0f;
-    constexpr float MaxFOV = 90.8f;
-    constexpr float MinFOV = 88.1f;
-    constexpr float ZoomSensitivity = 0.1f;
-    constexpr float LookSensitivity = 4;
+    constexpr float FOV = 88.0f;
+    constexpr float MaxFOV = 88.2f;
+    constexpr float MinFOV = 87.97f;
+    constexpr float ZoomSensitivity = 0.0033f;
+    constexpr float LookSensitivity = 5;
+    constexpr float PanSensitivity = 9;
     constexpr float AspectRatio = (float)WinWidth / (float)WinHeight;
     constexpr float NearClip = 0.1f;
     constexpr float FarClip  = 100.0f;
-    constexpr float CameraOffset = -3;      //How far back the camera is from the center of the scene.
+    constexpr float CameraOffset = -70;      //How far back the camera is from the center of the scene.
     const glm::vec4 ClearColor { 1.0f, .8f, .6f, 1.0f};
     constexpr char PathBaseShader[] = "assets/shaders/base.shader";
     constexpr char PathBaseTexture[] = "assets/textures/Checkers.jpg";

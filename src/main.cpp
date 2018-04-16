@@ -90,13 +90,14 @@ int main()
         renderer.draw(model.m_vao, model.m_meshes[0].m_ebo, shader);
 
 		//@TODO shader.bindDynamic()
-        projection = glm::perspective(Input::fovy, C::AspectRatio, 0.1f, -100.0f);
-        camera = glm::rotate(glm::mat4(1), (C::LookSensitivity * Input::mouseX / C::WinWidth), glm::vec3(0.0f, 1.0f, 0.0f));
-        camera = glm::rotate(glm::mat4(1), (C::LookSensitivity * Input::mouseY / C::WinHeight), glm::vec3(1.0f, 0.0f, 0.0f)) * camera;
-
+        projection = glm::perspective(Input::m_fovy, C::AspectRatio, 0.1f, -100.0f);
+        camera = glm::rotate(glm::mat4(1), (C::LookSensitivity * Input::m_camRotX / C::WinWidth), glm::vec3(0.0f, 1.0f, 0.0f));
+        camera = glm::rotate(glm::mat4(1), (C::LookSensitivity * Input::m_camRotY / C::WinHeight), glm::vec3(1.0f, 0.0f, 0.0f)) * camera;
+        pivot = glm::translate(glm::mat4(1),glm::vec3(Input::m_camPanX, Input::m_camPanY, C::CameraOffset));  //Camera pos in world.
+        
         view = pivot * camera;
-        // view = pivot;
         glm::inverse(view); //To reverse both axis, so controls are not reverse.
+
 
         shader.bind({});
         GLCall(glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(projection)));

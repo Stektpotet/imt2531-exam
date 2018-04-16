@@ -2,12 +2,16 @@
 
 namespace overkill
 {
-    float Input::fovy = C::FOV;
-    float Input::cursorX = 0;
-    float Input::cursorY = 0;
-    float Input::mouseX = 0;
-    float Input::mouseY = 0;
-    bool Input::leftButtonDown = false;
+    bool Input::m_leftButtonDown = false;
+    bool Input::m_rightButtonDown = false;
+    
+    float Input::m_fovy = C::FOV;
+    float Input::m_cursorX = 0;
+    float Input::m_cursorY = 0;
+    float Input::m_camRotX = 0;
+    float Input::m_camRotY = 0;
+    float Input::m_camPanX = 0;
+    float Input::m_camPanY = 0;
 
     void Input::OnInputKeyPress(GLFWwindow* window, int keyCode, int scanCode, int mods)
     {
@@ -55,45 +59,74 @@ namespace overkill
 
     void Input::OnCursorHover(GLFWwindow* window, double x, double y)
     {
-        if (leftButtonDown) //Click and drag to rotate.
+
+        //Camera rotation:
+        if (m_leftButtonDown) //Click and drag to rotate.
         {
-            mouseX += x - cursorX;
-            mouseY += y - cursorY;
+            m_camRotX += x - m_cursorX;
+            m_camRotY += y - m_cursorY;
 
-            if (mouseX / C::WinWidth > C::PI/2) mouseX = 0;
-            if (mouseX < 0) mouseX = C::WinWidth * C::PI/2;
+            if (m_camRotX / C::WinWidth > C::PI/2) m_camRotX = 0;
+            if (m_camRotX < 0) m_camRotX = C::WinWidth * C::PI/2;
 
-            if (mouseY / C::WinHeight < -0.4f) mouseY = C::WinHeight * -0.4f;   // Lock Y axis on camera to 90deg up, and down,
-            if (mouseY / C::WinHeight > 0.4f)  mouseY = C::WinHeight * 0.4f;    // no looping the camera around.
+            if (m_camRotY / C::WinHeight < -0.4f) m_camRotY = C::WinHeight * -0.4f;   // Lock Y axis on camera to 90deg up, and down,
+            if (m_camRotY / C::WinHeight > 0.4f)  m_camRotY = C::WinHeight * 0.4f;    // no looping the camera around.
 
-            printf("mouseX:%f,  \tmouseY:%f \tmouseX / C::WinWidth:%f   \tmouseY / C::WinWidth:%f\n",
-                    mouseX,     mouseY,     mouseX / C::WinWidth,       mouseY / C::WinHeight);
+            printf("camRotX:%f,  \tcamRotY:%f \tcamRotX / C::WinWidth:%f   \tcamRotY / C::WinWidth:%f\n",
+                    m_camRotX,     m_camRotY,     m_camRotX / C::WinWidth,       m_camRotY / C::WinHeight);
         }
-        cursorX = x;
-        cursorY = y;
-    }
+
+        //Camera paning:
+        if (m_rightButtonDown) //Click and drag to rotate.
+        {
+            m_camPanX += ((x - m_cursorX) / C::WinWidth * C::PanSensitivity) * ((m_fovy - C::MinFOV + 0.06f) / ((C::MaxFOV - C::MinFOV)  * 0.6f));
+            m_camPanY += ((y - m_cursorY) / C::WinHeight * C::PanSensitivity) * ((m_fovy - C::MinFOV + 0.06f) / ((C::MaxFOV - C::MinFOV)  * 0.6f)) * -1;
+
+            printf("camPanX:%f,  \tcamPanY:%f \tcamPanX / C::WinWidth:%f   \tcamPanY / C::WinWidth:%f\n",
+                    m_camPanX,     m_camPanY,     m_camPanX / C::WinWidth,       m_camPanY / C::WinHeight);
+        }
+
+        m_cursorX = x;  // Save current cursor pos.
+        m_cursorY = y;  // important to do this last since the logic to rotate and pan
+    }                   // uses the difference between now and last mouse pos.
 
     void Input::OnScrollChange(GLFWwindow* window, double x, double y)
     {
         // fovy += (y / 512) + 32;
-        fovy -= y * C::ZoomSensitivity;
-        if (fovy < C::MinFOV) fovy = C::MinFOV;
-        if (fovy > C::MaxFOV) fovy = C::MaxFOV;
+        m_fovy -= y * C::ZoomSensitivity;
+        if (m_fovy < C::MinFOV) m_fovy = C::MinFOV;
+        if (m_fovy > C::MaxFOV) m_fovy = C::MaxFOV;
 
-        printf("Scroll: x: %f,\ty:%f\t\tfovy:%f\n", x, y, fovy);
+        printf("Scroll: x: %f,\ty:%f\t\tfovy:%f\n", x, y, m_fovy);
     }
 
-    void Input::OnLeftClick(GLFWwindow* window, int button, int action, int mods)
+    void Input::OnMouseClick(GLFWwindow* window, int button, int action, int mods)
     {
-        if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+        if (button == GLFW_MOUSE_BUTTON_LEFT)
         {
-            printf("Left button pressed.\n");
-            leftButtonDown = true;
+            if (action == GLFW_PRESS)
+            {
+                printf("Left button pressed.\n");
+                m_leftButtonDown = true;
+            }
+            else if (action == GLFW_RELEASE)
+            {
+                printf("Left button released.\n");       
+                m_leftButtonDown = false;
+            }
         }
-        else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE)
+        if (button == GLFW_MOUSE_BUTTON_RIGHT)
         {
-            printf("Left button released.\n");       
-            leftButtonDown = false;
+            if (action == GLFW_PRESS)
+            {
+                printf("Right button pressed.\n");
+                m_rightButtonDown = true;
+            }
+            else if (action == GLFW_RELEASE)
+            {
+                printf("Right button released.\n");       
+                m_rightButtonDown = false;
+            }
         }
     }
 }
