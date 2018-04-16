@@ -40,7 +40,8 @@ void TextureSystem::load()
         "checkers",
         "brickwall",
         "brickwall-nrm",
-        "nrm_test",
+        "scifi",
+        "scifi_nrm"
     };
 
     for (const auto tag : tags) {

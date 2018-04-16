@@ -1,7 +1,8 @@
 maps: 2
-
   mainTex: brickwall
   bumpTex: nrm_test
 
-values: 1
+values: 3
   opacity: 1
+  intensity: 1
+  bumpiness: 0

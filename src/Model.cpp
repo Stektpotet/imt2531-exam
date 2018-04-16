@@ -4,9 +4,9 @@
 namespace overkill 
 {
 
-Mesh::Mesh(const std::vector<GLuint>& indices, const int shaderID, const int materialID)
+Mesh::Mesh(const std::vector<GLuint>& indices, const int materialID, const ShaderProgram shaderProgram)
 {
-    m_shaderID = shaderID;
+    m_shaderProgram = shaderProgram;
     m_materialID = materialID;
     m_ebo = ElementBuffer(indices.data(), indices.size());
 }
@@ -23,9 +23,9 @@ Model::Model(std::vector<Vertex> vertices)
     m_vao.addBuffer(m_vbo, vbufLayout);
 }
 
-void Model::pushMesh(const std::vector<GLuint> indices, const int shaderID, const int materialID)
+void Model::pushMesh(const Mesh mesh)
 {
-    m_meshes.emplace_back( Mesh(indices, shaderID, materialID) );
+    m_meshes.emplace_back( mesh );
 }
 
 

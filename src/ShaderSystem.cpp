@@ -22,10 +22,10 @@ auto ShaderSystem::getById(C::ID shaderProgramID) -> const ShaderProgram&
     return ShaderSystem::m_shaderPrograms[shaderProgramID];
 }
 
-/*auto ShaderSystem::copyByTag(const C::Tag& tag) -> ShaderProgram 
+auto ShaderSystem::copyByTag(const C::Tag& tag) -> ShaderProgram 
 {
     return ShaderSystem::m_shaderPrograms[m_mapShaderProgramID[tag]];
-}*/
+}
 
 void ShaderSystem::push(const C::Tag&& tag, const char* path) 
 {

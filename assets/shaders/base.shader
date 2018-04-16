@@ -98,11 +98,13 @@ uniform sampler2D mainTex;
 uniform sampler2D bumpTex;
 
 uniform float opacity = 0;
+uniform float intensity = 1;
+uniform float bumpiness = 0;
 
 uniform struct Light {
 	vec3 position;
 	vec3 intensities; //a.k.a the color of the light
-} light = Light(vec3(10,10,6), vec3(1,0.5,0));
+} light = Light(vec3(10,10,6), vec3(1,1,1));
 
 uniform mat4 model = mat4(1);
 
@@ -113,7 +115,7 @@ void main() {
 
 	mat3 normalMatrix = transpose(inverse(mat3(model)));
 	vec3 normal = normalize(normalMatrix * fragNormal);
-    normal = normal + normalize(bump.rgb*2.0 - 1.0);
+    normal = normal + bumpiness * normalize(bump.rgb*2.0 - 1.0);
 	//calculate the location of this fragment (pixel) in world coordinates
 	vec3 fragPosition = vec3(model * vec4(fragVert, 1));
 
@@ -124,7 +126,7 @@ void main() {
 	float brightness = dot(normal, surfaceToLight) / (length(surfaceToLight) * length(normal));
 	brightness = clamp(brightness, 0, 1);
 
-	out_color = vec4(vec3(0.25, 0.125, 0) + brightness * light.intensities * tex.rgb, opacity);
+	out_color = vec4( brightness * intensity * light.intensities * tex.rgb, opacity);
     //out_color = vec4(normal, 1);
     /*out_color = vec4(
         tex.r*vertex_color_out.r,
@@ -134,5 +136,6 @@ void main() {
     );*/
 
     //out_color = vec4(texture(mainTex, texCoord).rgb , vertex_color_out.a);
+
 }
-//out_color = vec4(texture(mainTex, texCoord).rgb * vertex_color_out.rgb, vertex_color_out.a);
+//out_color = vec4(texture(mainTexture, texCoord).rgb * vertex_color_out.rgb, vertex_color_out.a);

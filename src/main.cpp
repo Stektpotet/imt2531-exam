@@ -50,9 +50,9 @@ int main()
     MaterialSystem::load();
     ModelSystem::load();
 
-    auto shader   = ShaderSystem::getByTag("base");
-    auto material = MaterialSystem::getByTag("brick");
     auto model    = ModelSystem::getByTag("cube");
+    ShaderProgram shader = model.m_meshes[0].m_shaderProgram;
+    auto material = MaterialSystem::getById(model.m_meshes[0].m_materialID);
 
 
     auto renderer = EdgeRenderer();
@@ -71,14 +71,22 @@ int main()
     GLint uniformView;                                  //Will communicate camera orientation to shader.
 
 
-    shader.bind({});
+    shader.bind();
     uniformMVP  = shader.getUniformLocation("projection");
     uniformTime = shader.getUniformLocation("time");
     uniformView = shader.getUniformLocation("view");
 
     GLCall(glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(projection)));
+    shader.setMaterial(material);
 
-    shader.bind(material);
+    float twoSecondTick = 0.0f;
+    auto everyTwoSeconds = [&twoSecondTick](float t){
+
+        if (t - twoSecondTick > 2.0f) {
+            MaterialSystem::reload();
+            twoSecondTick += 2;
+        }
+    };
 
     for(;;)
     {
@@ -98,7 +106,7 @@ int main()
         // view = pivot;
         glm::inverse(view); //To reverse both axis, so controls are not reverse.
 
-        shader.bind({});
+        shader.bind();
         GLCall(glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(projection)));
         GLCall(glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(view)));
         GLCall(glUniform1f(uniformTime, (float)glfwGetTime()));
@@ -106,6 +114,7 @@ int main()
         glfwSwapBuffers(window);
         glfwPollEvents();
 
+        everyTwoSeconds(t);
     }
 
     glfwDestroyWindow(window);

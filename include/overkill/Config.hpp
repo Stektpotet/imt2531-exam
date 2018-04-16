@@ -9,8 +9,8 @@ namespace overkill::C
 
     constexpr int VersionMajor = 4;
     constexpr int VersionMinor = 1;
-    constexpr int WinWidth = 1600;
-    constexpr int WinHeight = 900;
+    constexpr int WinWidth = 960;
+    constexpr int WinHeight = 1060;
     constexpr char WinName[] = "Assignment 2 - Cube";
     constexpr float FOV = 90.0f;
     constexpr float MaxFOV = 90.8f;
