@@ -1,6 +1,6 @@
 maps: 2
 
-  mainTex: brickwall
+  mainTex: checkers
   specularTex: brickwall-nrm
 
 values: 1

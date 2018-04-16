@@ -1,5 +1,7 @@
 #include <overkill/ModelSystem.hpp>
 
+#include <overkill/MaterialSystem.hpp>
+
 namespace overkill
 {
 
@@ -114,7 +116,24 @@ void ModelSystem::load()
     };
 
     Model model{vertices};
-    model.pushMesh(indicies, 0,0);
+    
+    Mesh mesh { 
+        indicies,
+        MaterialSystem::getIdByTag("brick"),
+        ShaderSystem::copyByTag("base")
+    };
+
+    auto placedMesh = model.m_meshes.emplace_back(mesh);
+
+    MaterialSystem::bindOnUpdate(
+        "brick", 
+        placedMesh, 
+        [](C::ID materialID, Mesh& mesh) {
+            mesh.m_materialID = materialID;
+            mesh.m_shaderProgram.setMaterial(MaterialSystem::getById(materialID));
+        }
+    );
+
 
     m_mapModelID["cube"] = m_models.size();
     m_models.push_back(model);

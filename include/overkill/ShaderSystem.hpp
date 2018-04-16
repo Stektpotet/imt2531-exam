@@ -24,7 +24,7 @@ public:
     static auto getIdByTag(const C::Tag& shaderTag) -> C::ID;
     static auto getByTag(const C::Tag& shaderTag) -> const ShaderProgram&;
     static auto getById(const C::ID shaderProgramID ) -> const ShaderProgram&;
-    //static auto copyByTag(const C::Tag& tag) -> ShaderProgram;
+    static auto copyByTag(const C::Tag& tag) -> ShaderProgram;
 };
 
 }
