@@ -13,7 +13,7 @@ Texture::Texture(const std::string& _filepath)
     localBuffer = SOIL_load_image(filepath.c_str(), &width, &height, &channels, SOIL_LOAD_AUTO);
     if (!localBuffer)
     {
-        LOG_ERROR("failed to load \"%s\"\n", filepath);
+        LOG_ERROR("failed to load \"%s\"\n", filepath.c_str());
     }
     GLCall(glGenTextures(1, &id));
     GLCall(glBindTexture(GL_TEXTURE_2D, id));
