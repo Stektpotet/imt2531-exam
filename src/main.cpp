@@ -27,6 +27,8 @@
 #include <overkill/MaterialSystem.hpp>
 #include <overkill/ModelSystem.hpp>
 
+#define DEBUG 1
+
 using namespace overkill;
 
 
@@ -50,7 +52,7 @@ int main()
     ModelSystem::load();
 
     auto shader   = ShaderSystem::getByTag("base");
-    auto material = MaterialSystem::getByTag("brickwall");
+    auto material = MaterialSystem::getByTag("brick");
     auto model    = ModelSystem::getByTag("cube");
 
 

@@ -84,19 +84,18 @@ auto Parser::nextKeyString() -> KeyString
     if (line.find(":") + 2 < line.size())
         valueString = line.substr(line.find(":") + 2);
 
-    // @debug
-    /*
-    std::cout << std::setw(35) << std::left
-    << line
+#ifdef DEBUG
+    std::stringstream ss;
+    ss  << " key: "
+        << std::setw(18) << std::left
+        << key
 
-    << " key: "
-    << std::setw(18) << std::left
-    << key
+        << " val: "
+        << valueString;
 
-    << " val: "
-    << valueString
-    << '\n';
-    */
+    LOG_DEBUG("%s", ss.str().c_str());
+#endif
+
     return KeyString{ key, valueString };
 };
 

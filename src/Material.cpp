@@ -9,35 +9,37 @@ namespace overkill
 {
 
 
-Material::Material(const std::string& tag)
+Material::Material(const std::string& filepath)
 {
 
+    
+    auto file = Util::fileToString(filepath);
 
-    auto file = Util::fileToString("assets/materials/"+tag+".yml");
-    auto parser = Parser(file);
+    LOG_DEBUG("Parsing: %s", filepath.data());
+    auto p = Parser(file);
 
+    // Iterating through maps from material file
+    auto[mapcountkey, mapcount] = p.nextKeyInteger();
+    for (size_t i = 0; i < mapcount; ++i) {
+        auto[uniformtag, maptag] = p.nextKeyString();
+    
+        m_unimaps.emplace_back(
+            UniformTexture {
+                uniformtag,
+                TextureSystem::copyByTag(maptag)
+            }
+        );
+    }
 
+    // Iterating through values from material file
+    auto[valueskey, valuescount] = p.nextKeyInteger();
+    for (size_t i = 0; i < valuescount; ++i) {
+        auto[uniformtag, value] = p.nextKeyFloat();
 
-    std::cout << file;
-
-    m_unimaps.emplace_back(
-        UniformTexture
-        {
-            "mainTex",
-            TextureSystem::copyByTag("brickwall")
-        }
-    );
-    m_unimaps.emplace_back(
-        UniformTexture
-        {
-            "specularTex",
-            TextureSystem::copyByTag("brickwall-nrm")        
-        }
-    );
-
-    m_univalues.emplace_back(
-        UniformFloat{ "test", 0.5f }
-    );
+        m_univalues.emplace_back(
+            UniformFloat{ uniformtag, value }
+        );
+    }
 }
 
 

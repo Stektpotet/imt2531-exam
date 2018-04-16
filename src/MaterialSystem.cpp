@@ -26,8 +26,19 @@ auto MaterialSystem::getById(C::ID materialID) -> const Material&
 
 void MaterialSystem::load()
 {
-    MaterialSystem::m_mapMaterialID["brick"] = MaterialSystem::m_materials.size();
-    MaterialSystem::m_materials.emplace_back(Material("brick"));
+ 
+    // TODO: Load these from the file system somehow
+    std::vector<std::string> tags = {
+        "brick",
+    };
+
+    for(const auto tag : tags) {
+        const auto filepath = C::MaterialsFolder + tag + C::MaterialsExtension;
+
+        LOG_DEBUG("Material from file: %s", filepath.data());
+        MaterialSystem::m_mapMaterialID[tag] = MaterialSystem::m_materials.size();
+        MaterialSystem::m_materials.emplace_back(Material(filepath));
+    }
 }
 
 

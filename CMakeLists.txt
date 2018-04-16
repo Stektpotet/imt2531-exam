@@ -9,6 +9,8 @@ set(SRCDIR ${CMAKE_SOURCE_DIR})
 set(BINDIR ${CMAKE_BINARY_DIR})
 
 
+
+
 # Find system packages
 find_package(OpenGL REQUIRED)
 if(NOT MSVC)
@@ -148,7 +150,6 @@ target_link_libraries(
     PRIVATE ${GLEW_LIBRARY}
     PRIVATE glfw
     PRIVATE SOIL
-
 )
 endif()
 
@@ -156,4 +157,3 @@ endif()
 message("CMAKE_BINARY_DIR: " ${BINDIR})
 message("OPENGL_LIBRARIES"   ${OPENGL_LIBRARIES})
 message("GLEW_LIBRARY"       ${GLEW_LIBRARY})
-

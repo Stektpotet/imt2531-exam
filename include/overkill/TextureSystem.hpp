@@ -15,7 +15,7 @@ class TextureSystem
 private:
     static std::vector<Texture> m_textures;
     static std::unordered_map<C::Tag, C::ID> m_mapTextureID;
-    static void push(const C::Tag tag, const char* path);
+    static void push(const C::Tag tag, const std::string&& filepath);
 
 public:
     // <summary> Load all texture data onto GPU memory. 
