@@ -119,8 +119,8 @@ void main() {
 	brightness = clamp(brightness, 0, 1);
 
 	vec4 surfaceColor = texture(mainTex, texCoord);
-	out_color = vec4(brightness * light.intensities * surfaceColor.rgb, surfaceColor.a);
-
+	//out_color = vec4(brightness * light.intensities * surfaceColor.rgb, surfaceColor.a);
+    out_color = vec4(fragNormal, 1);
     //out_color = vec4(texture(mainTex, texCoord).rgb , vertex_color_out.a);
 }
 //out_color = vec4(texture(mainTex, texCoord).rgb * vertex_color_out.rgb, vertex_color_out.a);

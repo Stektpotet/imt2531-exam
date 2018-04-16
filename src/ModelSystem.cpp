@@ -38,7 +38,7 @@ auto packNormal(float x, float y, float z) -> GLint
 	//			01 0000 0000
 	//-1*511 = -511
 	//			10 0000 0001
-	GLint r = ix | (iy << 10) | (iz << 20);
+	GLint r = (iz << 20) | (iy << 10) | ix;
 	return r;
 }
 
