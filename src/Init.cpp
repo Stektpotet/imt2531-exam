@@ -67,5 +67,4 @@ void Init::OpenGL(const glm::vec4 background)
 
 
 
-
 } // ::overkill

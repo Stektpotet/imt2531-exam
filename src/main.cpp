@@ -45,7 +45,6 @@ int main()
     Init::GLEW();
     Init::OpenGL(C::ClearColor); //(0.05f, 0.06f, 0.075f, 1.0f) for sexy dark blue-grey
 
-
     TextureSystem::load();
     ShaderSystem::load();
     MaterialSystem::load();
@@ -83,6 +82,7 @@ int main()
 
     for(;;)
     {
+        float t = glfwGetTime();
         if ((glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS || glfwWindowShouldClose(window) != 0))
             break;
 
@@ -105,6 +105,7 @@ int main()
 
         glfwSwapBuffers(window);
         glfwPollEvents();
+
     }
 
     glfwDestroyWindow(window);

@@ -24,9 +24,13 @@ auto MaterialSystem::getById(C::ID materialID) -> const Material&
 }
 
 
+void MaterialSystem::reload() 
+{
+    MaterialSystem::m_materials.clear();
+}
+
 void MaterialSystem::load()
 {
- 
     // TODO: Load these from the file system somehow
     std::vector<std::string> tags = {
         "brick",
