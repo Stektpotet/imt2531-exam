@@ -12,7 +12,6 @@
 #include <overkill/gl_caller.hpp>
 #include <overkill/Input.hpp>
 
-
 namespace overkill::Init
 {
 

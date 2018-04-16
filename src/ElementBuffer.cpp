@@ -1,5 +1,4 @@
-#include "overkill/elementBuffer.hpp"
-
+#include "overkill/ElementBuffer.hpp"
 
 namespace overkill 
 {

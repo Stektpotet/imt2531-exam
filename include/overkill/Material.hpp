@@ -1,7 +1,10 @@
 #pragma once
 
 #include <vector>
-#include <overkill/texture.hpp>
+
+#include <PMS/logger.h>
+#include <overkill/Config.hpp>
+#include <overkill/Texture.hpp>
 #include <overkill/gl_caller.hpp>
 
 
@@ -13,6 +16,7 @@ struct UniformTexture
 	std::string tag;
 	Texture		texture;
 };
+
 struct UniformFloat
 {
 	std::string tag;
@@ -25,7 +29,7 @@ public:
 	std::vector<UniformTexture>	m_unimaps;
 	std::vector<UniformFloat>	m_univalues;
     Material()=default;
-    Material(const std::string& tag);
+    Material(const std::string& filepath);
 
 };
 

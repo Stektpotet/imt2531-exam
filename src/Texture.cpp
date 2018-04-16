@@ -1,18 +1,19 @@
-#include <overkill/texture.hpp>
+#include <overkill/Texture.hpp>
 #include <fstream>
 
+#include <PMS/logger.h>
 
 namespace overkill 
 {
 
-Texture::Texture(const std::string& filePath)
-    :id(0), filePath(filePath), localBuffer(nullptr),
+Texture::Texture(const std::string& _filepath)
+    :id(0), filepath(_filepath), localBuffer(nullptr),
     width(0), height(0), channels(0)
 {
-    localBuffer = SOIL_load_image(filePath.c_str(), &width, &height, &channels, SOIL_LOAD_AUTO);
+    localBuffer = SOIL_load_image(filepath.c_str(), &width, &height, &channels, SOIL_LOAD_AUTO);
     if (!localBuffer)
     {
-        printf("failed to load \"%s\"\n", filePath.c_str());
+        LOG_ERROR("failed to load \"%s\"\n", filepath.c_str());
     }
     GLCall(glGenTextures(1, &id));
     GLCall(glBindTexture(GL_TEXTURE_2D, id));

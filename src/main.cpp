@@ -20,12 +20,14 @@
 #include <overkill/Init.hpp>
 #include <overkill/Input.hpp>
 #include <overkill/gl_caller.hpp>
-#include <overkill/renderer.hpp>
+#include <overkill/Renderer.hpp>
 
 #include <overkill/TextureSystem.hpp>
 #include <overkill/ShaderSystem.hpp>
 #include <overkill/MaterialSystem.hpp>
 #include <overkill/ModelSystem.hpp>
+
+#define DEBUG 1
 
 using namespace overkill;
 
@@ -43,14 +45,13 @@ int main()
     Init::GLEW();
     Init::OpenGL(C::ClearColor); //(0.05f, 0.06f, 0.075f, 1.0f) for sexy dark blue-grey
 
-
     TextureSystem::load();
     ShaderSystem::load();
     MaterialSystem::load();
     ModelSystem::load();
 
     auto shader   = ShaderSystem::getByTag("base");
-    auto material = MaterialSystem::getByTag("brickwall");
+    auto material = MaterialSystem::getByTag("brick");
     auto model    = ModelSystem::getByTag("cube");
 
 
@@ -81,6 +82,7 @@ int main()
 
     for(;;)
     {
+        float t = glfwGetTime();
         if ((glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS || glfwWindowShouldClose(window) != 0))
             break;
 
@@ -103,6 +105,7 @@ int main()
 
         glfwSwapBuffers(window);
         glfwPollEvents();
+
     }
 
     glfwDestroyWindow(window);

@@ -3,7 +3,6 @@
 #include <SOIL.h>
 #include <overkill/gl_caller.hpp>
 
-
 namespace overkill 
 {
 
@@ -11,11 +10,11 @@ class Texture
 {
     private:
         GLuint      id;
-        std::string filePath;
+        std::string filepath;
         GLubyte*    localBuffer;
         GLsizei     width, height, channels;
     public:
-        Texture(const std::string& filePath);
+        Texture(const std::string& filepath);
 		
 		
 		void clean();

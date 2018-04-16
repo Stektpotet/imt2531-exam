@@ -1,10 +1,10 @@
 #pragma once
 
 #include <overkill/gl_caller.hpp>
-#include <overkill/elementBuffer.hpp>
-#include <overkill/vertexBuffer.hpp>
-#include <overkill/vertexArray.hpp>
-#include <overkill/renderer.hpp>
+#include <overkill/ElementBuffer.hpp>
+#include <overkill/VertexBuffer.hpp>
+#include <overkill/VertexArray.hpp>
+#include <overkill/Renderer.hpp>
 
 
 #include <vector>

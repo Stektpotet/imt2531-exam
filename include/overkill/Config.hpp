@@ -25,4 +25,21 @@ namespace overkill::C
     constexpr char PathBaseShader[] = "assets/shaders/base.shader";
     constexpr char PathBaseTexture[] = "assets/textures/Checkers.jpg";
     constexpr float PI = 3.14159265359f;
+
+    constexpr char TexturesFolder[]  = "assets/textures/";
+    constexpr char TexturesExtension[]  = ".jpg";
+
+    constexpr char ShadersFolder[]   = "assets/shaders/";
+    constexpr char ShadersExtension[]   = ".shader";
+
+    constexpr char MaterialsFolder[] = "assets/materials/";
+    constexpr char MaterialsExtension[] = ".yml";
+
+    constexpr char ModelsFolder[]    = "assets/models/";
+    constexpr char ModelsExtension[]    = ".yml";
+
+    constexpr char ScenesFolder[]    = "assets/scenes/";
+    constexpr char ScenesExtension[]    = ".yml";
+
+       
 }
