@@ -5,7 +5,7 @@
 #include <unordered_map>
 
 #include <overkill/Config.hpp>
-#include <overkill/texture.hpp>
+#include <overkill/Texture.hpp>
 
 namespace overkill
 {

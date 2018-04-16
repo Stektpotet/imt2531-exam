@@ -2,8 +2,8 @@
 
 #include <overkill/gl_caller.hpp>
 
-#include <overkill/vertexBuffer.hpp>
-#include <overkill/vertexBufferAttribLayout.hpp>
+#include <overkill/VertexBuffer.hpp>
+#include <overkill/VertexBufferAttribLayout.hpp>
 
 
 namespace overkill 

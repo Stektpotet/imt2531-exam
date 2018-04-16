@@ -1,4 +1,4 @@
-#include <overkill/renderer.hpp>
+#include <overkill/Renderer.hpp>
 
 namespace overkill
 {

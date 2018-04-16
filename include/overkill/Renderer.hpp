@@ -1,8 +1,8 @@
 #pragma once
 #include <overkill/gl_caller.hpp>
 
-#include <overkill/vertexArray.hpp>
-#include <overkill/elementBuffer.hpp>
+#include <overkill/VertexArray.hpp>
+#include <overkill/ElementBuffer.hpp>
 #include <overkill/ShaderProgram.hpp>
 
 namespace overkill

@@ -20,7 +20,7 @@
 #include <overkill/Init.hpp>
 #include <overkill/Input.hpp>
 #include <overkill/gl_caller.hpp>
-#include <overkill/renderer.hpp>
+#include <overkill/Renderer.hpp>
 
 #include <overkill/TextureSystem.hpp>
 #include <overkill/ShaderSystem.hpp>

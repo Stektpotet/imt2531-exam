@@ -1,4 +1,4 @@
-#include <overkill/vertexArray.hpp>
+#include <overkill/VertexArray.hpp>
 #include <overkill/gl_util.hpp>
 
 
