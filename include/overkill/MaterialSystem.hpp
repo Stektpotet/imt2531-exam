@@ -13,12 +13,13 @@
 namespace overkill
 {
 
-using OnUpdate = void (*)(C::ID, Mesh&);
+using OnUpdate = void (*)(C::ID, C::ID, C::ID);
 
 struct UpdateCallback 
 {
     C::Tag   tag;
-    Mesh&    mesh;
+    C::ID    modelID;
+    C::ID    meshID;
     OnUpdate callback;
 };
 
@@ -39,7 +40,7 @@ public:
     static auto getIdByTag(const C::Tag& materialTag) -> C::ID;
     static auto getByTag(const C::Tag& materialTag) -> const Material&;
     static auto getById(const C::ID materialID) -> const Material&;
-    static void bindOnUpdate(const C::Tag& materialTag, Mesh& mesh, OnUpdate onUpdate);
+    static void bindOnUpdate(const C::Tag& materialTag, C::ID modelID, C::ID meshID, OnUpdate onUpdate);
 };
 
 }

@@ -77,8 +77,16 @@ int main()
     uniformView = shader.getUniformLocation("view");
 
     GLCall(glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(projection)));
-
     shader.setMaterial(material);
+
+    float twoSecondTick = 0.0f;
+    auto everyTwoSeconds = [&twoSecondTick](float t){
+
+        if (t - twoSecondTick > 2.0f) {
+            MaterialSystem::reload();
+            twoSecondTick += 2;
+        }
+    };
 
     for(;;)
     {
@@ -106,6 +114,7 @@ int main()
         glfwSwapBuffers(window);
         glfwPollEvents();
 
+        everyTwoSeconds(t);
     }
 
     glfwDestroyWindow(window);

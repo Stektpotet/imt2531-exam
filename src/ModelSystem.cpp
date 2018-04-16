@@ -116,6 +116,7 @@ void ModelSystem::load()
     };
 
     Model model{vertices};
+    m_mapModelID["cube"] = m_models.size();
     
     Mesh mesh { 
         indicies,
@@ -123,19 +124,24 @@ void ModelSystem::load()
         ShaderSystem::copyByTag("base")
     };
 
-    auto placedMesh = model.m_meshes.emplace_back(mesh);
+    auto meshID = model.m_meshes.size();
+    model.m_meshes.emplace_back(mesh);
 
     MaterialSystem::bindOnUpdate(
-        "brick", 
-        placedMesh, 
-        [](C::ID materialID, Mesh& mesh) {
+        "brick",
+        m_mapModelID["cube"],
+        meshID,
+        [](C::ID materialID, C::ID modelID, C::ID meshID) {
+
+            auto model = ModelSystem::getById(modelID);
+            auto mesh  = model.m_meshes[meshID];
+
             mesh.m_materialID = materialID;
             mesh.m_shaderProgram.setMaterial(MaterialSystem::getById(materialID));
         }
     );
 
 
-    m_mapModelID["cube"] = m_models.size();
     m_models.push_back(model);
 }
 

@@ -34,7 +34,7 @@ void MaterialSystem::reload()
     for(auto onUpdate : MaterialSystem::m_updateCallbacks)
     {
         auto materialID =  MaterialSystem::getIdByTag(onUpdate.tag);
-        onUpdate.callback(materialID, onUpdate.mesh);
+        onUpdate.callback(materialID, onUpdate.modelID, onUpdate.meshID);
     }
 }
 
@@ -54,12 +54,13 @@ void MaterialSystem::load()
     }
 }
 
-void MaterialSystem::bindOnUpdate(const C::Tag& materialTag, Mesh& mesh, OnUpdate onUpdate) 
+void MaterialSystem::bindOnUpdate(const C::Tag& materialTag, C::ID modelID, C::ID meshID, OnUpdate onUpdate)
 {
     MaterialSystem::m_updateCallbacks.emplace_back(
         UpdateCallback{ 
-            materialTag, 
-            mesh, 
+            materialTag,
+            modelID,
+            meshID, 
             onUpdate 
         }
     );
