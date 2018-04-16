@@ -13,15 +13,17 @@
 namespace overkill 
 {
 
-struct KeyInteger  { std::string key; int i;             };
-struct KeyFloat    { std::string key; float fp;          };
-struct KeyString   { std::string key; std::string str;   };
-struct KeyVertex   { std::string key; Vertex vertex;     };
-struct KeyTriangle { std::string key; Triangle triangle; };
+struct KeyInteger  { std::string key; int i;             int parseerror=0; };
+struct KeyFloat    { std::string key; float fp;          int parseerror=0; };
+struct KeyString   { std::string key; std::string str;   int parseerror=0; };
+struct KeyVertex   { std::string key; Vertex vertex;     int parseerror=0; };
+struct KeyTriangle { std::string key; Triangle triangle; int parseerror=0; };
+    const int PARSE_ERROR = 1;
 
 /// <summary> Translates files into internal datastructure </summary>
 class Parser
 {
+
     std::string_view strview;
     int startofline =  0;
     int endofline = 9999999;

@@ -19,10 +19,15 @@ Material::Material(const std::string& filepath)
     auto p = Parser(file);
 
     // Iterating through maps from material file
-    auto[mapcountkey, mapcount] = p.nextKeyInteger();
+    auto[mapcountkey, mapcount, err1] = p.nextKeyInteger();
+    if (err1 == PARSE_ERROR)
+        return;
+
     for (size_t i = 0; i < mapcount; ++i) {
-        auto[uniformtag, maptag] = p.nextKeyString();
-    
+        auto[uniformtag, maptag, err2] = p.nextKeyString();
+        if (err2 == PARSE_ERROR)
+            return;
+
         m_unimaps.emplace_back(
             UniformTexture {
                 uniformtag,
@@ -32,9 +37,14 @@ Material::Material(const std::string& filepath)
     }
 
     // Iterating through values from material file
-    auto[valueskey, valuescount] = p.nextKeyInteger();
+    auto[valueskey, valuescount, err3] = p.nextKeyInteger();
+    if (err3 == PARSE_ERROR)
+        return;
+        
     for (size_t i = 0; i < valuescount; ++i) {
-        auto[uniformtag, value] = p.nextKeyFloat();
+        auto[uniformtag, value, err4] = p.nextKeyFloat();
+        if (err4 == PARSE_ERROR)
+            return;
 
         m_univalues.emplace_back(
             UniformFloat{ uniformtag, value }

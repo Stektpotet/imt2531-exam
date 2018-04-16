@@ -13,7 +13,7 @@ void Renderer::draw(const VertexArray& va, const ElementBuffer& eb, const Shader
 {
     va.bind();
     eb.bind();
-    shader.bind(Material{});
+    shader.bind();
     GLCall(glDrawElements(GL_TRIANGLES, eb.count(), GL_UNSIGNED_INT, nullptr));
     //
     // UNBIND [optional]... discuss
@@ -23,12 +23,11 @@ void EdgeRenderer::drawEdged(const VertexArray & va, const ElementBuffer & eb, c
 {
     va.bind();
     eb.bind();
-    shader.bind({});
+    shader.bind();
 
     GLCall(glDrawElements(GL_TRIANGLES, eb.count(), GL_UNSIGNED_INT, nullptr));
 
-
-    edgeShader.bind({});
+    edgeShader.bind();
     GLCall(glLineWidth(1.0f))
         GLCall(glDrawElements(GL_LINE_STRIP, eb.count(), GL_UNSIGNED_INT, nullptr));
 }

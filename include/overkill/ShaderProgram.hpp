@@ -41,13 +41,16 @@ public:
 
     explicit operator GLuint() const;
 
+    ShaderProgram()=default;
+    ShaderProgram(const ShaderProgram&)=default;
     ShaderProgram(const std::string& vert, const std::string& frag, const std::string& geom);
     ShaderProgram(const std::string& filePath);
     
     
     void clean();
 
-    void bind(const Material& mat) const; // const; - can't be const as uniform cache might be updated
+    void setMaterial(const Material& mat) const;
+    void bind() const;
     void unbind() const;
 
 

@@ -5,6 +5,7 @@
 #include <overkill/VertexBuffer.hpp>
 #include <overkill/VertexArray.hpp>
 #include <overkill/Renderer.hpp>
+#include <overkill/ShaderSystem.hpp>
 
 
 #include <vector>
@@ -34,18 +35,19 @@ struct Triangle
 
 struct Mesh
 {
-    Mesh(const std::vector<GLuint>& indices, const int shaderID, const int materialID);
+    Mesh()=default;
+    Mesh(const std::vector<GLuint>& indices, const int materialID, const ShaderProgram shaderProgram);
 
     ElementBuffer m_ebo;
-    int m_shaderID;
-    int m_materialID;
+    ShaderProgram m_shaderProgram;
+    int           m_materialID;
 };
 
 
 struct Model 
 {
     Model(std::vector<Vertex> vertices);
-    void pushMesh(const std::vector<GLuint> indices, const int shaderID, const int materialID);
+    void pushMesh(const Mesh mesh);
 
     VertexArray       m_vao;
     VertexBuffer      m_vbo;

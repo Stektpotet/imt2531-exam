@@ -1,5 +1,6 @@
 #include <overkill/Input.hpp>
 
+
 namespace overkill
 {
     bool Input::m_leftButtonDown = false;
@@ -15,12 +16,23 @@ namespace overkill
 
     void Input::OnInputKeyPress(GLFWwindow* window, int keyCode, int scanCode, int mods)
     {
-        printf("Pressing %i, as char: %c\n", keyCode, char(keyCode));
+        LOG_DEBUG("Pressing %i, as char: %c\n", keyCode, char(keyCode));
         if (keyCode == GLFW_KEY_ESCAPE)
         {
             glfwSetWindowShouldClose(window, 1);
         }
+        else if(keyCode == GLFW_KEY_1) {
+            MaterialSystem::reload();
+        }
+        else if(keyCode == GLFW_KEY_2) {
 
+        }
+        else if(keyCode == GLFW_KEY_3) {
+
+        }
+        else if(keyCode == GLFW_KEY_4) {
+
+        }
     }
 
     void Input::OnInputKeyHold(GLFWwindow* window, int keyCode, int scanCode, int mods)

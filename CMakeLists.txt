@@ -129,6 +129,7 @@ target_compile_options(
     cube
     PRIVATE "-Wall"
     PRIVATE "-Wextra"
+    PRIVATE "-std=c++17"
 )
 
 target_include_directories(

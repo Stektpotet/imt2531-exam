@@ -16,12 +16,14 @@ auto Parser::nextLine() -> std::string
     if (startofline == std::string::npos) {
         std::cout << "\nPARSER ERROR ---->>> (startofline == std::string::npos)\n\n"
             << "Line: " << linecount;
-        LOG_ERROR("No whitelisted characters found after new-line character!! Line:");
+        LOG_WARN("No whitelisted characters found after new-line character!! Line:");
+        return "";
     }
     if (endofline == std::string::npos) {
         std::cout << "\nPARSER ERROR ---->>> (endofline == std::string::npos)\n\n"
             << "Line: " << linecount;
-        LOG_ERROR("No end of file (new-line) character found! Line:");
+        LOG_WARN("No end of file (new-line) character found! Line:");
+        return "";        
     }
 
     linecount++;
@@ -35,12 +37,14 @@ auto Parser::nextLine() -> std::string
         if (startofline == std::string::npos) {
             std::cout << "\nPARSER ERROR ---->>> (startofline == std::string::npos)\n\n"
                 << "Line: " << linecount;
-            LOG_ERROR("No whitelisted characters found after new-line character!! Line:");
+            LOG_WARN("No whitelisted characters found after new-line character!! Line:");
+            return "";
         }
         if (endofline == std::string::npos) {
             std::cout << "PARSER ERROR ---->>> (endofline == std::string::npos)"
                 << "Line: " << linecount;
-            LOG_ERROR("No end of file (new-line) character found! Line:");
+            LOG_WARN("No end of file (new-line) character found! Line:");
+            return "";
         }
         linecount++;
     }
@@ -61,7 +65,8 @@ auto Parser::nextLine() -> std::string
             << "line[lastCharacter]: " << line[lastCharacter] << '\n'
             << "int(line[lastValidCharacter]): " << int(line[lastValidCharacter]) << '\n'
             << "int(line[lastCharacter]): " << int(line[lastCharacter]) << '\n';
-        LOG_ERROR("Non-whitelisted character found after the end of line !!");
+        LOG_WARN("Non-whitelisted character found after the end of line !!");
+        return "";    
     }
 
     /*   std::cout << std::setw(40) << std::left << line
@@ -77,6 +82,9 @@ auto Parser::nextLine() -> std::string
 auto Parser::nextKeyString() -> KeyString
 {
     auto line = nextLine();
+
+    if(line == "")
+        return KeyString{"","", PARSE_ERROR};
 
     std::string key = line.substr(0, line.find(":"));
     std::string valueString = "";
@@ -102,7 +110,9 @@ auto Parser::nextKeyString() -> KeyString
 
 auto Parser::nextKeyInteger() -> KeyInteger
 {
-    auto[key, valueString] = nextKeyString();
+    auto[key, valueString, err] = nextKeyString();
+    if (err == PARSE_ERROR)
+        return KeyInteger{"",0, PARSE_ERROR};
 
     // @doc https://stackoverflow.com/a/18534114 - 15.04.2018
     try {
@@ -112,21 +122,24 @@ auto Parser::nextKeyInteger() -> KeyInteger
     }
     catch (std::invalid_argument& e) {
         // if no conversion could be performed
-        LOG_ERROR("std::stoi catch (std::invalid_argument& e) - no conversion could be performed");
+        LOG_WARN("std::stoi catch (std::invalid_argument& e) - no conversion could be performed");
     }
     catch (std::out_of_range& e) {
         // if the converted value would fall out of the range of the result type 
         // or if the underlying function (std::strtol or std::strtoull) sets errno 
         // to ERANGE.
-        LOG_ERROR("std::stoi catch (std::out_of_range& e) - the converted value would fall out of the range of the result type");
+        LOG_WARN("std::stoi catch (std::out_of_range& e) - the converted value would fall out of the range of the result type");
 
     }
+    return KeyInteger{"",0, PARSE_ERROR};
 }
 
 
 auto Parser::nextKeyFloat() -> KeyFloat
 {
-    auto[key, valueString] = nextKeyString();
+    auto[key, valueString, err] = nextKeyString();
+    if (err == PARSE_ERROR)
+        return KeyFloat{"",0, PARSE_ERROR};
 
     // @doc https://stackoverflow.com/a/18534114 - 15.04.2018
     try {
@@ -135,14 +148,15 @@ auto Parser::nextKeyFloat() -> KeyFloat
     }
     catch (std::invalid_argument& e) {
         // if no conversion could be performed
-        LOG_ERROR("std::stof catch (std::invalid_argument& e) - no conversion could be performed");
+        LOG_WARN("std::stof catch (std::invalid_argument& e) - no conversion could be performed");
     }
     catch (std::out_of_range& e) {
         // if the converted value would fall out of the range of the result type 
         // or if the underlying function (std::strtol or std::strtoull) sets errno 
         // to ERANGE.
-        LOG_ERROR("std::stof catch (std::out_of_range& e) - the converted value would fall out of the range of the result type");
+        LOG_WARN("std::stof catch (std::out_of_range& e) - the converted value would fall out of the range of the result type");
     }
+    return KeyFloat{"", 0, PARSE_ERROR};    
 }
 
 auto Parser::nextKeyVertex() -> KeyVertex { return KeyVertex{}; }

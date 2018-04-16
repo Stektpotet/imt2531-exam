@@ -96,29 +96,35 @@ ShaderProgram::operator GLuint() const
     return id;
 }
 
-void ShaderProgram::bind(const Material& mat) const
+void ShaderProgram::setMaterial(const Material& mat) const
 {
-	GLCall(glUseProgram(id));
-	std::size_t i = 0;
-	for (const auto unimap : mat.m_unimaps)
-	{
-		GLint location = getUniformLocation(unimap.tag);
-		if (location == -1) {
-			continue;
-		}
+    LOG_DEBUG("shaderid: %u", id);
+    bind();
+    std::size_t i = 0;
+    for (const auto unimap : mat.m_unimaps)
+    {
+        GLint location = getUniformLocation(unimap.tag);
+        if (location == -1) {
+            continue;
+        }
         unimap.texture.bind(i);
-		GLCall(glUniform1i(location, i));
-		i++;
-	}
-	for (const auto unival : mat.m_univalues)
-	{
-		GLint location = getUniformLocation(unival.tag);
-		if (location == -1) {
-			continue;
-		}
-		GLCall(glUniform1f(location, unival.value));
-	}
+        GLCall(glUniform1i(location, i));
+        i++;
+    }
+    for (const auto unival : mat.m_univalues)
+    {
+        GLint location = getUniformLocation(unival.tag);
+        if (location == -1) {
+            continue;
+        }
+        GLCall(glUniform1f(location, unival.value));
+    }
+}
 
+void ShaderProgram::bind() const
+{
+
+    GLCall(glUseProgram(id));
 }
 
 void ShaderProgram::unbind() const
