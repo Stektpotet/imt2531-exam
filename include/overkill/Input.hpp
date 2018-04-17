@@ -11,10 +11,8 @@
 
 namespace overkill 
 {
-    class Input;
-}
 
-class overkill::Input
+class Input
 {
 private:
     static bool m_leftButtonDown;
@@ -39,3 +37,5 @@ public:
     static void OnScrollChange(GLFWwindow* window, double x, double y);
     static void OnMouseClick(GLFWwindow* window, int button, int action, int mods);
 };
+
+}
