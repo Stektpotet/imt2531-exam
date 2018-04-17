@@ -63,10 +63,6 @@ int main()
     
     //translation * view * rotate(time*0.1*F, time*0.333334*F, time*0.1666666667*F) //From shader, old system.
     auto model2Object = EntityModel("cube");
-    model2Object.setAngularVelocity(glm::vec3(0.1f, 0, 0));
-
-
-
 
     //SCALE -> ROTATE -> TRANSLATE
     glm::mat4 projection = glm::perspective(C::FOV, C::AspectRatio, C::NearClip, C::FarClip);
@@ -74,13 +70,12 @@ int main()
     glm::mat4 pivot = glm::translate(glm::mat4(1),glm::vec3(0, 0, C::CameraOffset));  //Camera pos in world.
     glm::mat4 view = glm::mat4(1);
 
-
     //GLCall(glSetUn)
     GLint uniformMVP, uniformTime;
     GLint uniformMVP2, uniformTime2;
     GLint uniformView;                                  //Will communicate camera orientation to shader.
 
-
+    //TODO move to shader system:
     shader.bind();
     uniformMVP  = shader.getUniformLocation("projection");
     uniformTime = shader.getUniformLocation("time");
@@ -88,18 +83,17 @@ int main()
 
     GLCall(glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(projection)));
 
-
     for(;;)
     {
         float t = glfwGetTime();
         if ((glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS || glfwWindowShouldClose(window) != 0))
             break;
 
-        // auto model = ModelSystem::getByTag("cube");         // This is a hack, its beting loaded every frame in case it was
-        Renderer::clear();                                  // changed by keypress.
-        // Renderer::draw(model, glm::mat4(1));
+        // auto model = ModelSystem::getByTag("cube");          // This is a hack, its beting loaded every frame in case it was
+        Renderer::clear();                                      // changed by keypress.
+        // Renderer::draw(model, glm::mat4(1));                 // Replaced by new model, however some of old models components are still being used.
         model2Object.update();
-        model2Object.draw();
+        model2Object.draw();    //Important: currently uses the old model's 0th mesh's shader to draw. Also true for the camera.
 
 		//@TODO shader.bindDynamic()
         projection = glm::perspective(Input::m_fovy, C::AspectRatio, 0.1f, -100.0f);
@@ -109,7 +103,6 @@ int main()
         
         view = pivot * camera;
         glm::inverse(view); //To reverse both axis, so controls are not reverse.
-
 
         shader.bind();
         GLCall(glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(projection)));
