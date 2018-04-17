@@ -2,7 +2,8 @@
 
 namespace overkill
 {
-    Entity::Entity(C::Tag tag, glm::vec3 pos, glm::vec3 rot, glm::vec3 vel, glm::vec3 angVel)
+    Entity::Entity(C::Tag tag, glm::vec3 pos = glm::vec3(0,0,0), glm::vec3 rot = glm::vec3(0,0,0), 
+                            glm::vec3 vel = glm::vec3(0,0,0), glm::vec3 angVel = glm::vec3(0,0,0))
     {
         m_tag = tag;
         m_position = pos;

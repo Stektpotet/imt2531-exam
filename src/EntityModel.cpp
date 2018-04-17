@@ -3,21 +3,16 @@
 namespace overkill
 {
 
-    EntityModel::EntityModel(C::Tag tag, glm::vec3 pos, glm::vec3 rot, glm::vec3 scale, glm::vec3 vel, 
-        glm::vec3 angVel, unsigned int modelID, Material material)
-        : Entity(tag, pos, rot, vel, angVel)
+    EntityModel::EntityModel(C::Tag modelTag,
+                            glm::vec3 pos, glm::vec3 rot, 
+                            glm::vec3 scale, glm::vec3 vel, 
+                            glm::vec3 angVel) : Entity(modelTag, pos, rot, vel, angVel)
     {
-        m_modelID = modelID;
-        m_material = material;
+        m_modelID =  ModelSystem::getIdByTag(modelTag);
         m_scale = scale;
     }
-    
-    unsigned int EntityModel::getModel()
-    {   return m_modelID;   }
-    
-    Material EntityModel::getMaterial()
-    {   return m_material;   }
-    
+
+     
     glm::mat4 EntityModel::getModelMatrix()
     {   
         glm::mat4 rotationMatrix = glm::mat4(1);
@@ -30,15 +25,19 @@ namespace overkill
                 glm::scale(glm::mat4(1), m_scale);
     }
 
-    void EntityModel::setModel(unsigned int modelID)
+    
+    int EntityModel::getModel()
+    {   return m_modelID;   }
+
+    void EntityModel::setModelByID(int modelID)
     {   m_modelID = modelID;   }
     
-    void EntityModel::setMaterial(Material material)
-    {   m_material = material;   }
-    
+     void EntityModel::setModelByTag(C::Tag tag)
+    {   m_modelID =  ModelSystem::getIdByTag(tag);  }
+
     void EntityModel::draw()
     {   
-        // Renderer, plz draw!
+        Renderer::draw(ModelSystem::getById(m_modelID), getModelMatrix());
     }
 
 }

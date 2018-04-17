@@ -20,6 +20,11 @@ uniform mat4 view = mat4(1, 0, 0, 0,
     0, 0, 1, 0,
     0, 0, 0, 1);
 
+uniform mat4 model = mat4(1, 0, 0, 0,
+    0, 1, 0, 0,
+    0, 0, 1, 0,
+    0, 0, 0, 1);
+
 uniform float time = 0;
 
 mat4 rotate(float x, float y, float z) {
@@ -60,18 +65,8 @@ void main() {
 // model to world space transformations = transform
 // translation * rotation * scale * vertexPos;
 
-    mat4 translation = mat4(    1,0,0,0,
-                                0,1,0,0,
-                                0,0,1,0,
-                                0,0,0,0);
-
-    mat4 rot = mat4(0.525322, 0.000000, -0.850904, 0.000000,
-                    0.000000, 1.000000, 0.000000, 0.000000,
-                    0.850904, 0.000000, 0.525322, 0.000000,
-                    0.000000, 0.000000, 0.000000, 1.000000);
-
     float F = sqrt(position.x*position.x + position.y*position.y + position.z*position.z);
-    gl_Position = projection * translation * view * rotate(time*0.1*F, time*0.333334*F, time*0.1666666667*F) * position;
+    gl_Position = projection * model * view * position;
     vertex_color_out = vertex_color_from_program;
     texCoord = uv;
     pos = gl_Position;

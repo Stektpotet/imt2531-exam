@@ -28,6 +28,7 @@
 #include <overkill/ShaderSystem.hpp>
 #include <overkill/MaterialSystem.hpp>
 #include <overkill/ModelSystem.hpp>
+#include <overkill/EntityModel.hpp>
 
 #define DEBUG 1
 
@@ -60,6 +61,12 @@ int main()
     ShaderProgram shader = model.m_meshes[0].m_shaderProgram;
     auto renderer = EdgeRenderer();
     
+    //translation * view * rotate(time*0.1*F, time*0.333334*F, time*0.1666666667*F) //From shader, old system.
+    auto model2Object = EntityModel("cube");
+    model2Object.setAngularVelocity(glm::vec3(0.1f, 0, 0));
+
+
+
 
     //SCALE -> ROTATE -> TRANSLATE
     glm::mat4 projection = glm::perspective(C::FOV, C::AspectRatio, C::NearClip, C::FarClip);
@@ -88,9 +95,11 @@ int main()
         if ((glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS || glfwWindowShouldClose(window) != 0))
             break;
 
-        auto model = ModelSystem::getByTag("cube");
-        renderer.clear();
-        renderer.draw(model);
+        // auto model = ModelSystem::getByTag("cube");         // This is a hack, its beting loaded every frame in case it was
+        Renderer::clear();                                  // changed by keypress.
+        // Renderer::draw(model, glm::mat4(1));
+        model2Object.update();
+        model2Object.draw();
 
 		//@TODO shader.bindDynamic()
         projection = glm::perspective(Input::m_fovy, C::AspectRatio, 0.1f, -100.0f);
