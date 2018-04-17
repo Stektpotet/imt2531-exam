@@ -21,13 +21,13 @@ void Watcher::watchFile(const std::string tag, const std::string path, ModifiedF
     auto status = tfGetFileTime(mfile.path.c_str(), &(mfile.modTime));
 }
 
-void Watcher::scanFiles() 
+void Watcher::scanFiles()
 {
 #ifdef WIN32
 
     LOG_DEBUG("Scanning files...");
 
-    for (auto mfile : Watcher::m_modifiedFiles) 
+    for (auto mfile : Watcher::m_modifiedFiles)
     {
         tfFILETIME newmodTime;
 
@@ -37,9 +37,11 @@ void Watcher::scanFiles()
 
         if (newmodTime.time.dwLowDateTime != mfile.modTime.time.dwLowDateTime)
             mfile.callback(mfile);
-#endif
-// @todo implement the same for Mac and Linux. Windows uses DWORD as time type. Unix systems uses time_t.
+        // @todo implement the same for Mac and Linux. Windows uses DWORD as time type. Unix systems uses time_t.
     }
+#endif
+}
+
 }
 
 
