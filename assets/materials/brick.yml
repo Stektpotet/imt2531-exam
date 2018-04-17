@@ -1,6 +1,6 @@
 maps: 2
-  mainTex: brickwall
-  bumpTex: nrm_test
+  mainTex: scifi
+  bumpTex: scifi_nrm
 
 values: 3
   opacity: 1

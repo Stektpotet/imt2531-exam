@@ -15,12 +15,14 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#define TINYFILES_IMPLEMENTATION
 
 #include <overkill/Config.hpp>
 #include <overkill/Init.hpp>
 #include <overkill/Input.hpp>
 #include <overkill/gl_caller.hpp>
 #include <overkill/Renderer.hpp>
+#include <overkill/Util.hpp>
 
 #include <overkill/TextureSystem.hpp>
 #include <overkill/ShaderSystem.hpp>
@@ -42,19 +44,20 @@ int main()
         C::WinHeight,
         C::WinName);
 
+    // Init libraries + Watcher callbacks
     Init::GLEW();
     Init::OpenGL(C::ClearColor); //(0.05f, 0.06f, 0.075f, 1.0f) for sexy dark blue-grey
+    Init::Watcher();
 
+    // Load resource subsystems
     TextureSystem::load();
     ShaderSystem::load();
     MaterialSystem::load();
     ModelSystem::load();
 
-    auto model    = ModelSystem::getByTag("cube");
+    // Example model
+    auto model = ModelSystem::getByTag("cube");
     ShaderProgram shader = model.m_meshes[0].m_shaderProgram;
-    auto material = MaterialSystem::getById(model.m_meshes[0].m_materialID);
-
-
     auto renderer = EdgeRenderer();
     
 
@@ -77,16 +80,7 @@ int main()
     uniformView = shader.getUniformLocation("view");
 
     GLCall(glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(projection)));
-    shader.setMaterial(material);
 
-    float twoSecondTick = 0.0f;
-    auto everyTwoSeconds = [&twoSecondTick](float t){
-
-        if (t - twoSecondTick > 2.0f) {
-            MaterialSystem::reload();
-            twoSecondTick += 2;
-        }
-    };
 
     for(;;)
     {
@@ -95,16 +89,17 @@ int main()
             break;
 
         renderer.clear();
-        renderer.draw(model.m_vao, model.m_meshes[0].m_ebo, shader);
+        renderer.draw(model);
 
 		//@TODO shader.bindDynamic()
-        projection = glm::perspective(Input::fovy, C::AspectRatio, 0.1f, -100.0f);
-        camera = glm::rotate(glm::mat4(1), (C::LookSensitivity * Input::mouseX / C::WinWidth), glm::vec3(0.0f, 1.0f, 0.0f));
-        camera = glm::rotate(glm::mat4(1), (C::LookSensitivity * Input::mouseY / C::WinHeight), glm::vec3(1.0f, 0.0f, 0.0f)) * camera;
-
+        projection = glm::perspective(Input::m_fovy, C::AspectRatio, 0.1f, -100.0f);
+        camera = glm::rotate(glm::mat4(1), (C::LookSensitivity * Input::m_camRotX / C::WinWidth), glm::vec3(0.0f, 1.0f, 0.0f));
+        camera = glm::rotate(glm::mat4(1), (C::LookSensitivity * Input::m_camRotY / C::WinHeight), glm::vec3(1.0f, 0.0f, 0.0f)) * camera;
+        pivot = glm::translate(glm::mat4(1),glm::vec3(Input::m_camPanX, Input::m_camPanY, C::CameraOffset));  //Camera pos in world.
+        
         view = pivot * camera;
-        // view = pivot;
         glm::inverse(view); //To reverse both axis, so controls are not reverse.
+
 
         shader.bind();
         GLCall(glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(projection)));
@@ -114,7 +109,8 @@ int main()
         glfwSwapBuffers(window);
         glfwPollEvents();
 
-        everyTwoSeconds(t);
+        // LIVE UPDATE SHADER AND MATERIALS
+        // Util::everyTwoSeconds(t);
     }
 
     glfwDestroyWindow(window);

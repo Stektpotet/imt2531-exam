@@ -6,11 +6,16 @@
 
 #include <overkill/Config.hpp>
 #include <overkill/Model.hpp>
+#include <overkill/ShaderSystem.hpp>
+#include <overkill/ElementBuffer.hpp>
+#include <overkill/VertexBuffer.hpp>
+#include <overkill/VertexArray.hpp>
+#include <overkill/MaterialSystem.hpp>
+#include <overkill/Parser.hpp>
+#include <overkill/Util.hpp>
 
 namespace overkill
 {
-
-
 
 class ModelSystem 
 {

@@ -34,7 +34,7 @@ auto Init::GLFW(
     glfwSetKeyCallback(window, Input::OnInputKey); //set upp callbacks
     glfwSetCursorPosCallback(window, Input::OnCursorHover);
     glfwSetScrollCallback(window, Input::OnScrollChange);
-    glfwSetMouseButtonCallback(window, Input::OnLeftClick);
+    glfwSetMouseButtonCallback(window, Input::OnMouseClick);
 
     return window;
 }
@@ -65,6 +65,12 @@ void Init::OpenGL(const glm::vec4 background)
     GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 }
 
+void Init::Watcher() 
+{
+    Watcher::watchFile("brick", "assets/material/brick.yml", [](const ModifiedFile& mfile) {
+        LOG_INFO("File %s changed", mfile.path.c_str());
+    });
+}
 
 
 } // ::overkill

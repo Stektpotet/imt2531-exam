@@ -47,22 +47,24 @@ target_sources(
     PRIVATE ${SRCDIR}/src/ElementBuffer.cpp
 	PRIVATE ${SRCDIR}/src/gl_caller.cpp
     PRIVATE ${SRCDIR}/src/gl_util.cpp
+    PRIVATE ${SRCDIR}/src/Entity.cpp
+    PRIVATE ${SRCDIR}/src/EntityModel.cpp
     PRIVATE ${SRCDIR}/src/Init.cpp
     PRIVATE ${SRCDIR}/src/Input.cpp
-    PRIVATE ${SRCDIR}/src/Renderer.cpp
-    PRIVATE ${SRCDIR}/src/Parser.cpp
     PRIVATE ${SRCDIR}/src/Material.cpp
     PRIVATE ${SRCDIR}/src/MaterialSystem.cpp
     PRIVATE ${SRCDIR}/src/Model.cpp
     PRIVATE ${SRCDIR}/src/ModelSystem.cpp
-    PRIVATE ${SRCDIR}/src/Texture.cpp
-    PRIVATE ${SRCDIR}/src/TextureSystem.cpp
+    PRIVATE ${SRCDIR}/src/Parser.cpp
+    PRIVATE ${SRCDIR}/src/Renderer.cpp
     PRIVATE ${SRCDIR}/src/ShaderProgram.cpp
     PRIVATE ${SRCDIR}/src/ShaderSystem.cpp
+    PRIVATE ${SRCDIR}/src/Texture.cpp
+    PRIVATE ${SRCDIR}/src/TextureSystem.cpp
     PRIVATE ${SRCDIR}/src/Util.cpp
     PRIVATE ${SRCDIR}/src/VertexArray.cpp
     PRIVATE ${SRCDIR}/src/VertexBuffer.cpp
-    
+    PRIVATE ${SRCDIR}/src/Watcher.cpp
 )
 
 #
@@ -97,6 +99,7 @@ target_include_directories(
     cube
     PRIVATE ${SRCDIR}
     PRIVATE ${SRCDIR}/include
+    PRIVATE ${SRCDIR}/lib/
     PRIVATE ${SRCDIR}/lib/glew-2.1.0/include
     PRIVATE ${SRCDIR}/lib/glm-0.9.8.5
     PRIVATE ${SRCDIR}/lib/glfw-3.2.1/include
@@ -136,6 +139,7 @@ target_include_directories(
     cube
     PRIVATE ${SRCDIR}
     PRIVATE ${SRCDIR}/include
+    PRIVATE ${SRCDIR}/lib/
     PRIVATE ${SRCDIR}/lib/glm-0.9.8.5
     PRIVATE ${SRCDIR}/lib/glfw-3.2.1/include
     PRIVATE ${SRCDIR}/lib/SOIL-1.07/src
