@@ -28,6 +28,8 @@
 #include <overkill/ShaderSystem.hpp>
 #include <overkill/MaterialSystem.hpp>
 #include <overkill/ModelSystem.hpp>
+#include <overkill/Entity.hpp>
+
 
 #define DEBUG 1
 
@@ -60,26 +62,29 @@ int main()
     ShaderProgram shader = model.m_meshes[0].m_shaderProgram;
     auto renderer = EdgeRenderer();
     
+	Transform modelTransform;
+	modelTransform.m_position = glm::vec3{0,0,2};
 
-    //SCALE -> ROTATE -> TRANSLATE
+
     glm::mat4 projection = glm::perspective(C::FOV, C::AspectRatio, C::NearClip, C::FarClip);
     glm::mat4 camera = glm::mat4(1); 
     glm::mat4 pivot = glm::translate(glm::mat4(1),glm::vec3(0, 0, C::CameraOffset));  //Camera pos in world.
     glm::mat4 view = glm::mat4(1);
-
+	glm::mat4 m2w = modelTransform.modelToWorld();
 
     //GLCall(glSetUn)
     GLint uniformMVP, uniformTime;
-    GLint uniformMVP2, uniformTime2;
     GLint uniformView;                                  //Will communicate camera orientation to shader.
-
+	GLint uniformM2W;
 
     shader.bind();
+	uniformM2W = shader.getUniformLocation("m2w");
     uniformMVP  = shader.getUniformLocation("projection");
     uniformTime = shader.getUniformLocation("time");
     uniformView = shader.getUniformLocation("view");
 
-    GLCall(glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(projection)));
+	GLCall(glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(projection)));
+	GLCall(glUniformMatrix4fv(uniformM2W, 1, GL_FALSE, glm::value_ptr(m2w)));
 
 
     for(;;)
@@ -102,6 +107,7 @@ int main()
 
 
         shader.bind();
+		GLCall(glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(projection)));
         GLCall(glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(projection)));
         GLCall(glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(view)));
         GLCall(glUniform1f(uniformTime, (float)glfwGetTime()));

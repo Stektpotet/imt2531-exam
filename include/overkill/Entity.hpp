@@ -36,14 +36,15 @@ public:
 struct Transform
 {
 
-	const glm::vec3 right{ 1,0,0 };
-	const glm::vec3 up{ 0,1,0 };
-	const glm::vec3 forward{ 0,0,-1 };
-	const glm::vec3 one{ 1,1,1 };
+	const glm::vec3 right{ 1.0f,0.0f,0.0f };
+	const glm::vec3 up{ 0.0f,1.0f,0.0f };
+	const glm::vec3 forward{ 0.0f,0.0f,1.0f };
+	const glm::vec3 one{ 1.0f, 1.0f, 1.0f };
+	const glm::vec3 zero{ 0.0f ,0.0f ,0.0f };
 
-	glm::vec3 m_position;
-	glm::vec3 m_rotation;
-	glm::vec3 m_scale = one;
+	glm::vec3 m_position = zero;
+	glm::vec3 m_rotation = zero;
+	glm::vec3 m_scale    = one;
 
 	auto modelToWorld()->glm::mat4;
 };

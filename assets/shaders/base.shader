@@ -19,6 +19,7 @@ uniform mat4 view = mat4(1, 0, 0, 0,
 	0, 1, 0, 0,
 	0, 0, 1, 0,
 	0, 0, 0, 1);
+uniform mat4 m2w;
 
 uniform float time = 0;
 
@@ -58,7 +59,7 @@ out vec3 fragNormal;
 void main() {
 
 	float F = sqrt(position.x*position.x + position.y*position.y + position.z*position.z);
-	mat4 rot = rotate(0, time*0.333334*F, 0);
+	mat4 rot = rotate(0, time*0.0333334*F, 0);
 
 	vec4 rotatedNormal = rot * vec4(normal, 1);
 	// Pass some variables to the fragment shader
@@ -75,7 +76,7 @@ void main() {
 
 
 
-	gl_Position = projection * translation * view * rot * position;
+	gl_Position = projection * view * m2w * rot * position;
 	vertex_color_out = rotatedNormal;
 	texCoord = uv;
 }
