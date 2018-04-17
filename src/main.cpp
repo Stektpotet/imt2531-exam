@@ -65,10 +65,12 @@ int main()
     auto modelCubeObject = EntityModel("cube");
     auto modelFloorObject = EntityModel("cube");
 
-    modelCubeObject.setPosition(glm::vec3(2,0,0));
+    modelCubeObject.setRotation(glm::vec3(45, 45, 45));
+    modelCubeObject.setAngularVelocity(glm::vec3(1, 3.4f, 1.67f));
+    modelCubeObject.setPosition(glm::vec3(4,2,1));
 
     modelFloorObject.setPosition(glm::vec3(0, -3, 0));
-    modelFloorObject.setScale(glm::vec3(10, 0.5f, 10));
+    modelFloorObject.setScale(glm::vec3(20, 0.5f, 20));
 
 
     //SCALE -> ROTATE -> TRANSLATE
@@ -90,9 +92,11 @@ int main()
 
     GLCall(glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(projection)));
 
+    float oldT = 0, t = 0, dt = 0;
     for(;;)
     {
-        float t = glfwGetTime();
+        t = glfwGetTime();
+        dt = t - oldT;
         if ((glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS || glfwWindowShouldClose(window) != 0))
             break;
 
@@ -100,8 +104,8 @@ int main()
         Renderer::clear();                                      // changed by keypress.
         // Renderer::draw(model, glm::mat4(1));                 // Replaced by new model, however some of old models components are still being used.
         
-        modelCubeObject.update();
-        modelFloorObject.update();
+        modelCubeObject.update(dt);
+        modelFloorObject.update(dt);
         modelCubeObject.draw();    //Important: currently uses the old model's 0th mesh's shader to draw. Also true for the camera.
         modelFloorObject.draw();    //Important: currently uses the old model's 0th mesh's shader to draw. Also true for the camera.
 
@@ -126,6 +130,8 @@ int main()
 
         // LIVE UPDATE SHADER AND MATERIALS
         // Util::everyTwoSeconds(t);
+
+        oldT = t;
     }
 
     glfwDestroyWindow(window);
