@@ -63,6 +63,7 @@ int main()
     
     //translation * view * rotate(time*0.1*F, time*0.333334*F, time*0.1666666667*F) //From shader, old system.
     auto model2Object = EntityModel("cube");
+    model2Object.setPosition(glm::vec3(10,0,0));
 
     //SCALE -> ROTATE -> TRANSLATE
     glm::mat4 projection = glm::perspective(C::FOV, C::AspectRatio, C::NearClip, C::FarClip);

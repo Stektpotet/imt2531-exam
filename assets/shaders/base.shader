@@ -59,18 +59,23 @@ mat4 modelToWorld(mat3 transform) {
 
 
 
-
+//Vertex shader:
 void main() {
 
 // model to world space transformations = transform
 // translation * rotation * scale * vertexPos;
 
     float F = sqrt(position.x*position.x + position.y*position.y + position.z*position.z);
-    gl_Position = projection * model * view * position;
+    
+    gl_Position = projection * view * model * position;
+    
     vertex_color_out = vertex_color_from_program;
     texCoord = uv;
     pos = gl_Position;
 }
+
+
+
 
 #shader fragment
 #version 410
