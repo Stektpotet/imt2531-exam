@@ -82,8 +82,8 @@ namespace overkill
             m_camRotX += x - m_cursorX;
             m_camRotY += y - m_cursorY;
 
-            if (m_camRotX / C::WinWidth > C::PI/2) m_camRotX = 0;
-            if (m_camRotX < 0) m_camRotX = C::WinWidth * C::PI/2;
+            if (m_camRotX / C::WinWidth > C::PI) m_camRotX = 0;
+            if (m_camRotX < 0) m_camRotX = C::WinWidth * C::PI;
 
             if (m_camRotY / C::WinHeight < -0.4f) m_camRotY = C::WinHeight * -0.4f;   // Lock Y axis on camera to 90deg up, and down,
             if (m_camRotY / C::WinHeight > 0.4f)  m_camRotY = C::WinHeight * 0.4f;    // no looping the camera around.
