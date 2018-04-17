@@ -45,7 +45,7 @@ v:  1.0  1.0  1.0  1  1 1  255 255 255 80
 meshes: 2
 
 mesh: innercube
-    material: brickwall
+    material: brick
     shader: base
     triangles: 12
     t: 0 1 2
@@ -67,7 +67,7 @@ mesh: innercube
     t: 11 10 12
 
 mesh: outercube
-    material: brickwall
+    material: brick
     shader: base
     triangles: 12
     t: 14 15 16

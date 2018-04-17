@@ -19,6 +19,22 @@ void Renderer::draw(const VertexArray& va, const ElementBuffer& eb, const Shader
     // UNBIND [optional]... discuss
 }
 
+void Renderer::draw(const Model& model) const
+{
+
+    model.m_vao.bind();
+    
+    for(auto& mesh: model.m_meshes) 
+    {
+        mesh.m_ebo.bind();
+        mesh.m_shaderProgram.bind();
+        GLCall(glDrawElements(GL_TRIANGLES, mesh.m_ebo.count(), GL_UNSIGNED_INT, nullptr));
+    }
+
+    //
+    // UNBIND [optional]... discuss
+}
+
 void EdgeRenderer::drawEdged(const VertexArray & va, const ElementBuffer & eb, const ShaderProgram& shader, const ShaderProgram& edgeShader) const
 {
     va.bind();

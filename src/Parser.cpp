@@ -104,21 +104,21 @@ auto Parser::nextKeyString() -> KeyString
     LOG_DEBUG("%s", ss.str().c_str());
 #endif
 
-    return KeyString{ key, valueString };
+    return KeyString{ key, valueString, PARSE_SUCCESS };
 };
 
 
 auto Parser::nextKeyInteger() -> KeyInteger
 {
     auto[key, valueString, err] = nextKeyString();
-    if (err == PARSE_ERROR)
+    if (err)
         return KeyInteger{"",0, PARSE_ERROR};
 
     // @doc https://stackoverflow.com/a/18534114 - 15.04.2018
     try {
 
         int integer = std::stoi(valueString);
-        return KeyInteger{ key, integer };
+        return KeyInteger{ key, integer, PARSE_SUCCESS };
     }
     catch (std::invalid_argument& e) {
         // if no conversion could be performed
@@ -144,7 +144,7 @@ auto Parser::nextKeyFloat() -> KeyFloat
     // @doc https://stackoverflow.com/a/18534114 - 15.04.2018
     try {
         float fp = std::stof(valueString);
-        return KeyFloat{ key, fp };
+        return KeyFloat{ key, fp, PARSE_SUCCESS };
     }
     catch (std::invalid_argument& e) {
         // if no conversion could be performed
@@ -159,8 +159,101 @@ auto Parser::nextKeyFloat() -> KeyFloat
     return KeyFloat{"", 0, PARSE_ERROR};    
 }
 
-auto Parser::nextKeyVertex() -> KeyVertex { return KeyVertex{}; }
-auto Parser::nextKeyTriangle() -> KeyTriangle { return KeyTriangle{};  }
+auto Parser::nextKeyVertex() -> KeyVertex { 
+    
+
+    auto[key, valueString, err] = nextKeyString();
+    if (err == PARSE_ERROR)
+        return KeyVertex{"", 0, PARSE_ERROR};
+
+
+    std::stringstream ss;
+    ss << valueString;
+
+    Vertex vert{};
+
+    // Parsing position
+    ss >> vert.x;
+    if(ss.fail()){
+        return KeyVertex{"", 0, PARSE_ERROR};
+    }
+    ss >> vert.y;
+    if(ss.fail()){
+        return KeyVertex{"", 0, PARSE_ERROR};
+    }
+    ss >> vert.z;
+    if(ss.fail()){
+        return KeyVertex{"", 0, PARSE_ERROR};
+    }
+
+    // Parsing normal
+    ss >> vert.normal;
+    if(ss.fail()){
+        return KeyVertex{"", 0, PARSE_ERROR};
+    }
+
+    // Parsing UV
+    ss >> vert.u;
+    if(ss.fail()){
+        return KeyVertex{"", 0, PARSE_ERROR};
+    }
+    ss >> vert.v;
+    if(ss.fail()){
+        return KeyVertex{"", 0, PARSE_ERROR};
+    }
+
+    // Parsing RGBA
+    unsigned color;
+
+    ss >> color;  
+    vert.r = color;
+    if(ss.fail()){
+        return KeyVertex{"", 0, PARSE_ERROR};
+    }
+    ss >> color; 
+    vert.g = color;
+    if(ss.fail()){
+        return KeyVertex{"", 0, PARSE_ERROR};
+    }
+    ss >> color;
+    vert.b = color;
+    if(ss.fail()){
+        return KeyVertex{"", 0, PARSE_ERROR};
+    }
+    ss >> color; 
+    vert.a = color;
+    if(ss.fail()){
+        return KeyVertex{"", 0, PARSE_ERROR};
+    }
+
+    return KeyVertex{key, vert, PARSE_SUCCESS };
+}
+auto Parser::nextKeyTriangle() -> KeyTriangle
+{ 
+    auto[key, valueString, err] = nextKeyString();
+    if (err == PARSE_ERROR)
+        return KeyTriangle{"", 0, PARSE_ERROR};
+
+    std::stringstream ss;
+    ss << valueString;
+
+    Triangle tri{};
+    ss >> tri.a;
+    if(ss.fail()){
+        return KeyTriangle{"", 0, PARSE_ERROR};
+    }
+    ss >> tri.b;
+    if(ss.fail()){
+        return KeyTriangle{"", 0, PARSE_ERROR};
+    }
+    ss >> tri.c;
+    if(ss.fail()){
+        return KeyTriangle{"", 0, PARSE_ERROR};
+    }
+
+    return KeyTriangle{key, tri, PARSE_SUCCESS };
+
+}
 auto Parser::nextKeyFilepath() -> KeyString { return KeyString{}; }
 
 }
