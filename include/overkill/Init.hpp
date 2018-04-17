@@ -11,6 +11,7 @@
 
 #include <overkill/gl_caller.hpp>
 #include <overkill/Input.hpp>
+#include <overkill/Watcher.hpp>
 
 namespace overkill::Init
 {
@@ -23,5 +24,7 @@ auto GLFW(
     const char* wname) -> GLFWwindow*;
 void GLEW();
 void OpenGL(const glm::vec4 background);
+
+void Watcher();
 
 } // ::Init::overkill

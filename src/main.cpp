@@ -15,6 +15,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#define TINYFILES_IMPLEMENTATION
 
 #include <overkill/Config.hpp>
 #include <overkill/Init.hpp>
@@ -44,6 +45,7 @@ int main()
 
     Init::GLEW();
     Init::OpenGL(C::ClearColor); //(0.05f, 0.06f, 0.075f, 1.0f) for sexy dark blue-grey
+    Init::Watcher();
 
     TextureSystem::load();
     ShaderSystem::load();
@@ -83,6 +85,7 @@ int main()
     auto everyTwoSeconds = [&twoSecondTick](float t){
 
         if (t - twoSecondTick > 2.0f) {
+            //Watcher::scanFiles();
             MaterialSystem::reload();
             twoSecondTick += 2;
         }
