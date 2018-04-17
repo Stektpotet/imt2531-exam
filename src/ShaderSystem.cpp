@@ -41,8 +41,8 @@ void ShaderSystem::push(const C::Tag&& tag, const char* path)
 
 void ShaderSystem::load() 
 {
-    ShaderSystem::push("base", "assets/shaders/base.shader");
-    ShaderSystem::push("edge", "assets/shaders/edge.shader");
+    ShaderSystem::push("base", "assets/shaders/base.glsl");
+    ShaderSystem::push("default", "assets/shaders/default.glsl");
 }
 
 void ShaderSystem::reload() 
@@ -82,6 +82,7 @@ void ShaderSystem::unbindAll()
 {
     ShaderSystem::m_updateCallbacks.clear();
 }
+
 
 
 }

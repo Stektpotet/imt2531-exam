@@ -56,8 +56,7 @@ int main()
     ModelSystem::load();
 
     // Example model
-    auto model = ModelSystem::getByTag("cube");
-    ShaderProgram shader = model.m_meshes[0].m_shaderProgram;
+    auto model = ModelSystem::getByTag("out");
     auto renderer = EdgeRenderer();
     
 
@@ -74,23 +73,13 @@ int main()
     GLint uniformView;                                  //Will communicate camera orientation to shader.
 
 
-    shader.bind();
-    uniformMVP  = shader.getUniformLocation("projection");
-    uniformTime = shader.getUniformLocation("time");
-    uniformView = shader.getUniformLocation("view");
-
-    GLCall(glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(projection)));
-
-
     for(;;)
     {
-        float t = glfwGetTime();
+        // float t = glfwGetTime();
         if ((glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS || glfwWindowShouldClose(window) != 0))
             break;
 
         auto model = ModelSystem::getByTag("out");
-        renderer.clear();
-        renderer.draw(model);
 
 		//@TODO shader.bindDynamic()
         projection = glm::perspective(Input::m_fovy, C::AspectRatio, 0.1f, -100.0f);
@@ -101,11 +90,20 @@ int main()
         view = pivot * camera;
         glm::inverse(view); //To reverse both axis, so controls are not reverse.
 
+        // Set uniforms global shaders
+        for(auto mesh : model.m_meshes)
+        {
+            mesh.m_shaderProgram.bind();
+            uniformMVP  = mesh.m_shaderProgram.getUniformLocation("projection");
+            uniformTime = mesh.m_shaderProgram.getUniformLocation("time");
+            uniformView = mesh.m_shaderProgram.getUniformLocation("view");
+            GLCall(glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(projection)));
+            GLCall(glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(view)));
+            GLCall(glUniform1f(uniformTime, (float)glfwGetTime()));
+        }
 
-        shader.bind();
-        GLCall(glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(projection)));
-        GLCall(glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(view)));
-        GLCall(glUniform1f(uniformTime, (float)glfwGetTime()));
+        renderer.clear();
+        renderer.draw(model);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

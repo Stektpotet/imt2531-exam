@@ -30,30 +30,6 @@ mat4 rotate(float x, float y, float z) {
         0,                                                                                                          0,                                                                                                          0,                              1
     );
 }
-/*
-}
-mat4 modelToWorld(mat3 transform) {
-    mat4 m = mat4(1); //ORIGINAL model representation
-    mat4 scale = mat4(
-        transform[0][0], 0,               0,               0,
-        0,               transform[0][1], 0,               0,
-        0,               0,               transform[0][2], 0,
-        0,               0,               0,               1
-    );
-
-    m = scale * m;
-    m = rotate(transform[1][0], transform[1][1], transform[1][2]) * m;
-
-    mat4 translate = mat4(  1,               0,               0,               0,
-                            0,               1,               0,               0,
-                            0,               0,               1,               0,
-                            transform[2][0], transform[2][1], transform[2][2], 0);
-    m = translate * m;
-    return m;
-}*/
-
-
-
 
 void main() {
 
@@ -72,7 +48,7 @@ void main() {
 
     float F = sqrt(position.x*position.x + position.y*position.y + position.z*position.z);
     gl_Position = projection * translation * view * rotate(time*0.1*F, time*0.333334*F, time*0.1666666667*F) * position;
-    vertex_color_out = vertex_color_from_program;
+    vertex_color_out = vec4(normal, 1);
     texCoord = uv;
     pos = gl_Position;
 }
@@ -93,6 +69,7 @@ uniform sampler2D mainTexture;
 uniform float test = 0;
 
 void main() {
-    out_color = test*vec4(texture(mainTexture, texCoord).rgb * vertex_color_out.rgb, vertex_color_out.a);
+    out_color = vec4(1,1,1,1);//vertex_color_out;
+   //out_color = test*vec4(texture(mainTexture, texCoord).rgb * vertex_color_out.rgb, vertex_color_out.a);
 }
 //out_color = vec4(texture(mainTexture, texCoord).rgb * vertex_color_out.rgb, vertex_color_out.a);

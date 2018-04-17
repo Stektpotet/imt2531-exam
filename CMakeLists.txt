@@ -132,6 +132,7 @@ target_compile_options(
     cube
     PRIVATE "-Wall"
     PRIVATE "-Wextra"
+    PRIVATE "-g"
     PRIVATE "-std=c++17"
 )
 

@@ -186,6 +186,8 @@ auto Parser::nextKeyVertex() -> KeyVertex {
         return KeyVertex{"", 0, PARSE_ERROR};
     }
 
+
+
     // Parsing normal
     float nx, ny, nz;
     ss >> nx >> ny >> nz;
@@ -193,6 +195,9 @@ auto Parser::nextKeyVertex() -> KeyVertex {
         return KeyVertex{"", 0, PARSE_ERROR};
     }
     vert.normal = Util::packNormal(nx, ny, nz);
+
+
+
 
     // Parsing UV
     ss >> vert.u;

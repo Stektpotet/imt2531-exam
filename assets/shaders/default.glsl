@@ -1,14 +1,22 @@
 #shader vertex
 #version 410 core
 
-layout(location = 0) in vec4 position;
+layout(location = 0) in vec4 v_position;
+layout(location = 1) in vec3 v_normal;
+layout(location = 2) in vec2 v_uv;
+layout(location = 3) in vec4 v_vertex_color_from_program;
 
-uniform mat4 projection = mat4( 1,0,0,0,
-                                0,1,0,0,
-                                0,0,1,0,
-                                0,0,0,1);
+uniform mat4 projection = mat4(1, 0, 0, 0,
+    0, 1, 0, 0,
+    0, 0, 1, 0,
+    0, 0, 0, 1);
+
+uniform mat4 view = mat4(1, 0, 0, 0,
+    0, 1, 0, 0,
+    0, 0, 1, 0,
+    0, 0, 0, 1);
+
 uniform float time = 0;
-
 
 mat4 rotate(float x, float y, float z) {
     return mat4(
@@ -20,25 +28,26 @@ mat4 rotate(float x, float y, float z) {
 }
 
 void main() {
-
-    mat4 translation = mat4(1, 0, 0, 0,
-        0, 1, 0, 0,
-        0, 0, 1, 0,
-        0, 0, -3, 0);
+    mat4 translation = mat4(1,0,0,0,
+                            0,1,0,0,
+                            0,0,1,0,
+                            0,0,0,0);
 
     mat4 rot = mat4(0.525322, 0.000000, -0.850904, 0.000000,
-        0.000000, 1.000000, 0.000000, 0.000000,
-        0.850904, 0.000000, 0.525322, 0.000000,
-        0.000000, 0.000000, 0.000000, 1.000000);
-    float F = sqrt(position.x*position.x + position.y*position.y + position.z*position.z);
-    gl_Position = projection * translation *  rotate(time*0.1*F, time*0.333334*F, time*0.1666666667*F)  * position;
+                    0.000000, 1.000000, 0.000000, 0.000000,
+                    0.850904, 0.000000, 0.525322, 0.000000,
+                    0.000000, 0.000000, 0.000000, 1.000000);
+
+    float F = sqrt(v_position.x*v_position.x + v_position.y*v_position.y + v_position.z*v_position.z);
+    gl_Position = projection * translation * view * rotate(time*0.1*F, time*0.333334*F, time*0.1666666667*F) * v_position;
 }
 
 #shader fragment
 #version 410 core
 
-layout(location = 0) out vec4 out_color;
+in vec4 pos;
+out vec4 out_color;
 
 void main() {
-    out_color = vec4(1, 1, 1, 1);
+    out_color = vec4(.5, .5, 1, 1);
 }

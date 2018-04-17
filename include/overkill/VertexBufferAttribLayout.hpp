@@ -30,7 +30,10 @@ public:
     void push(GLuint count, GLenum type, bool normalized = false)
     {
         m_attributes.push_back({ count, type, normalized });
-        m_stride += count * GLTypeSize(type);
+        if(type == GL_INT_2_10_10_10_REV)
+            m_stride += GLTypeSize(type);
+        else
+            m_stride += count * GLTypeSize(type);
     }
 
     inline const std::vector<VertexBufferAttrib> getAttributes() const { return m_attributes; }
