@@ -16,7 +16,7 @@ namespace overkill::C
     constexpr float MaxFOV = 88.2f;
     constexpr float MinFOV = 87.97f;
     constexpr float ZoomSensitivity = 0.0033f;
-    constexpr float LookSensitivity = 5;
+    constexpr float LookSensitivity = 0.013f;
     constexpr float PanSensitivity = 9;
     constexpr float AspectRatio = (float)WinWidth / (float)WinHeight;
     constexpr float NearClip = 0.1f;

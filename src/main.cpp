@@ -62,8 +62,14 @@ int main()
     auto renderer = EdgeRenderer();
     
     //translation * view * rotate(time*0.1*F, time*0.333334*F, time*0.1666666667*F) //From shader, old system.
-    auto model2Object = EntityModel("cube");
-    model2Object.setPosition(glm::vec3(10,0,0));
+    auto modelCubeObject = EntityModel("cube");
+    auto modelFloorObject = EntityModel("cube");
+
+    modelCubeObject.setPosition(glm::vec3(2,0,0));
+
+    modelFloorObject.setPosition(glm::vec3(0, -3, 0));
+    modelFloorObject.setScale(glm::vec3(10, 0.5f, 10));
+
 
     //SCALE -> ROTATE -> TRANSLATE
     glm::mat4 projection = glm::perspective(C::FOV, C::AspectRatio, C::NearClip, C::FarClip);
@@ -93,13 +99,18 @@ int main()
         // auto model = ModelSystem::getByTag("cube");          // This is a hack, its beting loaded every frame in case it was
         Renderer::clear();                                      // changed by keypress.
         // Renderer::draw(model, glm::mat4(1));                 // Replaced by new model, however some of old models components are still being used.
-        model2Object.update();
-        model2Object.draw();    //Important: currently uses the old model's 0th mesh's shader to draw. Also true for the camera.
+        
+        modelCubeObject.update();
+        modelFloorObject.update();
+        modelCubeObject.draw();    //Important: currently uses the old model's 0th mesh's shader to draw. Also true for the camera.
+        modelFloorObject.draw();    //Important: currently uses the old model's 0th mesh's shader to draw. Also true for the camera.
+
+
 
 		//@TODO shader.bindDynamic()
         projection = glm::perspective(Input::m_fovy, C::AspectRatio, 0.1f, -100.0f);
-        camera = glm::rotate(glm::mat4(1), (C::LookSensitivity * Input::m_camRotX / C::WinWidth), glm::vec3(0.0f, 1.0f, 0.0f));
-        camera = glm::rotate(glm::mat4(1), (C::LookSensitivity * Input::m_camRotY / C::WinHeight), glm::vec3(1.0f, 0.0f, 0.0f)) * camera;
+        camera = glm::rotate(glm::mat4(1), (Input::m_camRotX), glm::vec3(0.0f, 1.0f, 0.0f));
+        camera = glm::rotate(glm::mat4(1), (Input::m_camRotY), glm::vec3(1.0f, 0.0f, 0.0f)) * camera;
         pivot = glm::translate(glm::mat4(1),glm::vec3(Input::m_camPanX, Input::m_camPanY, C::CameraOffset));  //Camera pos in world.
         
         view = pivot * camera;
