@@ -26,9 +26,11 @@ public:
                 glm::vec3 angVel = glm::vec3(0,0,0));
 
     int getModel();
+    glm::vec3 getScale();
     void setModelByID(int modelID);
     void setModelByTag(C::Tag tag);
-    
+    void setScale(glm::vec3 scale = glm::vec3(1));
+
     void draw();
 };
 

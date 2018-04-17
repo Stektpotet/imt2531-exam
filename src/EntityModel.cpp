@@ -29,11 +29,18 @@ namespace overkill
     int EntityModel::getModel()
     {   return m_modelID;   }
 
+    glm::vec3 EntityModel::getScale()
+    {   return m_scale;  }
+
     void EntityModel::setModelByID(int modelID)
     {   m_modelID = modelID;   }
     
      void EntityModel::setModelByTag(C::Tag tag)
     {   m_modelID =  ModelSystem::getIdByTag(tag);  }
+
+    void EntityModel::setScale(glm::vec3 scale)
+    {   m_scale = scale;   }
+
 
     void EntityModel::draw()
     {   
