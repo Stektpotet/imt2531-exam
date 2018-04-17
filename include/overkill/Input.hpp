@@ -7,6 +7,7 @@
 #include <overkill/Config.hpp>
 #include <overkill/MaterialSystem.hpp>
 #include <overkill/ShaderSystem.hpp>
+#include <overkill/ModelSystem.hpp>
 #include <PMS/logger.h>
 
 namespace overkill 

@@ -78,4 +78,10 @@ void ShaderSystem::bindOnUpdate(const C::Tag& shaderTag, C::ID modelID, C::ID me
     );
 }
 
+void ShaderSystem::unbindAll()
+{
+    ShaderSystem::m_updateCallbacks.clear();
+}
+
+
 }

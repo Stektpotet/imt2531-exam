@@ -39,6 +39,7 @@ public:
     static auto copyByTag(const C::Tag& tag) -> ShaderProgram;
     static auto copyById(C::ID shaderProgramID) -> ShaderProgram;
     static void bindOnUpdate(const C::Tag& shaderTag, C::ID modelID, C::ID meshID, OnUpdate onUpdate);
+    static void unbindAll();
 };
 
 }

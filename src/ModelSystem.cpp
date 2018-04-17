@@ -23,6 +23,30 @@ auto ModelSystem::getById(C::ID modelID) -> const Model&
 }
 
 
+void ModelSystem::reload() 
+{   
+    // Clean out all buffers from GPU
+    for(auto model : ModelSystem::m_models)
+    {
+        for(auto mesh : model.m_meshes) 
+        {
+            mesh.m_ebo.clean();
+        }
+        model.m_vbo.clean();
+        model.m_vao.clean();
+    }
+
+    // Clear the models on CPU
+    ModelSystem::m_models.clear();
+
+    // Unbind callbacks
+    MaterialSystem::unbindAll();
+    ShaderSystem::unbindAll();
+
+    // Finally load new data
+    ModelSystem::load();
+}
+
 void ModelSystem::load()
 {
     std::vector<std::string> tags {

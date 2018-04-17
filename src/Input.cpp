@@ -26,13 +26,13 @@ namespace overkill
         else if(keyCode == GLFW_KEY_1) {
             MaterialSystem::reload();
         }
-
         // PRESS 2 TO RELOAD ShaderSystem
         else if(keyCode == GLFW_KEY_2) {
             ShaderSystem::reload();
         }
+        // PRESS 3 TO RELOAD ModelSystem
         else if(keyCode == GLFW_KEY_3) {
-
+            ModelSystem::reload();
         }
         else if(keyCode == GLFW_KEY_4) {
 

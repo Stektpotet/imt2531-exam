@@ -27,6 +27,7 @@ public:
     // <summary> Load all model data onto GPU memory. 
     //           Keep model metadata on CPU </summary>
     static void load();
+    static void reload();
     static auto getIdByTag(const C::Tag& modeltag) -> C::ID;
     static auto getByTag(const C::Tag& tag) -> const Model&;
     static auto getById(const C::ID modelID) -> const Model&;

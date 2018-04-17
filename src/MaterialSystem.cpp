@@ -66,5 +66,10 @@ void MaterialSystem::bindOnUpdate(const C::Tag& materialTag, C::ID modelID, C::I
     );
 }
 
+void MaterialSystem::unbindAll()
+{
+    MaterialSystem::m_updateCallbacks.clear();
+}
+
 
 }

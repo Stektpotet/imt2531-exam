@@ -42,6 +42,7 @@ public:
     static auto getByTag(const C::Tag& materialTag) -> const Material&;
     static auto getById(const C::ID materialID) -> const Material&;
     static void bindOnUpdate(const C::Tag& materialTag, C::ID modelID, C::ID meshID, OnUpdate onUpdate);
+    static void unbindAll();
 };
 
 }
