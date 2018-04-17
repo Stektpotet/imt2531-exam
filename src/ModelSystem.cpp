@@ -1,6 +1,5 @@
 #include <overkill/ModelSystem.hpp>
 
-#include <overkill/MaterialSystem.hpp>
 
 namespace overkill
 {
@@ -26,123 +25,132 @@ auto ModelSystem::getById(C::ID modelID) -> const Model&
 
 void ModelSystem::load()
 {
-    auto vertices = std::vector<Vertex> {
-
-        // Cube 1
-        {  -0.5f, -0.5f,  0.5f,  1,   0, 0 ,  255,     255-96,  255-192, 255 },
-        {   0.5f, -0.5f,  0.5f,  1,   1, 0 ,  255-16,  255-112, 255-208, 255 },
-        {   0.5f,  0.5f,  0.5f,  1,   1, 1 ,  255-32,  255-128, 255-224, 255 },
-        {  -0.5f,  0.5f,  0.5f,  1,   0, 1 ,  255-48,  255-144, 255-240, 255 },
-
-        {  -0.5f, -0.5f, -0.5f,  1,   1, 0 ,  255-64,  255-160, 255-255, 255 },
-        {  -0.5f,  0.5f, -0.5f,  1,   1, 1 ,  255-80,  255-176, 255, 255 },
-
-        {   0.5f, -0.5f, -0.5f,  1,   0, 0 ,  255-96,  255-192, 255-16, 255 },
-        {   0.5f,  0.5f, -0.5f,  1,   0, 1 ,  255-112, 255-208, 255-32, 255 },
-
-        {  -0.5f, -0.5f, -0.5f,  1,   0, 1 ,  255-128, 255-224, 255-48, 255 },
-        {   0.5f, -0.5f, -0.5f,  1,   1, 1 ,  255-144, 255-240, 255-64, 255 },
-
-        {  -0.5f,  0.5f, -0.5f,  1,   0, 0 ,  255-160, 255-255,  255-80, 255 },
-        {   0.5f,  0.5f, -0.5f,  1,   1, 0 ,  255-176, 255,      255-96, 255 },
-
-        {  -0.5f,  0.5f,  0.5f,  1,   0, 1 ,  255-192, 255-16,   255-112, 255 },
-        {   0.5f,  0.5f,  0.5f,  1,   1, 1 ,  255-208, 255-32,   255-128, 255 },
-
-
-        // Cube 2
-        {  -1.0f, -1.0f,  1.0f,  1,   0, 0 ,  255, 255, 255, 80 },
-        {   1.0f, -1.0f,  1.0f,  1,   1, 0 ,  255, 255, 255, 80 },
-        {   1.0f,  1.0f,  1.0f,  1,   1, 1 ,  255, 255, 255, 80 },
-        {  -1.0f,  1.0f,  1.0f,  1,   0, 1 ,  255, 255, 255, 80 },
-
-        {  -1.0f, -1.0f, -1.0f,  1,   1, 0 ,  255, 255, 255, 80 },
-        {  -1.0f,  1.0f, -1.0f,  1,   1, 1 ,  255, 255, 255, 80 },
-
-        {   1.0f, -1.0f, -1.0f,  1,   0, 0 ,  255, 255, 255, 80 },
-        {   1.0f,  1.0f, -1.0f,  1,   0, 1 ,  255, 255, 255, 80 },
-
-        {  -1.0f, -1.0f, -1.0f,  1,   0, 1 ,  255, 255, 255, 80 },
-        {   1.0f, -1.0f, -1.0f,  1,   1, 1 ,  255, 255, 255, 80 },
-
-        {  -1.0f,  1.0f, -1.0f,  1,   0, 0 ,  255, 255, 255, 80 },
-        {   1.0f,  1.0f, -1.0f,  1,   1, 0 ,  255, 255, 255, 80 },
-
-        {  -1.0f,  1.0f,  1.0f,  1,   0, 1 ,  255, 255, 255, 80 },
-        {   1.0f,  1.0f,  1.0f,  1,   1, 1 ,  255, 255, 255, 80 },
-
+    std::vector<std::string> tags {
+        "cube"
     };
 
-    std::vector<GLuint> indicies {
+    for(auto tag: tags)
+    {
+        Model newModel;
 
-        // Cube 1
-        0, 1, 2,
-        2, 3, 0,
+        // Model tag
+        newModel.m_tag = tag;
+        
+        // Read from modelfile
+        auto filepath = C::ModelsFolder + tag + C::ModelsExtension;
+        auto filestring = Util::fileToString(filepath.data());
+        auto p = Parser(filestring);
+        LOG_DEBUG("Parsing: %s", filepath.data());
 
-        4, 0, 3,
-        3, 5, 4,
-
-        1, 6, 7,
-        7, 2, 1,
-
-        8, 9, 1,
-        1, 0, 8,
-
-        10, 11, 9,
-        9,  8,  10,
-
-        12, 13, 11,
-        11, 10, 12,
-
-
-        // Cube 2
-        14, 15, 16,
-        16, 17, 14,
-
-        18, 14, 3+14,
-        3 + 14, 5 + 14, 4 + 14,
-
-        1+14, 6+14, 7+14,
-        7+14, 2+14, 1+14,
-
-        8+14, 9+14, 1+14,
-        1+14, 0+14, 8+14,
-
-        10 + 14, 11 + 14, 9 + 14,
-        9 + 14,  8 + 14,  10 + 14,
-
-        12+14, 13+14, 11+14,
-        11+14, 10+14, 12+14,
-    };
-
-    Model model{vertices};
-    m_mapModelID["cube"] = m_models.size();
-    
-    Mesh mesh { 
-        indicies,
-        MaterialSystem::getIdByTag("brick"),
-        ShaderSystem::copyByTag("base")
-    };
-
-    auto meshID = model.m_meshes.size();
-    model.m_meshes.emplace_back(mesh);
-
-    MaterialSystem::bindOnUpdate(
-        "brick",
-        m_mapModelID["cube"],
-        meshID,
-        [](C::ID materialID, C::ID modelID, C::ID meshID) {
-
-            auto model = ModelSystem::getById(modelID);
-            auto mesh  = model.m_meshes[meshID];
-
-            mesh.m_materialID = materialID;
-            mesh.m_shaderProgram.setMaterial(MaterialSystem::getById(materialID));
+        //
+        // VERTICES
+        //
+        // Vertex count
+        auto[vertexCountKey, vertexCount, err1] = p.nextKeyInteger();
+        if(err1) {
+            break; // @TODO Set default model before breaking
         }
-    );
 
+        // Iterate vertices
+        std::vector<Vertex> vertices;
+        for(size_t i = 0; i < vertexCount; ++i) 
+        {
+            auto[vertexKey, vertex, err2] = p.nextKeyVertex();
+            if(err2) {
+                return;
+            }
+            vertices.push_back(vertex);
+        }
 
-    m_models.push_back(model);
+        // Buffer vertex data to GPU VAO and VBO
+        newModel.m_vbo = VertexBuffer(vertices.data(), vertices.size() * sizeof(Vertex));
+        
+        auto vbufLayout = VertexBufferAttribLayout();
+        vbufLayout.push(3, GL_FLOAT);                       //position;
+        vbufLayout.push(1, GL_UNSIGNED_INT);                //normal
+        vbufLayout.push(2, GL_SHORT);                       //uv
+        vbufLayout.push(4, GL_UNSIGNED_BYTE, GL_TRUE);      //color;
+        newModel.m_vao.addBuffer(newModel.m_vbo, vbufLayout);
+
+        //
+        // MESHES
+        //
+        // Mesh count
+        auto[meshCountKey, meshCount, err3] = p.nextKeyInteger();
+        if(err3) {
+            return;
+        }
+
+        // Iterate meshes
+        for(size_t i = 0; i < meshCount; ++i) 
+        {
+            // mesh tag
+            auto[meshtagKey, meshtag, err2] = p.nextKeyString();
+            if(err2) {
+                return;
+            }
+            // material tag
+            auto[materialtagKey, materialtag, err4] = p.nextKeyString();
+            if(err4) {
+                return;
+            }
+            // shader tag
+            auto[shadertagKey, shadertag, err5] = p.nextKeyString();
+            if(err5) {
+                return;
+            }
+            
+            // Triangle count
+            auto[triCountKey, triCount, err6]   = p.nextKeyInteger();
+            if(err6) {
+                return;
+            }
+
+            std::vector<GLuint> indices;
+            // Triangles 
+            for(size_t j = 0; j < triCount; ++j) 
+            {
+
+                auto[triKey, triangle, err7] = p.nextKeyTriangle();
+                if(err7) {
+                    return;
+                }
+                indices.push_back(triangle.a);
+                indices.push_back(triangle.b);
+                indices.push_back(triangle.c);
+            } 
+
+            // Construct mesh, buffer ElementBuffer data to GPU
+            auto meshID = newModel.m_meshes.size();
+        
+            auto newMesh = newModel.m_meshes.emplace_back(
+                Mesh{
+                    meshtag,
+                    ElementBuffer(indices.data(), indices.size()),
+                    MaterialSystem::getIdByTag(materialtag),
+                    ShaderSystem::copyByTag(shadertag)
+                }
+            );
+            newMesh.m_shaderProgram.setMaterial(MaterialSystem::getByTag(materialtag));
+
+            // Bind model.mesh to material system update event
+            MaterialSystem::bindOnUpdate(
+                materialtag,
+                m_mapModelID[newModel.m_tag],
+                meshID,
+                [](C::ID materialID, C::ID modelID, C::ID meshID) {
+
+                    auto model = ModelSystem::getById(modelID);
+                    auto mesh  = model.m_meshes[meshID];
+
+                    mesh.m_materialID = materialID;
+                    mesh.m_shaderProgram.setMaterial(MaterialSystem::getById(materialID));
+                }
+            );
+        }
+        m_mapModelID[tag] = m_models.size();
+        m_models.emplace_back(newModel);
+    }
 }
 
-}
+} // ::overkill

@@ -8,7 +8,7 @@
 #include <PMS/logger.h>
 #include <overkill/Model.hpp>
 
-#define DEBUG 1
+#define DEBUG 0
 
 namespace overkill 
 {
@@ -18,7 +18,8 @@ struct KeyFloat    { std::string key; float fp;          int parseerror=0; };
 struct KeyString   { std::string key; std::string str;   int parseerror=0; };
 struct KeyVertex   { std::string key; Vertex vertex;     int parseerror=0; };
 struct KeyTriangle { std::string key; Triangle triangle; int parseerror=0; };
-    const int PARSE_ERROR = 1;
+const int PARSE_SUCCESS = 0;
+const int PARSE_ERROR = 1;
 
 /// <summary> Translates files into internal datastructure </summary>
 class Parser

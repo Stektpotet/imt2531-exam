@@ -16,4 +16,16 @@ auto Util::fileToString(const std::string& filepath) -> std::string
 }
 
 
+void Util::everyTwoSeconds(float t)
+{
+    static float twoSecondTick = 0.0f;
+
+    if (t - twoSecondTick > 2.0f) 
+    {
+        //Watcher::scanFiles();
+        MaterialSystem::reload();
+        twoSecondTick += 2;
+    }
+};
+
 }
