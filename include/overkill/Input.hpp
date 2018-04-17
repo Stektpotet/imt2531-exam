@@ -6,6 +6,7 @@
 #include <GLFW/glfw3.h>
 #include <overkill/Config.hpp>
 #include <overkill/MaterialSystem.hpp>
+#include <overkill/ShaderSystem.hpp>
 #include <PMS/logger.h>
 
 namespace overkill 

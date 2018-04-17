@@ -6,7 +6,7 @@ namespace overkill
 
 std::vector<Material>             MaterialSystem::m_materials;
 std::unordered_map<C::Tag, C::ID> MaterialSystem::m_mapMaterialID;
-std::vector<UpdateCallback>       MaterialSystem::m_updateCallbacks;
+std::vector<MaterialSystem::UpdateCallback> MaterialSystem::m_updateCallbacks;
 
 
 auto MaterialSystem::getIdByTag(const C::Tag& tag) -> C::ID

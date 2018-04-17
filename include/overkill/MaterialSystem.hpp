@@ -13,23 +13,24 @@
 namespace overkill
 {
 
-using OnUpdate = void (*)(C::ID, C::ID, C::ID);
-
-struct UpdateCallback 
-{
-    C::Tag   tag;
-    C::ID    modelID;
-    C::ID    meshID;
-    OnUpdate callback;
-};
-
 class MaterialSystem
 {
+public:
+    using OnUpdate = void (*)(C::ID, C::ID, C::ID);
+    struct UpdateCallback 
+    {
+        
+        C::Tag   tag;
+        C::ID    modelID;
+        C::ID    meshID;
+        OnUpdate callback;
+    };
+
 private:
-    
     static std::vector<Material> m_materials;
     static std::unordered_map<C::Tag, C::ID> m_mapMaterialID;
     static std::vector<UpdateCallback> m_updateCallbacks;
+    
 
 public:
 

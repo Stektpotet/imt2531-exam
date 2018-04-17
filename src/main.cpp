@@ -109,7 +109,8 @@ int main()
         glfwSwapBuffers(window);
         glfwPollEvents();
 
-        Util::everyTwoSeconds(t);
+        // LIVE UPDATE SHADER AND MATERIALS
+        // Util::everyTwoSeconds(t);
     }
 
     glfwDestroyWindow(window);

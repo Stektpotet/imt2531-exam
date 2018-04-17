@@ -30,7 +30,9 @@ void ModelSystem::load()
     };
 
     for(auto tag: tags)
-    {
+    {   
+        // Create new modesl
+        m_mapModelID[tag] = m_models.size();
         Model newModel;
 
         // Model tag
@@ -122,7 +124,6 @@ void ModelSystem::load()
 
             // Construct mesh, buffer ElementBuffer data to GPU
             auto meshID = newModel.m_meshes.size();
-        
             auto newMesh = newModel.m_meshes.emplace_back(
                 Mesh{
                     meshtag,
@@ -133,7 +134,7 @@ void ModelSystem::load()
             );
             newMesh.m_shaderProgram.setMaterial(MaterialSystem::getByTag(materialtag));
 
-            // Bind model.mesh to material system update event
+            // Bind to MaterialSystem update event
             MaterialSystem::bindOnUpdate(
                 materialtag,
                 m_mapModelID[newModel.m_tag],
@@ -147,9 +148,24 @@ void ModelSystem::load()
                     mesh.m_shaderProgram.setMaterial(MaterialSystem::getById(materialID));
                 }
             );
+
+            // Bind to ShaderSystem update event
+            ShaderSystem::bindOnUpdate(
+                shadertag,
+                m_mapModelID[newModel.m_tag],
+                meshID,
+                [](C::ID shaderID, C::ID modelID, C::ID meshID) {
+
+                    auto model = ModelSystem::getById(modelID);
+                    auto mesh  = model.m_meshes[meshID];
+
+                    mesh.m_shaderProgram = ShaderSystem::copyById(shaderID);
+                    mesh.m_shaderProgram.setMaterial(MaterialSystem::getById(mesh.m_materialID));
+                }
+            );
         }
-        m_mapModelID[tag] = m_models.size();
-        m_models.emplace_back(newModel);
+        m_models.push_back(newModel);
+
     }
 }
 
