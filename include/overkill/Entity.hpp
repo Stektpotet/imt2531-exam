@@ -1,5 +1,4 @@
 #pragma once
-
 #include <string>
 
 #include <glm/glm.hpp>
@@ -32,6 +31,27 @@ public:
     void setAngularVelocity(glm::vec3 angVel); 
 
     void update();  
+};
+
+struct Transform
+{
+
+	const glm::vec3 right{ 1,0,0 };
+	const glm::vec3 up{ 0,1,0 };
+	const glm::vec3 forward{ 0,0,-1 };
+	const glm::vec3 one{ 1,1,1 };
+
+	glm::vec3 m_position;
+	glm::vec3 m_rotation;
+	glm::vec3 m_scale = one;
+
+	auto modelToWorld()->glm::mat4;
+};
+
+
+struct Light : public Transform
+{
+	glm::vec3 intensities = one; //a.k.a the color of the light
 };
 
 }
