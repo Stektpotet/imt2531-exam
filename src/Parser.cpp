@@ -187,10 +187,12 @@ auto Parser::nextKeyVertex() -> KeyVertex {
     }
 
     // Parsing normal
-    ss >> vert.normal;
+    float nx, ny, nz;
+    ss >> nx >> ny >> nz;
     if(ss.fail()){
         return KeyVertex{"", 0, PARSE_ERROR};
     }
+    vert.normal = Util::packNormal(nx, ny, nz);
 
     // Parsing UV
     ss >> vert.u;

@@ -34,4 +34,16 @@ void Util::everyTwoSeconds(float t)
     }
 };
 
+//TODO move it
+auto Util::packNormal(float x, float y, float z) -> GLint
+{
+    float magnitude = sqrt(x * x + y * y + z * z);
+    x /= magnitude;
+    y /= magnitude;
+    z /= magnitude;
+    const auto DISCARDMASK = 1023;
+    const auto MAX = 511;        //01 1111 1111
+    return  ((GLint(z * MAX) & DISCARDMASK ) << 20) | ((GLint(y * MAX) & DISCARDMASK ) << 10) |  (GLint(x * MAX) & DISCARDMASK );
+}
+
 }

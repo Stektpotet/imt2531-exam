@@ -50,7 +50,8 @@ void ModelSystem::reload()
 void ModelSystem::load()
 {
     std::vector<std::string> tags {
-        "cube"
+        "cube",
+        "out"
     };
 
     for(auto tag: tags)

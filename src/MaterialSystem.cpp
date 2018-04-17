@@ -43,6 +43,7 @@ void MaterialSystem::load()
     // TODO: Load these from the file system somehow
     const std::vector<std::string> tags = {
         "brick",
+        "base",
     };
 
     for(const auto tag : tags) {

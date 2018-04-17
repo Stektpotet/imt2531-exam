@@ -88,7 +88,7 @@ int main()
         if ((glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS || glfwWindowShouldClose(window) != 0))
             break;
 
-        auto model = ModelSystem::getByTag("cube");
+        auto model = ModelSystem::getByTag("out");
         renderer.clear();
         renderer.draw(model);
 

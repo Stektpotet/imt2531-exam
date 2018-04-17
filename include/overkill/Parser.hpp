@@ -7,6 +7,7 @@
 
 #include <PMS/logger.h>
 #include <overkill/Model.hpp>
+#include <overkill/Util.hpp>
 
 #define DEBUG 0
 
