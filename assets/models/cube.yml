@@ -46,7 +46,7 @@ meshes: 2
 
 mesh: innercube
     material: brick
-    shader: default
+    shader: base
     triangles: 12
     t: 0 1 2
     t: 2 3 0

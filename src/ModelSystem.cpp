@@ -52,8 +52,8 @@ void ModelSystem::load()
     std::vector<std::string> tags {
         "cube",
         "out",
-        "base",
-        "top",
+       // "teapot-base", // @TODO find a way to dynamically load the file names(tags) into the system
+       // "teapot-top",
     };
 
     for(auto tag: tags)

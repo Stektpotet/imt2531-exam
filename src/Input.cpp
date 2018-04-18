@@ -79,17 +79,20 @@ namespace overkill
         //Camera rotation:
         if (m_leftButtonDown) //Click and drag to rotate.
         {
-            m_camRotX += x - m_cursorX;
-            m_camRotY += y - m_cursorY;
+            float deltaX = x - m_cursorX;
+            float deltaY= y - m_cursorY;
 
-            if (m_camRotX / C::WinWidth > C::PI/2) m_camRotX = 0;
-            if (m_camRotX < 0) m_camRotX = C::WinWidth * C::PI/2;
+            m_camRotX += deltaX * C::LookSensitivity;
+            m_camRotY += deltaY * C::LookSensitivity;
+        
+            if (m_camRotX * (180 / C::PI) > 360) m_camRotX = 0;
+            if (m_camRotX * (180 / C::PI) < 0) m_camRotX = 360 * (C::PI / 180);
 
-            if (m_camRotY / C::WinHeight < -0.4f) m_camRotY = C::WinHeight * -0.4f;   // Lock Y axis on camera to 90deg up, and down,
-            if (m_camRotY / C::WinHeight > 0.4f)  m_camRotY = C::WinHeight * 0.4f;    // no looping the camera around.
+            if (m_camRotY * (180 / C::PI) < -90) m_camRotY = -90 * (C::PI / 180);   // Lock Y axis on camera to 90deg up, and down,
+            if (m_camRotY * (180 / C::PI) > 90)  m_camRotY = 90 * (C::PI / 180);    // no looping the camera around.
 
-            printf("camRotX:%f,  \tcamRotY:%f \tcamRotX / C::WinWidth:%f   \tcamRotY / C::WinWidth:%f\n",
-                    m_camRotX,     m_camRotY,     m_camRotX / C::WinWidth,       m_camRotY / C::WinHeight);
+            printf("deltaX:%f,  \tdeltaY:%f \tcamRotX:%f   \tcamRotY:%f\n",
+                    deltaX,     deltaY,     m_camRotX,       m_camRotY);
         }
 
         //Camera paning:

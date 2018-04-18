@@ -28,6 +28,7 @@
 #include <overkill/ShaderSystem.hpp>
 #include <overkill/MaterialSystem.hpp>
 #include <overkill/ModelSystem.hpp>
+#include <overkill/EntityModel.hpp>
 
 #define DEBUG 1
 
@@ -57,58 +58,85 @@ int main()
 
     auto renderer = EdgeRenderer();
     
+    //translation * view * rotate(time*0.1*F, time*0.333334*F, time*0.1666666667*F) //From shader, old system.
+    auto modelCubeObject = EntityModel("cube");
+    auto modelFloorObject = EntityModel("cube");
+
+    modelCubeObject.setRotation(glm::vec3(45, 45, 45));
+    modelCubeObject.setAngularVelocity(glm::vec3(1, 3.4f, 1.67f));
+    modelCubeObject.setPosition(glm::vec3(4,2,1));
+
+    modelFloorObject.setPosition(glm::vec3(0, -3, 0));
+    modelFloorObject.setScale(glm::vec3(20, 0.5f, 20));
+
+
     //SCALE -> ROTATE -> TRANSLATE
     glm::mat4 projection = glm::perspective(C::FOV, C::AspectRatio, C::NearClip, C::FarClip);
     glm::mat4 camera = glm::mat4(1); 
     glm::mat4 pivot = glm::translate(glm::mat4(1),glm::vec3(0, 0, C::CameraOffset));  //Camera pos in world.
     glm::mat4 view = glm::mat4(1);
 
-
     //GLCall(glSetUn)
     GLint uniformMVP, uniformTime;
     GLint uniformMVP2, uniformTime2;
     GLint uniformView;                                  //Will communicate camera orientation to shader.
 
+    //TODO move to shader system:
+    for (auto mesh : ModelSystem::getById(modelCubeObject.getModel()).m_meshes)
+    {
+        mesh.m_shaderProgram.bind();
+        uniformMVP = mesh.m_shaderProgram.getUniformLocation("projection");
+        uniformTime = mesh.m_shaderProgram.getUniformLocation("time");
+        uniformView = mesh.m_shaderProgram.getUniformLocation("view");
+        GLCall(glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(projection)));
+    }
 
+    float oldT = 0, t = 0, dt = 0;
     for(;;)
     {
-        // float t = glfwGetTime();
+        t = glfwGetTime();
+        dt = t - oldT;
         if ((glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS || glfwWindowShouldClose(window) != 0))
             break;
 
-        auto model = ModelSystem::getByTag("top");
-        auto base  = ModelSystem::getByTag("base");
+        // auto model = ModelSystem::getByTag("cube");          // This is a hack, its beting loaded every frame in case it was
+        Renderer::clear();                                      // changed by keypress.
+        // Renderer::draw(model, glm::mat4(1));                 // Replaced by new model, however some of old models components are still being used.
+        
+        modelCubeObject.update(dt);
+        modelFloorObject.update(dt);
+
+        // Set uniforms global shaders
+        for (auto mesh : ModelSystem::getById(modelCubeObject.getModel()).m_meshes)
+        {
+            mesh.m_shaderProgram.bind();
+            GLCall(glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(projection)));
+            GLCall(glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(view)));
+            GLCall(glUniform1f(uniformTime, 0));
+        }
+
+        modelCubeObject.draw();    //Important: currently uses the old model's 0th mesh's shader to draw. Also true for the camera.
+        modelFloorObject.draw();    //Important: currently uses the old model's 0th mesh's shader to draw. Also true for the camera.
 
 		//@TODO shader.bindDynamic()
         projection = glm::perspective(Input::m_fovy, C::AspectRatio, 0.1f, -100.0f);
-        camera = glm::rotate(glm::mat4(1), (C::LookSensitivity * Input::m_camRotX / C::WinWidth), glm::vec3(0.0f, 1.0f, 0.0f));
-        camera = glm::rotate(glm::mat4(1), (C::LookSensitivity * Input::m_camRotY / C::WinHeight), glm::vec3(1.0f, 0.0f, 0.0f)) * camera;
+        camera = glm::rotate(glm::mat4(1), (Input::m_camRotX), glm::vec3(0.0f, 1.0f, 0.0f));
+        camera = glm::rotate(glm::mat4(1), (Input::m_camRotY), glm::vec3(1.0f, 0.0f, 0.0f)) * camera;
         pivot = glm::translate(glm::mat4(1),glm::vec3(Input::m_camPanX, Input::m_camPanY, C::CameraOffset));  //Camera pos in world.
         
         view = pivot * camera;
         glm::inverse(view); //To reverse both axis, so controls are not reverse.
 
-        // Set uniforms global shaders
-        for(auto mesh : model.m_meshes)
-        {
-            mesh.m_shaderProgram.bind();
-            uniformMVP  = mesh.m_shaderProgram.getUniformLocation("projection");
-            uniformTime = mesh.m_shaderProgram.getUniformLocation("time");
-            uniformView = mesh.m_shaderProgram.getUniformLocation("view");
-            GLCall(glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(projection)));
-            GLCall(glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(view)));
-            GLCall(glUniform1f(uniformTime, 0 ));
-        }
 
-        renderer.clear();
-        renderer.draw(model);
-        renderer.draw(base);
+
 
         glfwSwapBuffers(window);
         glfwPollEvents();
 
         // LIVE UPDATE SHADER AND MATERIALS
         // Util::everyTwoSeconds(t);
+
+        oldT = t;
     }
 
     glfwDestroyWindow(window);

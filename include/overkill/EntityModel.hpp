@@ -5,6 +5,8 @@
 
 #include <overkill/Material.hpp>
 #include <overkill/Entity.hpp>
+#include <overkill/ModelSystem.hpp>
+#include <overkill/Renderer.hpp>
 
 namespace overkill
 {
@@ -12,20 +14,23 @@ namespace overkill
 class EntityModel : public Entity
 {
 private:
-    unsigned int m_modelID;         // What model with id will be used to draw Entity.
-    Material m_material;            // What material it will be drawn with.
+    int m_modelID;         // What model with id will be used to draw Entity.
     glm::vec3 m_scale;
 
-public:
-    EntityModel(C::Tag tag, glm::vec3 pos, glm::vec3 rot, glm::vec3 scale, glm::vec3 vel, 
-        glm::vec3 angVel, unsigned int modelID, Material material);
-
-    unsigned int getModel();
-    Material getMaterial();
     glm::mat4 getModelMatrix();
-    void setModel(unsigned int modelID);
-    void setMaterial(Material material);
-    
+
+public:
+    EntityModel(C::Tag modelTag,
+                glm::vec3 pos = glm::vec3(0,0,0), glm::vec3 rot = glm::vec3(0,0,0), 
+                glm::vec3 scale = glm::vec3(1,1,1), glm::vec3 vel = glm::vec3(0,0,0), 
+                glm::vec3 angVel = glm::vec3(0,0,0));
+
+    int getModel();
+    glm::vec3 getScale();
+    void setModelByID(int modelID);
+    void setModelByTag(C::Tag tag);
+    void setScale(glm::vec3 scale = glm::vec3(1));
+
     void draw();
 };
 

@@ -2,7 +2,8 @@
 
 namespace overkill
 {
-    Entity::Entity(C::Tag tag, glm::vec3 pos, glm::vec3 rot, glm::vec3 vel, glm::vec3 angVel)
+    Entity::Entity(C::Tag tag, glm::vec3 pos = glm::vec3(0,0,0), glm::vec3 rot = glm::vec3(0,0,0), 
+                            glm::vec3 vel = glm::vec3(0,0,0), glm::vec3 angVel = glm::vec3(0,0,0))
     {
         m_tag = tag;
         m_position = pos;
@@ -35,10 +36,15 @@ namespace overkill
     void Entity::setAngularVelocity(glm::vec3 angVel)
     {   m_angularVelocity = angVel; }
 
-    void Entity::update()
+    void Entity::update(float dt)
     {
-        m_position += m_velocity;
-        m_rotation += m_angularVelocity;
+        m_position += m_velocity * dt;
+        m_rotation += m_angularVelocity * dt;
+        
+        printf("\n\n\nm_rotation %f, %f, %f\nm_angVel %f, %f, %f\ndeltatime %f", 
+                m_rotation.x, m_rotation.y, m_rotation.z, 
+                m_angularVelocity.x, m_angularVelocity.y, m_angularVelocity.z, 
+                dt);
     }
 
 }

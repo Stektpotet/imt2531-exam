@@ -2,6 +2,7 @@
 
 #include <string>
 
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -12,7 +13,6 @@ namespace overkill
 
 class Entity
 {
-
 protected:
     C::Tag m_tag;
     glm::vec3 m_position;
@@ -31,7 +31,7 @@ public:
     void setVelocity(glm::vec3 vel);
     void setAngularVelocity(glm::vec3 angVel); 
 
-    void update();  
+    void update(float dt);  
 };
 
 }
