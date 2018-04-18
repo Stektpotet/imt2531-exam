@@ -55,9 +55,12 @@ public:
 
 
     GLint getUniformLocation(const std::string& name) const;
+
+    static ShaderSource ParseProgram(const std::string& file);
+    static GLuint CompileShader(GLuint type, const std::string& source);
+
 };
 
-static ShaderSource ParseProgram(const std::string& file);
-static GLuint CompileShader(GLuint type, const std::string& source);
+// @note unused functions
 
 }

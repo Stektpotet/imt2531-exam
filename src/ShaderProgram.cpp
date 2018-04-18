@@ -10,7 +10,7 @@ void ShaderProgram::construct(const std::string& vert, const std::string& frag, 
     {
         if (!src.empty())
         {
-            auto shader = CompileShader(type, src);
+            auto shader = ShaderProgram::CompileShader(type, src);
             GLCall(glAttachShader(id, shader));
             GLCall(glDeleteShader(shader)); //it may be that I'm supposed to call glDetachShader() instead.. not sure for now tho
         }
@@ -81,7 +81,7 @@ ShaderProgram::ShaderProgram(const std::string& vert, const std::string& frag, c
 
 ShaderProgram::ShaderProgram(const std::string& filePath)
 {
-    auto[vert, frag, geom] = ParseProgram(filePath);
+    auto[vert, frag, geom] = ShaderProgram::ParseProgram(filePath);
     construct(vert, frag, geom);
 }
 
@@ -142,7 +142,7 @@ GLint ShaderProgram::getUniformLocation(const std::string& name) const
     return (*locationIter).second;
 }
 
-static GLuint CompileShader(GLuint type, const std::string& source)
+GLuint ShaderProgram::CompileShader(GLuint type, const std::string& source)
 {
     GLuint id;
     GLCall(id = glCreateShader(type));
@@ -168,7 +168,7 @@ static GLuint CompileShader(GLuint type, const std::string& source)
     return id;
 }
 
-static ShaderSource ParseProgram(const std::string& file)
+ShaderSource ShaderProgram::ParseProgram(const std::string& file)
 {
 
     enum ShaderType : int { NONE = -1, VERT = 0, FRAG = 1, GEOM = 2 };

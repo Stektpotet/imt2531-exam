@@ -23,7 +23,7 @@ Material::Material(const std::string& filepath)
     if (err1 == PARSE_ERROR)
         return;
 
-    for (size_t i = 0; i < mapcount; ++i) {
+    for (int i = 0; i < mapcount; ++i) {
         auto[uniformtag, maptag, err2] = p.nextKeyString();
         if (err2 == PARSE_ERROR)
             return;
@@ -41,7 +41,7 @@ Material::Material(const std::string& filepath)
     if (err3 == PARSE_ERROR)
         return;
         
-    for (size_t i = 0; i < valuescount; ++i) {
+    for (int i = 0; i < valuescount; ++i) {
         auto[uniformtag, value, err4] = p.nextKeyFloat();
         if (err4 == PARSE_ERROR)
             return;

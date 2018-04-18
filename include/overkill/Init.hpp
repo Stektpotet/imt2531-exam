@@ -9,6 +9,8 @@
 #include <glm/gtc/constants.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <PMS/logger.h>
+
 #include <overkill/gl_caller.hpp>
 #include <overkill/Input.hpp>
 #include <overkill/Watcher.hpp>

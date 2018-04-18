@@ -1,7 +1,11 @@
 #pragma once
-#include <GL/glew.h>
 #include <iostream>
+#include <string>
+#include <GL/glew.h>
 
+#include <PMS/logger.h>
+#include <overkill/gl_caller.hpp>
 
 GLuint GLTypeSize(const GLenum type);
-char* ShaderTypeName(const GLenum typeID);
+std::string ShaderTypeName(const GLenum typeID);
+void GLPrintMaxContants();

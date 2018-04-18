@@ -82,7 +82,7 @@ void ModelSystem::load()
 
         // Iterate vertices
         std::vector<Vertex> vertices;
-        for(size_t i = 0; i < vertexCount; ++i) 
+        for(int i = 0; i < vertexCount; ++i) 
         {
             auto[vertexKey, vertex, err2] = p.nextKeyVertex();
             if(err2) {
@@ -111,7 +111,7 @@ void ModelSystem::load()
         }
 
         // Iterate meshes
-        for(size_t i = 0; i < meshCount; ++i) 
+        for(int i = 0; i < meshCount; ++i) 
         {
             // mesh tag
             auto[meshtagKey, meshtag, err2] = p.nextKeyString();
@@ -137,7 +137,7 @@ void ModelSystem::load()
 
             std::vector<GLuint> indices;
             // Triangles 
-            for(size_t j = 0; j < triCount; ++j) 
+            for(int j = 0; j < triCount; ++j) 
             {
 
                 auto[triKey, triangle, err7] = p.nextKeyTriangle();

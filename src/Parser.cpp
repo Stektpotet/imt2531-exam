@@ -13,13 +13,13 @@ auto Parser::nextLine() -> std::string
     endofline = strview.find('\n', startofline);
     startofline = strview.find_first_of(whitelistedCharacters, startofline);
 
-    if (startofline == std::string::npos) {
+    if (size_t(startofline) == std::string::npos) {
         std::cout << "\nPARSER ERROR ---->>> (startofline == std::string::npos)\n\n"
             << "Line: " << linecount;
         LOG_WARN("No whitelisted characters found after new-line character!! Line:");
         return "";
     }
-    if (endofline == std::string::npos) {
+    if (size_t(endofline) == std::string::npos) {
         std::cout << "\nPARSER ERROR ---->>> (endofline == std::string::npos)\n\n"
             << "Line: " << linecount;
         LOG_WARN("No end of file (new-line) character found! Line:");
@@ -34,13 +34,13 @@ auto Parser::nextLine() -> std::string
         endofline = strview.find('\n', startofline);
         startofline = strview.find_first_of(whitelistedCharacters, startofline);
 
-        if (startofline == std::string::npos) {
+        if (size_t(startofline) == std::string::npos) {
             std::cout << "\nPARSER ERROR ---->>> (startofline == std::string::npos)\n\n"
                 << "Line: " << linecount;
             LOG_WARN("No whitelisted characters found after new-line character!! Line:");
             return "";
         }
-        if (endofline == std::string::npos) {
+        if (size_t(endofline) == std::string::npos) {
             std::cout << "PARSER ERROR ---->>> (endofline == std::string::npos)"
                 << "Line: " << linecount;
             LOG_WARN("No end of file (new-line) character found! Line:");
@@ -52,8 +52,8 @@ auto Parser::nextLine() -> std::string
     auto line = std::string{
         strview.substr(startofline, endofline - startofline)
     };
-    auto lastCharacter = (endofline - startofline) - 1;
-    auto lastValidCharacter = line.find_last_of(whitelistedCharacters);
+    size_t lastCharacter = (endofline - startofline) - 1;
+    size_t lastValidCharacter = line.find_last_of(whitelistedCharacters);
     if (lastValidCharacter != lastCharacter) {
 
         std::cout << "\nPARSER ERROR ---->>> (lastValidCharacter != lastCharacter)\n\n"
@@ -91,6 +91,7 @@ auto Parser::nextKeyString() -> KeyString
 
     if (line.find(":") + 2 < line.size())
         valueString = line.substr(line.find(":") + 2);
+
 /*
 #ifdef DEBUG
     std::stringstream ss;
@@ -164,7 +165,7 @@ auto Parser::nextKeyVertex() -> KeyVertex {
 
     auto[key, valueString, err] = nextKeyString();
     if (err == PARSE_ERROR)
-        return KeyVertex{"", 0, PARSE_ERROR};
+        return KeyVertex{"", {}, PARSE_ERROR};
 
 
     std::stringstream ss;
@@ -175,15 +176,15 @@ auto Parser::nextKeyVertex() -> KeyVertex {
     // Parsing position
     ss >> vert.x;
     if(ss.fail()){
-        return KeyVertex{"", 0, PARSE_ERROR};
+        return KeyVertex{"", {}, PARSE_ERROR};
     }
     ss >> vert.y;
     if(ss.fail()){
-        return KeyVertex{"", 0, PARSE_ERROR};
+        return KeyVertex{"", {}, PARSE_ERROR};
     }
     ss >> vert.z;
     if(ss.fail()){
-        return KeyVertex{"", 0, PARSE_ERROR};
+        return KeyVertex{"", {}, PARSE_ERROR};
     }
 
 
@@ -192,7 +193,7 @@ auto Parser::nextKeyVertex() -> KeyVertex {
     //float nx, ny, nz;
     ss >> vert.nx >> vert.ny >> vert.nz;
     if(ss.fail()){
-        return KeyVertex{"", 0, PARSE_ERROR};
+        return KeyVertex{"", {}, PARSE_ERROR};
     }
    // vert.normal = Util::packNormal(nx, ny, nz);
 
@@ -200,10 +201,10 @@ auto Parser::nextKeyVertex() -> KeyVertex {
 
 
     // Parsing UV
-    float u, v;
+ //   float u, v;
     ss >> vert.u >> vert.v;
     if(ss.fail()){
-        return KeyVertex{"", 0, PARSE_ERROR};
+        return KeyVertex{"", {}, PARSE_ERROR};
     }
     //vert.uv = Util::packUV(u, v);
 
@@ -215,22 +216,22 @@ auto Parser::nextKeyVertex() -> KeyVertex {
     ss >> color;  
     vert.r = color;
     if(ss.fail()){
-        return KeyVertex{"", 0, PARSE_ERROR};
+        return KeyVertex{"", {}, PARSE_ERROR};
     }
     ss >> color; 
     vert.g = color;
     if(ss.fail()){
-        return KeyVertex{"", 0, PARSE_ERROR};
+        return KeyVertex{"", {}, PARSE_ERROR};
     }
     ss >> color;
     vert.b = color;
     if(ss.fail()){
-        return KeyVertex{"", 0, PARSE_ERROR};
+        return KeyVertex{"", {}, PARSE_ERROR};
     }
     ss >> color; 
     vert.a = color;
     if(ss.fail()){
-        return KeyVertex{"", 0, PARSE_ERROR};
+        return KeyVertex{"", {}, PARSE_ERROR};
     }
 
     return KeyVertex{key, vert, PARSE_SUCCESS };
@@ -239,7 +240,7 @@ auto Parser::nextKeyTriangle() -> KeyTriangle
 { 
     auto[key, valueString, err] = nextKeyString();
     if (err == PARSE_ERROR)
-        return KeyTriangle{"", 0, PARSE_ERROR};
+        return KeyTriangle{"", {}, PARSE_ERROR};
 
     std::stringstream ss;
     ss << valueString;
@@ -247,15 +248,15 @@ auto Parser::nextKeyTriangle() -> KeyTriangle
     Triangle tri{};
     ss >> tri.a;
     if(ss.fail()){
-        return KeyTriangle{"", 0, PARSE_ERROR};
+        return KeyTriangle{"", {}, PARSE_ERROR};
     }
     ss >> tri.b;
     if(ss.fail()){
-        return KeyTriangle{"", 0, PARSE_ERROR};
+        return KeyTriangle{"", {}, PARSE_ERROR};
     }
     ss >> tri.c;
     if(ss.fail()){
-        return KeyTriangle{"", 0, PARSE_ERROR};
+        return KeyTriangle{"", {}, PARSE_ERROR};
     }
 
     return KeyTriangle{key, tri, PARSE_SUCCESS };

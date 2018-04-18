@@ -9,18 +9,17 @@
 #include <overkill/Model.hpp>
 #include <overkill/Util.hpp>
 
-#define DEBUG 0
 
 namespace overkill 
 {
 
-struct KeyInteger  { std::string key; int i;             int parseerror=0; };
-struct KeyFloat    { std::string key; float fp;          int parseerror=0; };
-struct KeyString   { std::string key; std::string str;   int parseerror=0; };
-struct KeyVertex   { std::string key; Vertex vertex;     int parseerror=0; };
-struct KeyTriangle { std::string key; Triangle triangle; int parseerror=0; };
-const int PARSE_SUCCESS = 0;
-const int PARSE_ERROR = 1;
+struct KeyInteger  { std::string key; int i;             int parseerror; };
+struct KeyFloat    { std::string key; float fp;          int parseerror; };
+struct KeyString   { std::string key; std::string str;   int parseerror; };
+struct KeyVertex   { std::string key; Vertex vertex;     int parseerror; };
+struct KeyTriangle { std::string key; Triangle triangle; int parseerror; };
+constexpr int PARSE_SUCCESS = 0;
+constexpr int PARSE_ERROR = 1;
 
 /// <summary> Translates files into internal datastructure </summary>
 class Parser
