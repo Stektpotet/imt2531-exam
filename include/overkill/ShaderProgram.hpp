@@ -55,6 +55,8 @@ public:
 
 
     GLint getUniformLocation(const std::string& name) const;
+
+    GLuint getUniformBlockIndex(const std::string& blockName) const;
 };
 
 static ShaderSource ParseProgram(const std::string& file);

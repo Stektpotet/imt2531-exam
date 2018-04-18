@@ -65,6 +65,8 @@ target_sources(
     PRIVATE ${SRCDIR}/src/VertexArray.cpp
     PRIVATE ${SRCDIR}/src/VertexBuffer.cpp
     PRIVATE ${SRCDIR}/src/Watcher.cpp
+
+	PRIVATE ${SRCDIR}/src/UniformBuffer.cpp
 )
 
 #

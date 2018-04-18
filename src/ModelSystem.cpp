@@ -21,13 +21,25 @@ auto ModelSystem::getById(C::ID modelID) -> const Model&
 {
     return ModelSystem::m_models[modelID];
 }
+
+auto packUV(float u, float v) -> GLshort
+{
+    const auto MAX = 127;
+    //const auto MIN = -128;
+    const auto CLAMPER = 255;
+   
+    return (GLint(v * MAX) & CLAMPER) << 8 | (GLint(u * MAX) & CLAMPER);
+}
+
 //TODO move it
 auto packNormal(float x, float y, float z) -> GLint
 {
+    
 	float magnitude = sqrt(x * x + y * y + z * z);
 	x /= magnitude;
 	y /= magnitude;
 	z /= magnitude;
+
 
 	const auto MAX = 511;		//01 1111 1111
 	const auto MIN = -512;		//10 0000 0000

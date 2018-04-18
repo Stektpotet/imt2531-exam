@@ -39,10 +39,10 @@ using namespace overkill;
 int main()
 {
 
-	auto window = Init::GLFW(
-        C::VersionMajor, 
-        C::VersionMinor, 
-        C::WinWidth, 
+    auto window = Init::GLFW(
+        C::VersionMajor,
+        C::VersionMinor,
+        C::WinWidth,
         C::WinHeight,
         C::WinName);
 
@@ -61,16 +61,36 @@ int main()
     auto model = ModelSystem::getByTag("cube");
     ShaderProgram shader = model.m_meshes[0].m_shaderProgram;
     auto renderer = EdgeRenderer();
-    
-	Transform modelTransform;
-	modelTransform.m_position = glm::vec3{0,0,2};
+
+    Transform modelTransform;
+    modelTransform.m_position = glm::vec3{ 0,0,0 };
+
+    Light light;
+
+    struct LightData {
+        glm::vec3 position;
+        glm::vec3 intensities;
+        float spread;
+    } lightData[8] = {
+        LightData{ { 0, 1, 0 },{ 0, 0, 1 }, 10.0f },
+        LightData{ { 1, 1, 0 },{ 0, 1, 0 }, 10.0f },
+        LightData{ { 3, 1, 0 },{ 0, 1, 1 }, 10.0f },
+        LightData{ { 0, -2, 0 },{ 1, 0, 0 }, 10.0f },
+        LightData{ { 0, 1, -4 },{ 1, 0, 1 }, 10.0f },
+        LightData{ { 0, -5, 0 },{ 1, 1, 0 }, 10.0f },
+        LightData{ { 0, 5, 0 },{ 1, 1, 1 }, 10.0f },
+        LightData{ { 0,3, 3 },{ 0.5, 0.5, 0.5 }, 10.0f },
+    };
 
 
     glm::mat4 projection = glm::perspective(C::FOV, C::AspectRatio, C::NearClip, C::FarClip);
-    glm::mat4 camera = glm::mat4(1); 
-    glm::mat4 pivot = glm::translate(glm::mat4(1),glm::vec3(0, 0, C::CameraOffset));  //Camera pos in world.
+    glm::mat4 camera = glm::mat4(1);
+    glm::mat4 pivot = glm::translate(glm::mat4(1), glm::vec3(0, 0, C::CameraOffset));  //Camera pos in world.
     glm::mat4 view = glm::mat4(1);
-	glm::mat4 m2w = modelTransform.modelToWorld();
+    glm::mat4 m2w = modelTransform.modelToWorld();
+
+    ShaderSystem::linkUniformBlocksForAll();
+
 
     //GLCall(glSetUn)
     GLint uniformMVP, uniformTime;
@@ -78,10 +98,12 @@ int main()
 	GLint uniformM2W;
 
     shader.bind();
-	uniformM2W = shader.getUniformLocation("m2w");
+	uniformM2W  = shader.getUniformLocation("m2w");
     uniformMVP  = shader.getUniformLocation("projection");
     uniformTime = shader.getUniformLocation("time");
     uniformView = shader.getUniformLocation("view");
+
+    auto matBuffObj = ShaderSystem::getUniformBufferByTag("OK_Matrices");
 
 	GLCall(glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(projection)));
 	GLCall(glUniformMatrix4fv(uniformM2W, 1, GL_FALSE, glm::value_ptr(m2w)));
@@ -107,7 +129,7 @@ int main()
 
 
         shader.bind();
-		GLCall(glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(projection)));
+		GLCall(glUniformMatrix4fv(uniformM2W, 1, GL_FALSE, glm::value_ptr(m2w)));
         GLCall(glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(projection)));
         GLCall(glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(view)));
         GLCall(glUniform1f(uniformTime, (float)glfwGetTime()));

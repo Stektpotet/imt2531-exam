@@ -37,39 +37,79 @@ void ShaderProgram::construct(const std::string& vert, const std::string& frag, 
     }
 
     ///https://stackoverflow.com/questions/440144/in-opengl-is-there-a-way-to-get-a-list-of-all-uniforms-attribs-used-by-a-shade
-    GLint i;
+   
     GLint count;
-
     GLint size; // size of the variable
     GLenum type; // type of the variable (float, vec3 or mat4, etc)
-
-    const GLsizei bufSize = 16; // maximum name length
-    GLchar name[bufSize]; // variable name in GLSL
     GLsizei length; // name length
+    
+    GLsizei nameMaxLength;
+    
+    LOG_INFO("\n\n= = = = = =<| ATTRIBUTE INFO |>= = = = = =");
 
+    GLCall(glGetProgramiv(id, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH, &nameMaxLength));
+    LOG_INFO("Attribute name maxlength: %i", nameMaxLength);
     GLCall(glGetProgramiv(id, GL_ACTIVE_ATTRIBUTES, &count));
-    std::cout << "\nActive attributes: " << count << std::endl;
+    LOG_INFO("Active attributes: %i", count);
 
-    for (i = 0; i < count; i++)
+    for (GLuint i = 0; i < count; i++)
     {
-        GLCall(glGetActiveAttrib(id, (GLuint)i, bufSize, &length, &size, &type, name));
-        printf("Attribute #%d Type: %u Name: %s\n", i, type, name);
-
+        char* attribName = (char*)alloca(nameMaxLength * sizeof(char));
+        GLCall(glGetActiveAttrib(id, i, nameMaxLength, &length, &size, &type, attribName));
+        LOG_INFO("Attribute #%u Type: %u Name: %s", i, type, attribName);
     }
 
-    GLCall(glGetProgramiv(id, GL_ACTIVE_UNIFORMS, &count));
-    std::cout << "\nActive uniforms: " << count << std::endl;
+    LOG_INFO("\n\n= = = = = =<| UNIFORM INFO |>= = = = = =");
 
-    for (i = 0; i < count; i++)
+    GLCall(glGetProgramiv(id, GL_ACTIVE_UNIFORM_MAX_LENGTH, &nameMaxLength));
+    LOG_INFO("Uniform name maxlength: %i", nameMaxLength);
+    GLCall(glGetProgramiv(id, GL_ACTIVE_UNIFORMS, &count));
+    LOG_INFO("\n\nActive uniforms: %i", count);
+
+    for (GLuint i = 0; i < count; i++)
     {
-        GLCall(glGetActiveUniform(id, (GLuint)i, bufSize, &length, &size, &type, name));
+        char* uniformName = (char*)alloca(nameMaxLength * sizeof(char));
+        GLCall(glGetActiveUniform(id, i, nameMaxLength, &length, &size, &type, uniformName));
+        LOG_INFO("Uniform #%u, Type: %u, Name: %s", i, type, uniformName);
+        if (length > 15)
+        {
+            LOG_WARN(R"(
+    Uniform #%d, %s of type %u: 
+    names of uniforms should generally be shorter than 15 characters
+    for optimal lookup time, if %s is not touched very often this may still be OK)",
+                i, uniformName, type, uniformName
+            );
+        }
+        GLint location;
+        GLCall(location = glGetUniformLocation(id, uniformName));
+        uniforms.insert({ uniformName, location });
+    }
+
+    /*GLCall(glGetProgramiv(id, GL_ACTIVE_UNIFORM_BLOCKS, &count));
+    std::cout << "\nActive uniform blocks: " << count << std::endl;
+
+    for (i = 0; i < count; i++) //GL_ACTIVE_UNIFORM_MAX_LENGTH
+    {
+        GLint blockCount;
+        GLCall(glGetActiveUniformBlockiv(id, (GLuint)i, GL_UNIFORM_BLOCK_ACTIVE_UNIFORMS, &blockCount));
+        std::cout << "\nActive block uniforms: " << count << std::endl;
 
         printf("Uniform #%d Type: %u Name: %s\n", i, type, name);
-
+        if (length > 15)
+        {
+            LOG_WARN(
+                R"(
+        Uniform #%d, %s of type %u: 
+        names of uniforms should generally be shorter than 15 characters
+        for optimal lookup time, if %s is not touched very often this may still be OK
+                )",
+                i, name, type, name
+            );
+        }
         GLint location;
         GLCall(location = glGetUniformLocation(id, name));
-        uniforms.insert({ name, location});
-    }
+        uniforms.insert({ name, location });
+    }*/
 
     GLCall(glValidateProgram(id));
 }
@@ -98,7 +138,7 @@ ShaderProgram::operator GLuint() const
 
 void ShaderProgram::setMaterial(const Material& mat) const
 {
-    LOG_DEBUG("shaderid: %u", id);
+    LOG_DEBUG("Setting material on shader: %u", id);
     bind();
     std::size_t i = 0;
     for (const auto unimap : mat.m_unimaps)
@@ -131,7 +171,6 @@ void ShaderProgram::unbind() const
 {
     GLCall(glUseProgram(0));
 }
-
 GLint ShaderProgram::getUniformLocation(const std::string& name) const
 {
 	const auto locationIter = uniforms.find(name);
@@ -141,6 +180,18 @@ GLint ShaderProgram::getUniformLocation(const std::string& name) const
 	}
     return (*locationIter).second;
 }
+
+GLuint ShaderProgram::getUniformBlockIndex(const std::string & blockName) const
+{
+    GLuint index;
+    GLCall(index = glGetUniformBlockIndex(id, blockName.c_str()));
+    if (index == GL_INVALID_INDEX)
+    {
+        LOG_WARN("\nTrying to access \"%s\",\n No uniform block with that name exists!", blockName.c_str());
+    }
+    return index;
+}
+
 
 static GLuint CompileShader(GLuint type, const std::string& source)
 {
@@ -199,7 +250,7 @@ static ShaderSource ParseProgram(const std::string& file)
             {
                 currentlyReading = GEOM;
             }
-            getline(fileStream, line);
+            getline(fileStream, line); //instantly get #version tag
             ss[(int)currentlyReading] << line << '\n';
             ss[(int)currentlyReading] << "#line " << ++lineNr+1 << '\n'; //inject line number to get the line as is in the shader file
         }
