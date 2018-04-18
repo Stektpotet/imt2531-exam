@@ -1,5 +1,5 @@
 #shader vertex
-#version 410
+#version 410 core
 
 layout(location = 0) in vec4 position;
 layout(location = 1) in vec3 normal;
@@ -69,7 +69,8 @@ uniform sampler2D mainTexture;
 uniform float test = 0;
 
 void main() {
-    out_color = vec4(1,1,1,1);//vertex_color_out;
+    //out_color = vec4(1,1,1,1);//vertex_color_out;
+    out_color = vec4(texture(mainTexture, texCoord).rgb, 1);
    //out_color = test*vec4(texture(mainTexture, texCoord).rgb * vertex_color_out.rgb, vertex_color_out.a);
 }
 //out_color = vec4(texture(mainTexture, texCoord).rgb * vertex_color_out.rgb, vertex_color_out.a);

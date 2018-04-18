@@ -1,7 +1,4 @@
-maps: 2
+maps: 1
+  mainTexture: brickwall
 
-  mainTexture: checkers
-  specularTex: brickwall-nrm
-
-values: 1
-  test: 0.5
+values: 0
