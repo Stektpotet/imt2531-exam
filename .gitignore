@@ -4,3 +4,7 @@ build/
 enc_temp_folder/
 CMakeSettings.json
 *.DS_Store
+
+# big assets
+*teapot-top.yml
+*teapot-base.yml
