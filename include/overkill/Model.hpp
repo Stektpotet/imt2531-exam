@@ -11,19 +11,15 @@
 
 namespace overkill 
 {
-
+// @note normalized integers (decimal floating point number): 
+// @ref  https://www.khronos.org/opengl/wiki/Normalized_Integer
+// @ref  https://stackoverflow.com/questions/14036892/using-gl-int-2-10-10-10-rev-in-glvertexattribpointer
+// @ref  https://www.khronos.org/opengl/wiki/Vertex_Specification_Best_Practices
 struct Vertex
 {
-    GLfloat x,y,z;
-
-    // @note normalized integers (decimal floating point number): 
-    // @ref  https://www.khronos.org/opengl/wiki/Normalized_Integer
-    // @ref  https://stackoverflow.com/questions/14036892/using-gl-int-2-10-10-10-rev-in-glvertexattribpointer
-    GLuint  normal;
-    GLshort  u,v;
-    //GLhalf  uv_2[2];
-    //GLhalf  uv_3[2];
-    // etc.
+    GLfloat  x,y,z;
+    GLfloat  nx,ny,nz;
+    GLfloat  u,v;
     GLubyte  r,g,b,a;
 };
 

@@ -55,11 +55,8 @@ int main()
     MaterialSystem::load();
     ModelSystem::load();
 
-    // Example model
-    auto model = ModelSystem::getByTag("out");
     auto renderer = EdgeRenderer();
     
-
     //SCALE -> ROTATE -> TRANSLATE
     glm::mat4 projection = glm::perspective(C::FOV, C::AspectRatio, C::NearClip, C::FarClip);
     glm::mat4 camera = glm::mat4(1); 
@@ -79,7 +76,8 @@ int main()
         if ((glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS || glfwWindowShouldClose(window) != 0))
             break;
 
-        auto model = ModelSystem::getByTag("out");
+        auto model = ModelSystem::getByTag("top");
+        auto base  = ModelSystem::getByTag("base");
 
 		//@TODO shader.bindDynamic()
         projection = glm::perspective(Input::m_fovy, C::AspectRatio, 0.1f, -100.0f);
@@ -99,11 +97,12 @@ int main()
             uniformView = mesh.m_shaderProgram.getUniformLocation("view");
             GLCall(glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(projection)));
             GLCall(glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(view)));
-            GLCall(glUniform1f(uniformTime, (float)glfwGetTime()));
+            GLCall(glUniform1f(uniformTime, 0 ));
         }
 
         renderer.clear();
         renderer.draw(model);
+        renderer.draw(base);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

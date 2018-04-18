@@ -91,7 +91,7 @@ auto Parser::nextKeyString() -> KeyString
 
     if (line.find(":") + 2 < line.size())
         valueString = line.substr(line.find(":") + 2);
-
+/*
 #ifdef DEBUG
     std::stringstream ss;
     ss  << " key: "
@@ -103,7 +103,7 @@ auto Parser::nextKeyString() -> KeyString
 
     LOG_DEBUG("%s", ss.str().c_str());
 #endif
-
+*/
     return KeyString{ key, valueString, PARSE_SUCCESS };
 };
 
@@ -189,28 +189,28 @@ auto Parser::nextKeyVertex() -> KeyVertex {
 
 
     // Parsing normal
-    float nx, ny, nz;
-    ss >> nx >> ny >> nz;
+    //float nx, ny, nz;
+    ss >> vert.nx >> vert.ny >> vert.nz;
     if(ss.fail()){
         return KeyVertex{"", 0, PARSE_ERROR};
     }
-    vert.normal = Util::packNormal(nx, ny, nz);
+   // vert.normal = Util::packNormal(nx, ny, nz);
 
 
 
 
     // Parsing UV
-    ss >> vert.u;
+    float u, v;
+    ss >> vert.u >> vert.v;
     if(ss.fail()){
         return KeyVertex{"", 0, PARSE_ERROR};
     }
-    ss >> vert.v;
-    if(ss.fail()){
-        return KeyVertex{"", 0, PARSE_ERROR};
-    }
+    //vert.uv = Util::packUV(u, v);
+
+
 
     // Parsing RGBA
-    unsigned color;
+    unsigned int color;
 
     ss >> color;  
     vert.r = color;

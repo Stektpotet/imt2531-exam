@@ -46,4 +46,13 @@ auto Util::packNormal(float x, float y, float z) -> GLint
     return  ((GLint(z * MAX) & DISCARDMASK ) << 20) | ((GLint(y * MAX) & DISCARDMASK ) << 10) |  (GLint(x * MAX) & DISCARDMASK );
 }
 
+auto Util::packUV(float u, float v) -> GLshort
+{
+    const auto MAX = 127;
+    const auto CLAMPER = 255;
+
+    return (GLint(v * MAX) & CLAMPER) << 8 |
+           (GLint(u * MAX) & CLAMPER);
+}
+
 }

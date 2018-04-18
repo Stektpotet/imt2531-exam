@@ -30,7 +30,9 @@ public:
     void push(GLuint count, GLenum type, bool normalized = false)
     {
         m_attributes.push_back({ count, type, normalized });
-        if(type == GL_INT_2_10_10_10_REV)
+        if (type == GL_INT_2_10_10_10_REV)
+            m_stride += GLTypeSize(type);
+        else if (type == GL_SHORT)
             m_stride += GLTypeSize(type);
         else
             m_stride += count * GLTypeSize(type);

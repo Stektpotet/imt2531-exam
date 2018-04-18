@@ -31,7 +31,7 @@ namespace overkill::C
     constexpr char TexturesExtension[]  = ".jpg";
 
     constexpr char ShadersFolder[]   = "assets/shaders/";
-    constexpr char ShadersExtension[]   = ".shader";
+    constexpr char ShadersExtension[]   = ".glsl";
 
     constexpr char MaterialsFolder[] = "assets/materials/";
     constexpr char MaterialsExtension[] = ".yml";
