@@ -1,4 +1,5 @@
-#include <overkill/ShaderProgram.hpp>
+﻿#include <overkill/ShaderProgram.hpp>
+
 
 namespace overkill 
 {
@@ -84,32 +85,24 @@ void ShaderProgram::construct(const std::string& vert, const std::string& frag, 
         GLCall(location = glGetUniformLocation(id, uniformName));
         uniforms.insert({ uniformName, location });
     }
-
-    /*GLCall(glGetProgramiv(id, GL_ACTIVE_UNIFORM_BLOCKS, &count));
-    std::cout << "\nActive uniform blocks: " << count << std::endl;
-
-    for (i = 0; i < count; i++) //GL_ACTIVE_UNIFORM_MAX_LENGTH
+    auto uBlockCount = ShaderIntrospector::getActiveBlockCount(id);
+    uniformBlocks.reserve(uBlockCount);
+    for (GLint i = 0; i < uBlockCount; i++)
     {
-        GLint blockCount;
-        GLCall(glGetActiveUniformBlockiv(id, (GLuint)i, GL_UNIFORM_BLOCK_ACTIVE_UNIFORMS, &blockCount));
-        std::cout << "\nActive block uniforms: " << count << std::endl;
-
-        printf("Uniform #%d Type: %u Name: %s\n", i, type, name);
-        if (length > 15)
+        auto name = ShaderIntrospector::getUnifromBlockName(id, i);
+        GLuint uBlockIndex = ShaderIntrospector::getUniformBlockIndex(id, name);
+        LOG_INFO("Uniform Block #%i, indexed as #%u, Name: %s", i, uBlockIndex, name.c_str());
+        uniformBlocks.insert({ name, i });
+        const auto& indices = ShaderIntrospector::getUniformBlockUniformIndices(id, uBlockIndex);
+        for (const auto index : indices)
         {
-            LOG_WARN(
-                R"(
-        Uniform #%d, %s of type %u: 
-        names of uniforms should generally be shorter than 15 characters
-        for optimal lookup time, if %s is not touched very often this may still be OK
-                )",
-                i, name, type, name
-            );
+            char* uniformName = (char*)alloca(nameMaxLength * sizeof(char));
+            GLsizei length;
+            GLCall(glGetActiveUniformName(id, index, nameMaxLength, &length, uniformName));
+            LOG_INFO("#%u has: %s", uBlockIndex, uniformName);
         }
-        GLint location;
-        GLCall(location = glGetUniformLocation(id, name));
-        uniforms.insert({ name, location });
-    }*/
+    }
+    
 
     GLCall(glValidateProgram(id));
 }

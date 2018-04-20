@@ -11,6 +11,7 @@
 #include <overkill/gl_util.hpp>
 #include <overkill/Texture.hpp>
 #include <overkill/Material.hpp>
+#include <overkill/ShaderIntrospector.hpp>
 
 namespace overkill 
 {
@@ -33,6 +34,7 @@ class ShaderProgram
     };
 private:
     std::unordered_map<std::string, GLint> uniforms;
+    std::unordered_map<std::string, GLint> uniformBlocks;
 
     void construct(const std::string& vert, const std::string& frag, const std::string& geom);
 

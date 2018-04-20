@@ -67,6 +67,7 @@ target_sources(
     PRIVATE ${SRCDIR}/src/Watcher.cpp
 
 	PRIVATE ${SRCDIR}/src/UniformBuffer.cpp
+	PRIVATE ${SRCDIR}/src/ShaderIntrospector.cpp
 )
 
 #

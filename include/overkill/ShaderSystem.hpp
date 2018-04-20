@@ -1,5 +1,6 @@
 #pragma once
 
+#include <set>
 #include <vector>
 #include <string>
 #include <unordered_map>
@@ -7,6 +8,7 @@
 #include <overkill/Config.hpp>
 #include <overkill/ShaderProgram.hpp>
 #include <overkill/UniformBuffer.hpp>
+#include <overkill/ShaderIntrospector.hpp>
 
 namespace overkill
 {
@@ -36,13 +38,22 @@ public:
         OnUpdate callback;
     };
 private:
-    static std::vector<DynamicUniformBuffer>    m_uBuffersDynamic;
+
+
+    static std::unordered_map<C::Tag, std::set<GLuint>> m_mapUniformBufferTargets;
+
+    static std::vector<UniformBuffer>           m_uBuffersDynamic;
     static std::unordered_map<C::Tag, C::ID>    m_mapUniformBufferDynamic;
     static std::vector<ShaderProgram>           m_shaderPrograms;
     static std::unordered_map<C::Tag, C::ID>    m_mapShaderProgramID;
     static std::vector<UpdateCallback>          m_updateCallbacks;
     static void push(const C::Tag&& tag, const char* path);
     static void pushUniformBuffer(const C::Tag&& tag, GLuint size);
+
+    static void linkUniformBlocks();
+
+    static void linkUniformBlocksForAll();
+
 
 public:
     // <summary> Load all shader data onto GPU memory. 
@@ -56,12 +67,13 @@ public:
     static auto copyById(C::ID shaderProgramID) -> ShaderProgram;
     static void bindOnUpdate(const C::Tag& shaderTag, C::ID modelID, C::ID meshID, OnUpdate onUpdate);
 
-    static auto getUniformBufferIdByTag(const C::Tag& shaderTag)->C::ID;
-    static auto getUniformBufferByTag(const C::Tag& shaderTag) -> const DynamicUniformBuffer&;
-    static auto getUniformBufferById(C::ID uBufferID) -> const DynamicUniformBuffer&;
+    static auto getUniformBufferIdByTag(const C::Tag& tag)->C::ID;
+    static auto getUniformBufferByTag(const C::Tag& tag) -> const UniformBuffer&;
+    static auto getUniformBufferById(C::ID uBufferID) -> const UniformBuffer&;
     
-    static void linkUniformBlocksForAll();
+
     
+    static auto updateUniformBlock(C::ID uBufferID, C::ID uniformLocation);
     //void ShaderProgram::bindUniformBlockToAll(GLuint blockIndex);
 
 };

@@ -2,11 +2,12 @@
 
 namespace overkill 
 {
-std::vector<DynamicUniformBuffer>           ShaderSystem::m_uBuffersDynamic;
-std::unordered_map<C::Tag, C::ID>           ShaderSystem::m_mapUniformBufferDynamic;
-std::vector<ShaderProgram>                  ShaderSystem::m_shaderPrograms;
-std::unordered_map<C::Tag, C::ID>           ShaderSystem::m_mapShaderProgramID;
-std::vector<ShaderSystem::UpdateCallback>   ShaderSystem::m_updateCallbacks;
+std::unordered_map<C::Tag, std::set<GLuint>> ShaderSystem::m_mapUniformBufferTargets;
+std::vector<UniformBuffer>                   ShaderSystem::m_uBuffersDynamic;
+std::unordered_map<C::Tag, C::ID>            ShaderSystem::m_mapUniformBufferDynamic;
+std::vector<ShaderProgram>                   ShaderSystem::m_shaderPrograms;
+std::unordered_map<C::Tag, C::ID>            ShaderSystem::m_mapShaderProgramID;
+std::vector<ShaderSystem::UpdateCallback>    ShaderSystem::m_updateCallbacks;
 
 auto ShaderSystem::getIdByTag(const C::Tag& tag) -> C::ID
 {
@@ -42,21 +43,54 @@ void ShaderSystem::push(const C::Tag&& tag, const char* path)
 void ShaderSystem::pushUniformBuffer(const C::Tag&& tag, GLuint size)
 {
     ShaderSystem::m_mapUniformBufferDynamic[tag] = ShaderSystem::m_uBuffersDynamic.size();
-    ShaderSystem::m_uBuffersDynamic.emplace_back( DynamicUniformBuffer(tag.c_str(), nullptr, size) );
+    ShaderSystem::m_uBuffersDynamic.emplace_back( UniformBuffer(tag.c_str(), nullptr, size, GL_DYNAMIC_DRAW) );
 }
 
+void ShaderSystem::linkUniformBlocks()
+{
+
+
+    std::unordered_map<C::Tag, GLint> uniformBlocks;
+
+    for (auto& shader : m_shaderPrograms)
+    {
+        auto id = GLuint(shader);
+        auto uBlockCount = ShaderIntrospector::getActiveBlockCount(id);
+        uniformBlocks.reserve(uBlockCount);
+        for (GLint i = 0; i < uBlockCount; i++)
+        {
+            auto name = ShaderIntrospector::getUnifromBlockName(id, i);
+            GLuint uBlockIndex = ShaderIntrospector::getUniformBlockIndex(id, name);
+            LOG_INFO("Uniform Block #%i, indexed as #%u, Name: %s", i, uBlockIndex, name.c_str());
+            uniformBlocks.insert({ name, i });
+            ShaderSystem::m_mapUniformBufferTargets.
+            const auto& indices = ShaderIntrospector::getUniformBlockUniformIndices(id, uBlockIndex);
+            for (const auto index : indices)
+            {
+                char* uniformName = (char*)alloca(nameMaxLength * sizeof(char));
+                GLsizei length;
+                GLCall(glGetActiveUniformName(id, index, nameMaxLength, &length, uniformName));
+                LOG_INFO("#%u has: %s", uBlockIndex, uniformName);
+            }
+        }
+    }
+}
+//void ShaderSystem::updateUniformBlock(C::ID uBufferID, C::ID uniformLocation) 
+//{
+//    //ShaderSystem::m_uBuffersDynamic[uBufferID].
+//}
 
 auto ShaderSystem::getUniformBufferIdByTag(const C::Tag& tag) -> C::ID
 {
-    return m_mapUniformBufferDynamic[tag];
+    return ShaderSystem::m_mapUniformBufferDynamic[tag];
 }
 
-auto ShaderSystem::getUniformBufferByTag(const C::Tag& tag) -> const DynamicUniformBuffer&
+auto ShaderSystem::getUniformBufferByTag(const C::Tag& tag) -> const UniformBuffer&
 {
     return ShaderSystem::m_uBuffersDynamic[m_mapShaderProgramID[tag]];
 }
 
-auto ShaderSystem::getUniformBufferById(C::ID uBufferID) -> const DynamicUniformBuffer&
+auto ShaderSystem::getUniformBufferById(C::ID uBufferID) -> const UniformBuffer&
 {
     return ShaderSystem::m_uBuffersDynamic[uBufferID];
 }
@@ -72,8 +106,8 @@ void ShaderSystem::load()
     pushUniformBuffer("OK_Lights", sizeof(LightData) * 8);
     pushUniformBuffer("OK_Matrices", sizeof(MVP));
 
-    //m_uBuffersDynamic.emplace_back( DynamicUniformBuffer("OK_Lights",nullptr, sizeof(LightData)*8) );
-    //m_uBuffersDynamic.emplace_back( DynamicUniformBuffer("OK_Matrices",nullptr, sizeof(MVP)) );
+    //m_uBuffersDynamic.emplace_back( UniformBuffer("OK_Lights",nullptr, sizeof(LightData)*8) );
+    //m_uBuffersDynamic.emplace_back( UniformBuffer("OK_Matrices",nullptr, sizeof(MVP)) );
 
     linkUniformBlocksForAll();
 }
@@ -102,15 +136,29 @@ void ShaderSystem::reload()
 void ShaderSystem::linkUniformBlocksForAll()
 {   
     GLuint bindPoint = 0;
-    for (auto& uBuffer : m_uBuffersDynamic)
+    for (const auto& shader : m_shaderPrograms)
     {
-        for (auto& shader : m_shaderPrograms)
+        auto uBlockCount = ShaderIntrospector::getActiveBlockCount(GLuint(shader));
+        for (GLint i = 0; i < uBlockCount; i++)
         {
-            GLCall(glUniformBlockBinding(GLuint(shader), shader.getUniformBlockIndex(C::Tag(uBuffer)), bindPoint));
-            GLCall(glBindBufferBase(GL_UNIFORM_BUFFER, bindPoint, GLuint(uBuffer)));
+            auto name = ShaderIntrospector::getUnifromBlockName(GLuint(shader), i);
+            LOG_INFO("Uniform Block #%i, Name: %s", i, name.c_str());
+            auto search = m_mapUniformBufferTargets.find(name);
+            if (search != m_mapUniformBufferTargets.end())
+            {
+                search->second.insert(GLuint(shader));
+            }
+            else
+            {
+                m_mapUniformBufferTargets.insert({ name, {GLuint(shader)} });
+            }
         }
-        bindPoint++;
+
+
+        //GLCall(glUniformBlockBinding(GLuint(shader), shader.getUniformBlockIndex(C::Tag(uBuffer)), bindPoint));
+        //GLCall(glBindBufferBase(GL_UNIFORM_BUFFER, bindPoint, GLuint(uBuffer)));
     }
+    bindPoint++;
 }
 
 void ShaderSystem::bindOnUpdate(const C::Tag& shaderTag, C::ID modelID, C::ID meshID, OnUpdate onUpdate)

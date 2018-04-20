@@ -89,8 +89,6 @@ int main()
     glm::mat4 view = glm::mat4(1);
     glm::mat4 m2w = modelTransform.modelToWorld();
 
-    ShaderSystem::linkUniformBlocksForAll();
-
 
     //GLCall(glSetUn)
     GLint uniformMVP, uniformTime;
@@ -103,7 +101,7 @@ int main()
     uniformTime = shader.getUniformLocation("time");
     uniformView = shader.getUniformLocation("view");
 
-    auto matBuffObj = ShaderSystem::getUniformBufferByTag("OK_Matrices");
+    ShaderSystem::updateUniformBlock()
 
 	GLCall(glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(projection)));
 	GLCall(glUniformMatrix4fv(uniformM2W, 1, GL_FALSE, glm::value_ptr(m2w)));

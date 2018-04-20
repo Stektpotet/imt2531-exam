@@ -42,5 +42,5 @@ namespace overkill::C
     constexpr char ScenesFolder[]    = "assets/scenes/";
     constexpr char ScenesExtension[]    = ".yml";
 
-       
+    constexpr unsigned int MAX_LIGHTS = 8; //inject it into shaders
 }
