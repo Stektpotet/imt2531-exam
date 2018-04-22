@@ -13,14 +13,13 @@
 namespace overkill
 {
     struct MVP {
-        glm::mat4 model2world;
         glm::mat4 view;
         glm::mat4 projection;
     };
 
     struct LightData {
-        glm::vec3 position;
-        glm::vec3 intensities;
+        glm::vec4 position;
+        glm::vec4 intensities;
         float spread;
     };
 
@@ -31,7 +30,6 @@ public:
     using OnUpdate = void (*)(C::ID, C::ID, C::ID);
     struct UpdateCallback 
     {
-        
         C::Tag   tag;
         C::ID    modelID;
         C::ID    meshID;
@@ -42,8 +40,8 @@ private:
 
     static std::unordered_map<C::Tag, std::set<GLuint>> m_mapUniformBufferTargets;
 
-    static std::vector<UniformBuffer>           m_uBuffersDynamic;
-    static std::unordered_map<C::Tag, C::ID>    m_mapUniformBufferDynamic;
+    static std::vector<UniformBuffer>           m_uniformBuffers;
+    static std::unordered_map<C::Tag, C::ID>    m_mapUniformBuffers;
     static std::vector<ShaderProgram>           m_shaderPrograms;
     static std::unordered_map<C::Tag, C::ID>    m_mapShaderProgramID;
     static std::vector<UpdateCallback>          m_updateCallbacks;
@@ -72,7 +70,8 @@ public:
     static auto getUniformBufferById(C::ID uBufferID) -> const UniformBuffer&;
     
 
-    
+
+	GLuint getBlockUniformLocation(const C::Tag& uBlock, const C::Tag& uniform);
     static auto updateUniformBlock(C::ID uBufferID, C::ID uniformLocation);
     //void ShaderProgram::bindUniformBlockToAll(GLuint blockIndex);
 

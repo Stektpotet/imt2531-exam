@@ -91,19 +91,24 @@ int main()
 
 
     //GLCall(glSetUn)
-    GLint uniformMVP, uniformTime;
-    GLint uniformView;                                  //Will communicate camera orientation to shader.
+    GLint uniformTime;
 	GLint uniformM2W;
+
+	auto matrixBuf = ShaderSystem::getUniformBufferByTag("OK_Matrices");
 
     shader.bind();
 	uniformM2W  = shader.getUniformLocation("m2w");
-    uniformMVP  = shader.getUniformLocation("projection");
     uniformTime = shader.getUniformLocation("time");
-    uniformView = shader.getUniformLocation("view");
 
-    ShaderSystem::updateUniformBlock()
+	auto projectionIndex = matrixBuf.getUniformIndex("projection");
+	auto viewIndex = matrixBuf.getUniformIndex("view");
 
-	GLCall(glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(projection)));
+	//ShaderSystem::getUniformLocation("m2w");
+	//ShaderSystem::updateUniformBlock();
+	//glUniformMatrix4fv()
+
+	matrixBuf.update(projectionIndex, sizeof(glm::mat4), glm::value_ptr(projection));
+	//GLCall(glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(projection)));
 	GLCall(glUniformMatrix4fv(uniformM2W, 1, GL_FALSE, glm::value_ptr(m2w)));
 
 
@@ -128,8 +133,12 @@ int main()
 
         shader.bind();
 		GLCall(glUniformMatrix4fv(uniformM2W, 1, GL_FALSE, glm::value_ptr(m2w)));
-        GLCall(glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(projection)));
-        GLCall(glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(view)));
+
+		matrixBuf.update(projectionIndex, sizeof(glm::mat4), glm::value_ptr(projection));
+		matrixBuf.update(viewIndex, sizeof(glm::mat4), glm::value_ptr(view));
+
+        //GLCall(glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(projection)));
+        //GLCall(glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(view)));
         GLCall(glUniform1f(uniformTime, (float)glfwGetTime()));
 
         glfwSwapBuffers(window);

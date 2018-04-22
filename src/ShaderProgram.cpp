@@ -97,9 +97,9 @@ void ShaderProgram::construct(const std::string& vert, const std::string& frag, 
         for (const auto index : indices)
         {
             char* uniformName = (char*)alloca(nameMaxLength * sizeof(char));
-            GLsizei length;
-            GLCall(glGetActiveUniformName(id, index, nameMaxLength, &length, uniformName));
-            LOG_INFO("#%u has: %s", uBlockIndex, uniformName);
+			GLCall(glGetActiveUniform(id, index, nameMaxLength, &length, &size, &type, uniformName));
+			GLsizei s = GLTypeSize(type);
+			LOG_INFO("#%u has: %s, with index: %u, and of type: %u, with the size: %i\n", uBlockIndex, uniformName, index, type, s);
         }
     }
     

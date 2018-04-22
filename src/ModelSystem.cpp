@@ -102,10 +102,10 @@ void ModelSystem::load()
         newModel.m_vbo = VertexBuffer(vertices.data(), vertices.size() * sizeof(Vertex));
         
         auto vbufLayout = VertexBufferAttribLayout();
-        vbufLayout.push(3, GL_FLOAT);                       //position;
-        vbufLayout.push(4, GL_INT_2_10_10_10_REV);          //normal
-        vbufLayout.push(2, GL_SHORT);                       //uv
-        vbufLayout.push(4, GL_UNSIGNED_BYTE, GL_TRUE);      //color;
+        vbufLayout.push<GL_FLOAT>(3);							//position;
+        vbufLayout.push<GL_INT_2_10_10_10_REV>(4);				//normal
+        vbufLayout.push<GL_SHORT>(2);							//uv
+        vbufLayout.push<GL_UNSIGNED_BYTE>(4, GL_TRUE);			//color;
         newModel.m_vao.addBuffer(newModel.m_vbo, vbufLayout);
 
         //

@@ -36,7 +36,7 @@ uniform float time;
 
 // unifirm blocks / uniform buffer objects
 //https://www.khronos.org/opengl/wiki/Interface_Block_(GLSL)#Memory_layout
-layout(std140, row_major) uniform Camera {
+layout(std140) uniform Camera {
     vec3 position;
     mat4 m_viewProjection;
 } camera;

@@ -15,9 +15,8 @@ uniform mat4 m2w;
 uniform float time = 0;
 
 layout(std140) uniform OK_Matrices {
-    mat4 model2world;
-    mat4 view;
     mat4 projection;
+    mat4 view;
 };
 
 layout(std140) uniform OK_Lights {
@@ -36,27 +35,6 @@ mat4 rotate(float x, float y, float z) {
         0, 0, 0, 1
     );
 }
-/*
-}
-mat4 modelToWorld(mat3 transform) {
-mat4 m = mat4(1); //ORIGINAL model representation
-mat4 scale = mat4(
-transform[0][0], 0,               0,               0,
-0,               transform[0][1], 0,               0,
-0,               0,               transform[0][2], 0,
-0,               0,               0,               1
-);
-
-m = scale * m;
-m = rotate(transform[1][0], transform[1][1], transform[1][2]) * m;
-
-mat4 translate = mat4(  1,               0,               0,               0,
-0,               1,               0,               0,
-0,               0,               1,               0,
-transform[2][0], transform[2][1], transform[2][2], 0);
-m = translate * m;
-return m;
-}*/
 
 out vec3 fragVert;
 out vec3 fragNormal;
@@ -89,7 +67,6 @@ void main() {
 #shader fragment
 #version 140
 in vec4 gl_FragCoord;
-// in vec2 gl_PointCoord; // @NOTE Not supported on [macos, openGL 4.1]
 in vec2 texCoord;
 in vec4 vertex_color_out;
 in vec4 pos;
@@ -107,11 +84,10 @@ uniform float opacity = 0;
 uniform float intensity = 1;
 uniform float bumpiness = 0;
 
-layout(std140) uniform OK_Matrices{
-    mat4 model2world;
-    mat4 view;
-    mat4 projection;
-};
+//layout(std140) uniform OK_Matrices{
+//    mat4 projection;
+//    mat4 view;
+//};
 
 layout(std140) uniform OK_Lights{
     vec3 position;
@@ -119,18 +95,12 @@ layout(std140) uniform OK_Lights{
     float spread;
 } lights[8];
 
-uniform struct Light {
-    vec3 position;
-    vec3 intensities; //a.k.a the color of the light
-} light = Light(vec3(10, 10, 6), vec3(1, 1, 1));
-
-uniform mat4 model = mat4(1);
 
 void main() {
 
     vec4 tex = texture(mainTex, texCoord);
     vec4 bump = texture(bumpTex, texCoord);
     //out_color = vec4(fragNormal, 1)*0.2 + 0.8*vec4(texture(mainTex, texCoord).rgb , vertex_color_out.a);
-
+	out_color = vec4(tex.rgb * vertex_color_out.rgb, vertex_color_out.a);
 }
 //out_color = vec4(texture(mainTexture, texCoord).rgb * vertex_color_out.rgb, vertex_color_out.a);
