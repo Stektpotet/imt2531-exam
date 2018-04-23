@@ -1,7 +1,7 @@
 maps: 3
   mainTex: scifi
   bumpTex: scifi_nrm
-  bumpTex: scifi_spec
+  specTex: scifi_spec
 
 values: 4
   opacity: 1

@@ -5,67 +5,114 @@
 #include <overkill/Config.hpp>
 #include <vector>
 #include <unordered_map>
-#include <tuple>
 
 namespace overkill
 {
 
-struct UniformBufferLayout
+
+struct BlockLayout
 {
-
 private:
-	std::unordered_map<C::Tag, GLuint> m_uniforms;
-	GLuint m_blockSize;
-	GLuint m_instances;
+    std::unordered_map<C::Tag, GLuint>      m_vars;
+    //std::unordered_map<C::Tag, BlockLayout> m_blocks;
+    GLuint m_blockSize; //the combined size of this block
+    C::Tag m_name;
 public:
-	UniformBufferLayout(GLuint instances = 1) : m_blockSize(0), m_instances(instances) {}
-	
-	template<GLenum type>
-	void push(const C::Tag& name, GLuint componentCount = 1)
-	{
-		const auto size = componentCount * GLTypeSize(type);
-		m_uniforms.emplace(std::make_pair(name, m_blockSize));
-		m_blockSize += size;
-	}
-	inline GLuint blockSize()  const { return m_blockSize; }
-	inline GLuint blockCount() const { return m_instances; }
-	inline GLsizei size()      const { return m_blockSize * m_instances; }
+    BlockLayout(const char* name = "");
+    inline GLsizei size() const { return m_blockSize; }
+    explicit operator C::Tag() const;
+    GLuint indexOfUniform(const C::Tag& name) const
+    {
+        auto search = m_vars.find(name); //@TODO discuss usage of at() as it works just as well here
+        if (search != m_vars.end())
+        {
+            return search->second;
+        }
+        LOG_WARN("indexOfUniform: \"%s\" cannot be found in buffer!\n has it been added in the layout?", name.c_str());
+        return 0;
+        //return m_vars.at(name);
+    }
 
-	GLuint indexOfUniform(const C::Tag& name, GLuint instance = 0) const
-	{
-		auto search = m_uniforms.find(name); //@TODO discuss usage of at() as it works just as well here
-		if (search != m_uniforms.end())
-		{
-			return instance * m_blockSize + search->second;
-		}
-		LOG_ERROR("indexOfUniform: \"%s\" cannot be found in buffer!\n has it been added in the layout?", name.c_str());
-		return 0;
-	}
+    void pushBlock(const BlockLayout& block, const GLuint count = 1) //allows direct access to the inner-element indices
+    {
 
-	///TEMPLATE SPESCIALIZATIONS:
-	//std140 dictates that vec3 types are placed on the GPU memory buffer as if they were vec4
-	//template<>
-	//void push<GL_FLOAT_VEC3>(const C::Tag& name, GLuint componentCount)
-	//{
-	//	const auto size = componentCount * GLTypeSize(GL_FLOAT_VEC4);
-	//	m_uniforms.emplace(std::make_pair(name, UniformValue{ m_blockSize, size }));
-	//	m_blockSize += size;
-	//}
-	//template<>
-	//void push<GL_INT_VEC3>(const C::Tag& name, GLuint componentCount)
-	//{
-	//	const auto size = componentCount * GLTypeSize(GL_INT_VEC4);
-	//	m_uniforms.emplace(std::make_pair(name, UniformValue{ m_blockSize, size }));
-	//	m_blockSize += size;
-	//}
-	//template<>
-	//void push<GL_DOUBLE_VEC3>(const C::Tag& name, GLuint componentCount)
-	//{
-	//	const auto size = componentCount * GLTypeSize(GL_DOUBLE_VEC4);
-	//	m_uniforms.emplace(std::make_pair(name, UniformValue{ m_blockSize, size }));
-	//	m_blockSize += size;
-	//}
+        /* TESTING THE LOGIC BEHIND THIS:
+
+            auto block0 = BlockLayout("b0")
+            block0.push<16>("position");
+            block0.push<16>("color");
+                // block0.size = 32
+
+            block1.push<16>("somevec");
+                // block1.size = 16
+            block1.pushBlock(block0);
+                // somevec,     0
+                // position,    16
+                // color,       32
+                // block1.size = 48
+        */
+        for (GLuint i = 0; i < count; i++)
+        {
+            for (const auto& var : block.m_vars)
+            {
+                m_vars.emplace(std::make_pair(block.m_name + '[' + std::to_string(i) + "]." + var.first, m_blockSize + var.second));
+            }
+            m_blockSize += block.m_blockSize;
+        }
+    }
+
+    void push(const C::Tag& name, GLuint size)
+    {
+        m_vars.emplace(std::make_pair(name, m_blockSize));
+        m_blockSize += size;
+    }
 };
+
+
+//struct UniformBufferLayout
+//{
+//
+//private:
+//	std::unordered_map<C::Tag, GLuint> m_uniforms;
+//	GLuint m_blockSize;
+//    C::Tag m_name;
+//public:
+//	UniformBufferLayout(const char* name = "") : m_blockSize(0), m_name(name) {}
+//
+//	template<GLuint size>
+//	void push(const C::Tag& name, GLuint count)
+//	{
+//	/*	m_uniforms.emplace(std::make_pair(name, m_blockSize));
+//		m_blockSize += size * componentCount;*/
+//        for (GLuint i = 0; i < count; i++)
+//        {
+//            push<size>(name + '[' + std::to_string(i) + ']');
+//        }
+//	}
+//
+//    template<GLuint size>
+//    void push<size>(const C::Tag& name)
+//    {
+//        m_uniforms.emplace(std::make_pair(name, m_blockSize));
+//        m_blockSize += size;
+//    }
+//
+//	inline GLsizei size()      const { return m_blockSize; }
+//
+//	inline GLuint indexOfUniform(const C::Tag& name) const
+//	{
+//        return m_uniforms.at(name);
+//
+//		//auto search = m_uniforms.find(name); //@TODO discuss usage of at() as it works just as well here
+//		//if (search != m_uniforms.end())
+//		//{
+//		//	return search->second;
+//		//}
+//		//LOG_ERROR("indexOfUniform: \"%s\" cannot be found in buffer!\n has it been added in the layout?", name.c_str());
+//		//return 0;
+//	}
+//    
+//};
 
 class UniformBuffer
 {
@@ -73,10 +120,10 @@ class UniformBuffer
 private:
     GLuint m_id;
     C::Tag m_name;
-	UniformBufferLayout m_blockLayout;
+	BlockLayout m_blockLayout;
 public:
 
-	UniformBuffer(const char *name, const UniformBufferLayout& layout, const GLenum drawMode);
+	UniformBuffer(const char *name, const BlockLayout& layout, const GLenum drawMode);
    
     explicit operator C::Tag() const;
     explicit operator GLuint() const;
@@ -86,12 +133,12 @@ public:
     void bind() const;
     void unbind() const;
 
-	inline GLuint blockCount()
-	{ 
-		return m_blockLayout.blockCount();
-	}
+    inline GLuint blockSize()
+    {
+        return m_blockLayout.size();
+    }
 
-	GLuint getUniformIndex(const C::Tag& name, const GLuint blockInstance = 0) const;
+	GLuint getUniformIndex(const C::Tag& name) const;
 	void update(const C::ID index, GLsizeiptr size, const void *data);
 };
 

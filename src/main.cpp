@@ -76,9 +76,9 @@ int main()
 		float quadratic;		//4 ->48
 
     } lightData[8] = {
-        LightData{ { 0, 4, 0, 0	},{ 2, 1, 0.5f	 , 0}, /*0.0f, 0.0f, 0.0f, 0.0f    */  },        
-		LightData{ { 0, 4, 0, 0 },{ 2, 1, 0.5f	 , 0 },/* 0.0f, 0.0f, 0.0f, 0.0f   */  },
-        LightData{ { 3, 1, 0, 0	},{ 0, 1, 1		 , 0}, /*10.0f, 10.0f, 10.0f, 10.0f*/ },
+        LightData{ { 0, 4, 0, 0	},{ 1.5f, 0, 0	 , 0}, /*0.0f, 0.0f, 0.0f, 0.0f    */ },        
+		LightData{ { 1.5f, 0, 0, 0 },{ 0, 0, 1.5f	 , 0 },/* 0.0f, 0.0f, 0.0f, 0.0f   */     },
+        LightData{ { 3, 1, 0, 0	},{ 0, 1.5f, 0		 , 0}, /*10.0f, 10.0f, 10.0f, 10.0f*/ },
         LightData{ { 0, -2, 0,0	},{ 1, 0, 0		 , 0}, /*10.0f, 10.0f, 10.0f, 10.0f*/ },
         LightData{ { 0, 1, -4,0	},{ 1, 0, 1		 , 0}, /*10.0f, 10.0f, 10.0f, 10.0f*/ },
         LightData{ { 0, -5, 0,0	},{ 1, 1, 0		 , 0}, /*10.0f, 10.0f, 10.0f, 10.0f*/ },
@@ -109,26 +109,32 @@ int main()
 	auto viewIndex       = matrixBuf.getUniformIndex("view");
 	auto viewPosIndex    = matrixBuf.getUniformIndex("view_position");
 
-	auto light0PosIndex			= lightBuf.getUniformIndex("position", 0);
-	auto light0IntensitiesIndex = lightBuf.getUniformIndex("intensities", 0);	
+	auto light0PosIndex			= lightBuf.getUniformIndex("light[0].position"); //TODO make this getUniformIndex("light", 0)
+	//auto light0IntensitiesIndex = lightBuf.getUniformIndex("light[0].intensities", 0);	
 	//auto light0Floats = lightBuf.getUniformIndex("spread", 0);
 
 
 	LOG_INFO("LIGHT_DATA_SIZE: %i", sizeof(LightData));
 
-	auto light1PosIndex			= lightBuf.getUniformIndex("position", 1); // this could also be used as offset for all the other lights
-	auto light1IntensitiesIndex = lightBuf.getUniformIndex("intensities", 1);
+	auto light1PosIndex			= lightBuf.getUniformIndex("light[1].position"); // this could also be used as offset for all the other lights
+    auto light2PosIndex = lightBuf.getUniformIndex("light[2].position"); // this could also be used as offset for all the other lights
+
+
+	//auto light1IntensitiesIndex = lightBuf.getUniformIndex("light[1].intensities", 1);
 	//auto light1Floats			= lightBuf.getUniformIndex("spread", 1);
 
 
 	lightBuf.update(light0PosIndex, 16, &(lightData[0].position));
-	lightBuf.update(light0IntensitiesIndex, 16, &(lightData[0].intensities));
+	lightBuf.update(light0PosIndex +16, 16, &(lightData[0].intensities));
 	//lightBuf.update(light0Floats+4, sizeof(GLfloat),	&(lightData[0].constant));
 	//lightBuf.update(light0Floats+8, sizeof(GLfloat),		&(lightData[0].linear));
 	//lightBuf.update(light0Floats+12, sizeof(GLfloat),	&(lightData[0].quadratic));
 
 	lightBuf.update(light1PosIndex, 16, &(lightData[1].position));
-	lightBuf.update(light1IntensitiesIndex, 16, &(lightData[1].intensities));
+	lightBuf.update(light1PosIndex +16, 16, &(lightData[1].intensities));
+
+    lightBuf.update(light2PosIndex + 16, 16, &(lightData[2].intensities));
+
 	//lightBuf.update(light0Floats + 4, sizeof(GLfloat), &(lightData[0].constant));
 	//lightBuf.update(light0Floats + 8, sizeof(GLfloat), &(lightData[0].linear));
 	//lightBuf.update(light0Floats + 12, sizeof(GLfloat), &(lightData[0].quadratic));
@@ -157,17 +163,40 @@ int main()
         
         view = pivot * camera;
         glm::inverse(view); //To reverse both axis, so controls are not reverse.
-
-
         shader.bind();
 		GLCall(glUniformMatrix4fv(uniformM2W, 1, GL_FALSE, glm::value_ptr(m2w)));
+        
+        
+        float time = (float)glfwGetTime();
+        lightData[0].position = glm::vec4(10 * sin(3 * time), 0, 10 * cos(3 * time), 0);
+        lightData[0].intensities = glm::vec4(1.5f * sin(1.33*time), 1.5 * cos(1.33*time), 0, 0);
+
+        lightData[1].position = glm::vec4(10 * sin(1.33*time),   10 * cos(1.33*time), 0, 0);
+        lightData[1].intensities = glm::vec4(1.5f * sin(1.33*time + C::PI/3), 1.5 * cos(1.33*time+ C::PI/3), 0, 0);
+
+        lightData[2].position = glm::vec4(0, 10 * sin(4.377*time), 10 * cos(4.377*time), 0);
+        lightData[2].intensities = glm::vec4(1.5f * sin(1.33*time+(C::PI*2/3)), 1.5 * cos(1.33*time + (C::PI * 2 / 3)), 0, 0);
+
+
+
+        lightBuf.update(light0PosIndex, 16, &(lightData[0].position));
+        lightBuf.update(light0PosIndex + 16, 16, &(lightData[0].intensities));
+
+        lightBuf.update(light1PosIndex, 16, &(lightData[1].position));
+        lightBuf.update(light1PosIndex + 16, 16, &(lightData[1].intensities));
+
+        lightBuf.update(light2PosIndex, 16, &(lightData[2].position));
+        lightBuf.update(light2PosIndex + 16, 16, &(lightData[2].intensities));
+
+
+
 
 		matrixBuf.update(projectionIndex, sizeof(glm::mat4), glm::value_ptr(projection));
 		matrixBuf.update(viewIndex, sizeof(glm::mat4), glm::value_ptr(view));
 		matrixBuf.update(viewPosIndex, sizeof(glm::vec4), glm::value_ptr(pivot));
         //GLCall(glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(projection)));
         //GLCall(glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(view)));
-        GLCall(glUniform1f(uniformTime, (float)glfwGetTime()));
+        GLCall(glUniform1f(uniformTime, time));
 
         glfwSwapBuffers(window);
         glfwPollEvents();

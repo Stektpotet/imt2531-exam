@@ -122,25 +122,30 @@ void ShaderSystem::load()
     //ShaderSystem::push("edge", "assets/shaders/edge.shader");
     
     //pushUniformBuffer("OK_Lights", sizeof(LightData) * 8);
-	auto matBufferLayout = UniformBufferLayout(1);
-	matBufferLayout.push<GL_FLOAT_MAT4>("projection", 1);
-	matBufferLayout.push<GL_FLOAT_MAT4>("view", 1);
-	matBufferLayout.push<GL_FLOAT_VEC4>("view_position", 1);	
+	auto matBufferLayout = BlockLayout();
+	matBufferLayout.push("projection", 64);
+	matBufferLayout.push("view", 64);
+	matBufferLayout.push("view_position", 16);	
 	
 	//pushUniformBuffer("OK_Matrices",    sizeof(glm::mat4) * 2);
 	ShaderSystem::m_mapUniformBuffersID["OK_Matrices"] = ShaderSystem::m_uniformBuffers.size(); //assign ID/index
-	auto buf = ShaderSystem::m_uniformBuffers.emplace_back(UniformBuffer("OK_Matrices", matBufferLayout, GL_STREAM_DRAW));
+	auto buf = ShaderSystem::m_uniformBuffers.emplace_back(UniformBuffer("OK_Matrices", matBufferLayout, GL_DYNAMIC_DRAW));
 
-	auto lightBufferLayout = UniformBufferLayout(1);
-	lightBufferLayout.push<GL_FLOAT_VEC4>("position");	//alternative approach: .push<GL_FLOAT>("position", 3); but this might be prune to errors because of how std140 handles vec3
-	lightBufferLayout.push<GL_FLOAT_VEC4>("intensities");
+	auto lightBufferLayout = BlockLayout();
+    //lightBufferLayout.push<16>("light.position")
+    auto lightStructLayout = BlockLayout("light");
+    lightStructLayout.push("position", 16);
+    lightStructLayout.push("intensities", 16);
+
+    lightBufferLayout.pushBlock(lightStructLayout, 8);
+	//lightBufferLayout.push<GL_FLOAT_VEC4>("intensities");
 	//lightBufferLayout.push<GL_FLOAT>("spread");
 	//lightBufferLayout.push<GL_FLOAT>("constant");
 	//lightBufferLayout.push<GL_FLOAT>("linear");
 	//lightBufferLayout.push<GL_FLOAT>("quadratic");
 
 	ShaderSystem::m_mapUniformBuffersID["OK_Lights"] = ShaderSystem::m_uniformBuffers.size(); //assign ID/index
-	ShaderSystem::m_uniformBuffers.emplace_back(UniformBuffer("OK_Lights", lightBufferLayout, GL_STATIC_DRAW));
+	ShaderSystem::m_uniformBuffers.emplace_back(UniformBuffer("OK_Lights", lightBufferLayout, GL_DYNAMIC_DRAW));
 
 	//pushUniformBuffer("OK_Lights",   sizeof(glm::vec4) * 2+sizeof(float));
 	//auto buf = getUniformBufferByTag("OK_Matrices");
@@ -151,32 +156,48 @@ void ShaderSystem::load()
 	GLuint bindPoint = 0;
 	for (auto& buffer : m_uniformBuffers)
 	{
+        buffer.bind();
 		for (const auto& shader : m_shaderPrograms)
 		{
-			if (buffer.blockCount() == 1)
-			{
+			/*if (buffer.blockCount() == 1)
+			{*/
 				auto uBlockIndex = ShaderIntrospector::getUniformBlockIndex(GLuint(shader), C::Tag(buffer));
 				if (uBlockIndex != GL_INVALID_INDEX) //this block did exist in the shader
 				{
 					GLCall(glUniformBlockBinding(GLuint(shader), uBlockIndex, bindPoint));
 					GLCall(glBindBufferBase(GL_UNIFORM_BUFFER, bindPoint, GLuint(buffer)));
 				}
-			}
-			else
-			{
-				for (int blockInstance = 0; blockInstance < buffer.blockCount(); blockInstance++)
-				{
-					const auto& blockName = C::Tag(buffer) + '[' + std::to_string(blockInstance) + ']';
-					auto uBlockIndex = ShaderIntrospector::getUniformBlockIndex(GLuint(shader), blockName);
-					if (uBlockIndex != GL_INVALID_INDEX) //this block did exist in the shader
-					{
-						
-						GLCall(glUniformBlockBinding(GLuint(shader), uBlockIndex, bindPoint));
-						GLCall(glBindBufferBase(GL_UNIFORM_BUFFER, bindPoint, GLuint(buffer)));
-					}
-				}
-			}
+			//}
+			//else
+			//{
+			//	//for (int blockInstance = 0; blockInstance < buffer.blockCount(); blockInstance++)
+			//	//{
+			//	//	const auto& blockName = C::Tag(buffer) + '[' + std::to_string(blockInstance) + ']';
+			//	//	auto uBlockIndex = ShaderIntrospector::getUniformBlockIndex(GLuint(shader), blockName);
+			//	//	if (uBlockIndex != GL_INVALID_INDEX) //this block did exist in the shader
+			//	//	{
+			//	//		GLCall(glUniformBlockBinding(GLuint(shader), uBlockIndex, bindPoint));
+
+
+   // //                    GLint offsetAlignment;
+   // //                    GLCall(glGetIntegerv(GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT, &offsetAlignment));
+   // //                    GLint bufferBindings;
+   // //                    GLCall(glGetIntegerv(GL_MAX_UNIFORM_BUFFER_BINDINGS, &bufferBindings));
+   // //                    LOG_INFO("bindingMAX: %i", bufferBindings);
+   // //                    
+
+   // //                    GLint bufSize;
+   // //                    glGetBufferParameteriv(GL_UNIFORM_BUFFER, GL_BUFFER_SIZE, &bufSize);
+   // //                    LOG_INFO("Block: #%i,\toffset: %u,\tsize: %u,\tBufferSize: %i,\toffset alignment: %i", blockInstance, a, buffer.blockSize(), bufSize, offsetAlignment);
+   // //                    //GLCall(glBindBufferRange(GL_UNIFORM_BUFFER, bindPoint, GLuint(buffer), a, buffer.blockSize()));
+			//	//		//GLCall(glBindBufferBase(GL_UNIFORM_BUFFER, bindPoint, GLuint(buffer)));
+   // //                    
+			//	//	}
+			//	//}
+   //             GLCall(glBindBufferBase(GL_UNIFORM_BUFFER, bindPoint, GLuint(buffer)));
+			//}
 		}
+        buffer.unbind();
 		bindPoint++;
 	}
 

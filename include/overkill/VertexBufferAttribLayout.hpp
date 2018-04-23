@@ -44,7 +44,7 @@ public:
 	void push<GL_INT_2_10_10_10_REV>(GLuint count, bool normalized)
 	{
 		m_attributes.push_back({ count, GL_INT_2_10_10_10_REV, normalized });
-		m_stride += GLTypeSize(GL_INT_2_10_10_10_REV); //TODO allow for attributes to contain more than one withouth striding errors
+        m_stride += count; //TODO allow for attributes to contain more than one withouth striding errors
 	}
 
     inline const std::vector<VertexBufferAttrib> getAttributes() const { return m_attributes; }
