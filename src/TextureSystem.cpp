@@ -1,6 +1,5 @@
 #include <overkill/TextureSystem.hpp>
 
-// #include <PMS/logger.h>
 namespace overkill 
 {
 
@@ -38,12 +37,12 @@ void TextureSystem::load()
 {   
     // TODO: Load these from the file system somehow
     std::vector<FileEvent> fevents = Watcher::popEvents("discovered", "textures");
-
     for (const auto e : fevents) {
 
         const auto filepath = C::TexturesFolder + ("/" + e.tag) + "." + e.extension;
         LOG_DEBUG("Texture from file: %s", filepath.data());
         TextureSystem::push(e.tag, filepath);
+
     }
 }
 

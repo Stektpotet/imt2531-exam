@@ -22,6 +22,38 @@ auto ModelSystem::getById(C::ID modelID) -> const Model&
     return ModelSystem::m_models[modelID];
 }
 
+auto packUV(float u, float v) -> GLshort
+{
+    const auto MAX = 127;
+    //const auto MIN = -128;
+    const auto CLAMPER = 255;
+   
+    return (GLint(v * MAX) & CLAMPER) << 8 | (GLint(u * MAX) & CLAMPER);
+}
+
+//TODO move it
+auto packNormal(float x, float y, float z) -> GLint
+{
+    
+	float magnitude = sqrt(x * x + y * y + z * z);
+	x /= magnitude;
+	y /= magnitude;
+	z /= magnitude;
+
+
+	const auto MAX = 511;		//01 1111 1111
+	const auto MIN = -512;		//10 0000 0000
+	// -1 * 511 = -511
+	GLint ix = (GLint(x * MAX) & 1023);
+	GLint iy = (GLint(y * MAX) & 1023);
+	GLint iz = (GLint(z * MAX) & 1023);
+	//1*511 =	511
+	//			01 0000 0000
+	//-1*511 = -511
+	//			10 0000 0001
+	GLint r = (iz << 20) | (iy << 10) | ix;
+	return r;
+}
 
 void ModelSystem::reload() 
 {   
@@ -92,10 +124,12 @@ void ModelSystem::load()
         newModel.m_vbo = VertexBuffer(vertices.data(), vertices.size() * sizeof(Vertex));
         
         auto vbufLayout = VertexBufferAttribLayout();
-        vbufLayout.push(3, GL_FLOAT);                       //position;
-        vbufLayout.push(3, GL_FLOAT);                       //normal
-        vbufLayout.push(2, GL_FLOAT);                       //uv
-        vbufLayout.push(4, GL_UNSIGNED_BYTE, GL_TRUE);      //color;
+
+        vbufLayout.push<GL_FLOAT>(3);                       //position;
+        vbufLayout.push<GL_FLOAT>(3);                       //normal
+        vbufLayout.push<GL_FLOAT>(2);                       //uv
+        vbufLayout.push<GL_UNSIGNED_BYTE>(4, GL_TRUE);      //color;
+
         newModel.m_vao.addBuffer(newModel.m_vbo, vbufLayout);
 
         //

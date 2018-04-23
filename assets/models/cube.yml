@@ -41,7 +41,6 @@ v:  1.0  1.0 -1.0   0.577  0.577 -0.577  1 0  255 255 255 80
 v: -1.0  1.0  1.0  -0.577  0.577  0.577  0 1  255 255 255 80
 v:  1.0  1.0  1.0   0.577  0.577  0.577   1 1  255 255 255 80
 
-
 meshes: 2
 
 mesh: innercube
@@ -68,7 +67,7 @@ mesh: innercube
 
 mesh: outercube
     material: brick
-    shader: base
+    shader: edge
     triangles: 12
     t: 14 15 16
     t: 16 17 14

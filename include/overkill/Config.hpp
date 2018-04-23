@@ -22,7 +22,8 @@ namespace overkill::C
     constexpr float NearClip = 0.1f;
     constexpr float FarClip  = 100.0f;
     constexpr float CameraOffset = -70;      //How far back the camera is from the center of the scene.
-    const glm::vec4 ClearColor { 0.05f, 0.06f, 0.075f, 1.0f };
+    const glm::vec4 ClearColor { 0.05f, 0.06f, 0.075f, 1.0f }; // Sexy blue
+    
     constexpr char PathBaseShader[] = "assets/shaders/base.shader";
     constexpr char PathBaseTexture[] = "assets/textures/Checkers.jpg";
     constexpr float PI = 3.14159265359f;
@@ -33,5 +34,5 @@ namespace overkill::C
     constexpr char ModelsFolder[]    = "assets/models";
     constexpr char ScenesFolder[]    = "assets/scenes";
 
-       
+    constexpr unsigned int MAX_LIGHTS = 8; //inject it into shaders
 }

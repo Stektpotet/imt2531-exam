@@ -6,6 +6,6 @@
 #include <PMS/logger.h>
 #include <overkill/gl_caller.hpp>
 
-GLuint GLTypeSize(const GLenum type);
-std::string ShaderTypeName(const GLenum typeID);
-void GLPrintMaxContants();
+void GLPrintMaxConstants();
+auto GLTypeSize(const GLenum type) -> GLsizei;
+auto ShaderTypeName(const GLenum typeID) -> std::string;
