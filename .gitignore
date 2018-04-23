@@ -8,3 +8,11 @@ CMakeSettings.json
 # big assets
 *teapot-top.yml
 *teapot-base.yml
+
+
+
+# blender folder
+
+blender/*
+!blender/default.blend
+!blender/export.py
