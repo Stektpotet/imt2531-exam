@@ -52,6 +52,8 @@ void ModelSystem::load()
     std::vector<std::string> tags {
         "cube",
         "out",
+        "Suzanne",
+        "Icosphere"
        // "teapot-base", // @TODO find a way to dynamically load the file names(tags) into the system
        // "teapot-top",
     };
@@ -136,6 +138,8 @@ void ModelSystem::load()
             }
 
             std::vector<GLuint> indices;
+
+            LOG_DEBUG("tricount: %d", triCount);
             // Triangles 
             for(int j = 0; j < triCount; ++j) 
             {
@@ -147,6 +151,7 @@ void ModelSystem::load()
                 indices.push_back(triangle.a);
                 indices.push_back(triangle.b);
                 indices.push_back(triangle.c);
+
             } 
 
             // Construct mesh, buffer ElementBuffer data to GPU

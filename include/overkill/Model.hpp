@@ -25,7 +25,7 @@ struct Vertex
 
 struct Triangle 
 {
-    int a, b, c;
+    GLuint a, b, c;
 };
 
 struct Mesh

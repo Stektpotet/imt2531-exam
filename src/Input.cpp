@@ -116,7 +116,7 @@ namespace overkill
         if (m_fovy < C::MinFOV) m_fovy = C::MinFOV;
         if (m_fovy > C::MaxFOV) m_fovy = C::MaxFOV;
 
-        printf("Scroll: x: %f,\ty:%f\t\tfovy:%f\n", x, y, m_fovy);
+//        printf("Scroll: x: %f,\ty:%f\t\tfovy:%f\n", x, y, m_fovy);
     }
 
     void Input::OnMouseClick(GLFWwindow* window, int button, int action, int mods)

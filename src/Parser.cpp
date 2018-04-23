@@ -10,48 +10,38 @@ Parser::Parser(std::string_view _strview)
 
 auto Parser::nextLine() -> std::string
 {
-    endofline = strview.find('\n', startofline);
-    startofline = strview.find_first_of(whitelistedCharacters, startofline);
 
-    if (size_t(startofline) == std::string::npos) {
-        std::cout << "\nPARSER ERROR ---->>> (startofline == std::string::npos)\n\n"
-            << "Line: " << linecount;
-        LOG_WARN("No whitelisted characters found after new-line character!! Line:");
-        return "";
-    }
-    if (size_t(endofline) == std::string::npos) {
-        std::cout << "\nPARSER ERROR ---->>> (endofline == std::string::npos)\n\n"
-            << "Line: " << linecount;
-        LOG_WARN("No end of file (new-line) character found! Line:");
-        return "";        
-    }
 
-    linecount++;
-    // Skip empty lines in between and eat whitespace
-    while (endofline - startofline <= 0) {
+    do {
+        if (startofline != 0) {
+            startofline = endofline + 1;
+        }
 
-        startofline = endofline + 1;
-        endofline = strview.find('\n', startofline);
+        endofline   = strview.find('\n', startofline);
         startofline = strview.find_first_of(whitelistedCharacters, startofline);
 
         if (size_t(startofline) == std::string::npos) {
             std::cout << "\nPARSER ERROR ---->>> (startofline == std::string::npos)\n\n"
                 << "Line: " << linecount;
-            LOG_WARN("No whitelisted characters found after new-line character!! Line:");
+            LOG_WARN("No whitelisted characters found after new-line character!! Line:%s", currentLine.data());
             return "";
         }
         if (size_t(endofline) == std::string::npos) {
-            std::cout << "PARSER ERROR ---->>> (endofline == std::string::npos)"
+            std::cout << "\nPARSER ERROR ---->>> (endofline == std::string::npos)\n\n"
                 << "Line: " << linecount;
-            LOG_WARN("No end of file (new-line) character found! Line:");
-            return "";
+            LOG_WARN("No end of file (new-line) character found! Line:%s", currentLine.data());
+            return "";        
         }
+
         linecount++;
-    }
+    } while (endofline - startofline <= 0);
+
 
     auto line = std::string{
         strview.substr(startofline, endofline - startofline)
     };
+    currentLine = line;
+
     size_t lastCharacter = (endofline - startofline) - 1;
     size_t lastValidCharacter = line.find_last_of(whitelistedCharacters);
     if (lastValidCharacter != lastCharacter) {
@@ -82,7 +72,8 @@ auto Parser::nextLine() -> std::string
 auto Parser::nextKeyString() -> KeyString
 {
     auto line = nextLine();
-
+    LOG_DEBUG("%s", line.data());
+    
     if(line == "")
         return KeyString{"","", PARSE_ERROR};
 
@@ -92,19 +83,6 @@ auto Parser::nextKeyString() -> KeyString
     if (line.find(":") + 2 < line.size())
         valueString = line.substr(line.find(":") + 2);
 
-/*
-#ifdef DEBUG
-    std::stringstream ss;
-    ss  << " key: "
-        << std::setw(18) << std::left
-        << key
-
-        << " val: "
-        << valueString;
-
-    LOG_DEBUG("%s", ss.str().c_str());
-#endif
-*/
     return KeyString{ key, valueString, PARSE_SUCCESS };
 };
 
