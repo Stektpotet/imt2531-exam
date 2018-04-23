@@ -68,22 +68,22 @@ int main()
     Light light;
 
     struct LightData {
-        glm::vec4 position;
-        glm::vec4 intensities;
-        float spread;
-		float constant;
-		float linear;
-		float quadratic;
+        glm::vec4 position;		//16->16
+        glm::vec4 intensities;	//16->32
+        float spread;			//4 ->36
+		float constant;			//4	->40
+		float linear;			//4 ->44
+		float quadratic;		//4 ->48
 
     } lightData[8] = {
-        LightData{ { 0, 4, 0, 0	},{ 2, 1, 0.5f	 , 0}, 10.0f, 10.0f, 10.0f, 10.0f },
-        LightData{ { 0, 3, 0, 0	},{ 0, 0, 1		 , 0}, 10.0f, 10.0f, 10.0f, 10.0f },
-        LightData{ { 3, 1, 0, 0	},{ 0, 1, 1		 , 0}, 10.0f, 10.0f, 10.0f, 10.0f },
-        LightData{ { 0, -2, 0,0	},{ 1, 0, 0		 , 0}, 10.0f, 10.0f, 10.0f, 10.0f },
-        LightData{ { 0, 1, -4,0	},{ 1, 0, 1		 , 0}, 10.0f, 10.0f, 10.0f, 10.0f },
-        LightData{ { 0, -5, 0,0	},{ 1, 1, 0		 , 0}, 10.0f, 10.0f, 10.0f, 10.0f },
-        LightData{ { 0, 5, 0,0	},{ 1, 1, 1		 , 0}, 10.0f, 10.0f, 10.0f, 10.0f },
-        LightData{ { 0,3, 3	,0	},{ 0.5, 0.5, 0.5, 0}, 10.0f, 10.0f, 10.0f, 10.0f },
+        LightData{ { 0, 4, 0, 0	},{ 2, 1, 0.5f	 , 0}, /*0.0f, 0.0f, 0.0f, 0.0f    */  },        
+		LightData{ { 0, 4, 0, 0 },{ 2, 1, 0.5f	 , 0 },/* 0.0f, 0.0f, 0.0f, 0.0f   */  },
+        LightData{ { 3, 1, 0, 0	},{ 0, 1, 1		 , 0}, /*10.0f, 10.0f, 10.0f, 10.0f*/ },
+        LightData{ { 0, -2, 0,0	},{ 1, 0, 0		 , 0}, /*10.0f, 10.0f, 10.0f, 10.0f*/ },
+        LightData{ { 0, 1, -4,0	},{ 1, 0, 1		 , 0}, /*10.0f, 10.0f, 10.0f, 10.0f*/ },
+        LightData{ { 0, -5, 0,0	},{ 1, 1, 0		 , 0}, /*10.0f, 10.0f, 10.0f, 10.0f*/ },
+        LightData{ { 0, 5, 0,0	},{ 1, 1, 1		 , 0}, /*10.0f, 10.0f, 10.0f, 10.0f*/ },
+        LightData{ { 0,3, 3	,0	},{ 0.5, 0.5, 0.5, 0}, /*10.0f, 10.0f, 10.0f, 10.0f*/ },
     };
 
 
@@ -110,34 +110,30 @@ int main()
 	auto viewPosIndex    = matrixBuf.getUniformIndex("view_position");
 
 	auto light0PosIndex			= lightBuf.getUniformIndex("position", 0);
-	auto light0IntensitiesIndex = lightBuf.getUniformIndex("intensities", 0);
-	auto light0Constant			= lightBuf.getUniformIndex("constant", 0);
-	auto light0Linear			= lightBuf.getUniformIndex("linear", 0);
-	auto light0Quadratic		= lightBuf.getUniformIndex("quadratic", 0);
+	auto light0IntensitiesIndex = lightBuf.getUniformIndex("intensities", 0);	
+	//auto light0Floats = lightBuf.getUniformIndex("spread", 0);
 
 
+	LOG_INFO("LIGHT_DATA_SIZE: %i", sizeof(LightData));
 
 	auto light1PosIndex			= lightBuf.getUniformIndex("position", 1); // this could also be used as offset for all the other lights
 	auto light1IntensitiesIndex = lightBuf.getUniformIndex("intensities", 1);
-	auto light1Constant			= lightBuf.getUniformIndex("constant", 1);
-	auto light1Linear			= lightBuf.getUniformIndex("linear", 1);
-	auto light1Quadratic		= lightBuf.getUniformIndex("quadratic", 1);
+	//auto light1Floats			= lightBuf.getUniformIndex("spread", 1);
 
 
-	lightBuf.update(light0PosIndex, sizeof(glm::vec4), glm::value_ptr(lightData[0].position));
-	lightBuf.update(light0IntensitiesIndex, sizeof(glm::vec4), glm::value_ptr(lightData[0].intensities));
-	lightBuf.update(light0Constant, sizeof(GLfloat),	&(lightData[0].constant));
-	lightBuf.update(light0Linear, sizeof(GLfloat),		&(lightData[0].linear));
-	lightBuf.update(light0Quadratic, sizeof(GLfloat),	&(lightData[0].quadratic));
+	lightBuf.update(light0PosIndex, 16, &(lightData[0].position));
+	lightBuf.update(light0IntensitiesIndex, 16, &(lightData[0].intensities));
+	//lightBuf.update(light0Floats+4, sizeof(GLfloat),	&(lightData[0].constant));
+	//lightBuf.update(light0Floats+8, sizeof(GLfloat),		&(lightData[0].linear));
+	//lightBuf.update(light0Floats+12, sizeof(GLfloat),	&(lightData[0].quadratic));
 
-	lightBuf.update(light1PosIndex, sizeof(glm::vec4), glm::value_ptr(lightData[1].position));
-	lightBuf.update(light1IntensitiesIndex, sizeof(glm::vec4), glm::value_ptr(lightData[1].intensities));
-	lightBuf.update(light1Constant, sizeof(GLfloat),	&(lightData[1].constant));
-	lightBuf.update(light1Linear, sizeof(GLfloat),		&(lightData[1].linear));
-	lightBuf.update(light1Quadratic, sizeof(GLfloat),	&(lightData[1].quadratic));
-	//ShaderSystem::getUniformLocation("m2w");
-	//ShaderSystem::updateUniformBlock();
-	//glUniformMatrix4fv()
+	lightBuf.update(light1PosIndex, 16, &(lightData[1].position));
+	lightBuf.update(light1IntensitiesIndex, 16, &(lightData[1].intensities));
+	//lightBuf.update(light0Floats + 4, sizeof(GLfloat), &(lightData[0].constant));
+	//lightBuf.update(light0Floats + 8, sizeof(GLfloat), &(lightData[0].linear));
+	//lightBuf.update(light0Floats + 12, sizeof(GLfloat), &(lightData[0].quadratic));
+
+
 
 	matrixBuf.update(projectionIndex, sizeof(glm::mat4), glm::value_ptr(projection));
 	//GLCall(glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(projection)));

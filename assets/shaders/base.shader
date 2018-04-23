@@ -61,6 +61,8 @@ void main() {
 #shader fragment
 #version 140
 
+#define MAX_LIGHTS 8
+
 in vec4 gl_FragCoord;
 in vec2 texCoord;
 in vec3 fragNormal;
@@ -90,13 +92,13 @@ layout(std140) uniform OK_Matrices{
 layout(std140) uniform OK_Lights{
 	vec4 position;
 	vec4 intensities;
-	float spread;
-	float constant;
-	float linear;
-	float quadratic;
-} light[8];
+	//float spread;
+	//float constant;
+	//float linear;
+	//float quadratic;
+} light[MAX_LIGHTS];
 
-vec3 OK_Light(in vec3 position, in vec3 intensities, in float constant, in float linear, in float quadratic) {
+vec3 OK_Light(in vec3 position, in vec3 intensities/*, in float constant, in float linear, in float quadratic*/) {
 	//Ambience
 	float ambientStrength = 0.1;
 	vec3 ambient = ambientStrength * intensities;
@@ -118,7 +120,7 @@ vec3 OK_Light(in vec3 position, in vec3 intensities, in float constant, in float
 	//float distance = length(position - fragVert);
 	float attenuation = 1.0; // /(constant + linear * distance + quadratic * (distance * distance));
 
-	return (ambient*attenuation + diffuse*intensity*attenuation /*+ specular*specularity*attenuation*/);
+	return (/*ambient*attenuation +*/ diffuse*intensity*attenuation /*+ specular*specularity*attenuation*/);
 }
 
 void main() {
@@ -127,10 +129,10 @@ void main() {
 	vec3 bump = texture(bumpTex, texCoord).rgb;
 	vec3 spec = texture(specTex, texCoord).rgb;
 
-	vec3 light0 = OK_Light(light[0].position.xyz, light[0].intensities.rgb,light[0].constant,light[0].linear, light[0].quadratic);
-	vec3 light1 = OK_Light(light[1].position.xyz, light[1].intensities.rgb,light[1].constant,light[1].linear, light[1].quadratic);
+	vec3 light0 = OK_Light(light[0].position.xyz, light[0].intensities.rgb /*,light[0].constant,light[0].linear, light[0].quadratic*/);
+	vec3 light1 = OK_Light(light[1].position.xyz, light[1].intensities.rgb /*,light[1].constant,light[1].linear, light[1].quadratic*/);
 
 	//out_color = vec4(fragNormal, 1)*0.2 + 0.8*vec4(texture(mainTex, texCoord).rgb , vertex_color_out.a);
-	out_color = vec4( (light0) * diff, 1);
+	out_color = vec4( light1, 1);
 }
 //out_color = vec4(texture(mainTexture, texCoord).rgb * vertex_color_out.rgb, vertex_color_out.a);

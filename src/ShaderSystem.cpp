@@ -134,10 +134,10 @@ void ShaderSystem::load()
 	auto lightBufferLayout = UniformBufferLayout(1);
 	lightBufferLayout.push<GL_FLOAT_VEC4>("position");	//alternative approach: .push<GL_FLOAT>("position", 3); but this might be prune to errors because of how std140 handles vec3
 	lightBufferLayout.push<GL_FLOAT_VEC4>("intensities");
-	lightBufferLayout.push<GL_FLOAT>("spread");
-	lightBufferLayout.push<GL_FLOAT>("constant");
-	lightBufferLayout.push<GL_FLOAT>("linear");
-	lightBufferLayout.push<GL_FLOAT>("quadratic");
+	//lightBufferLayout.push<GL_FLOAT>("spread");
+	//lightBufferLayout.push<GL_FLOAT>("constant");
+	//lightBufferLayout.push<GL_FLOAT>("linear");
+	//lightBufferLayout.push<GL_FLOAT>("quadratic");
 
 	ShaderSystem::m_mapUniformBuffersID["OK_Lights"] = ShaderSystem::m_uniformBuffers.size(); //assign ID/index
 	ShaderSystem::m_uniformBuffers.emplace_back(UniformBuffer("OK_Lights", lightBufferLayout, GL_STATIC_DRAW));
