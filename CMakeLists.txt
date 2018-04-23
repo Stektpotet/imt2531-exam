@@ -57,6 +57,7 @@ target_sources(
     PRIVATE ${SRCDIR}/src/ModelSystem.cpp
     PRIVATE ${SRCDIR}/src/Parser.cpp
     PRIVATE ${SRCDIR}/src/Renderer.cpp
+    PRIVATE ${SRCDIR}/src/Scene.cpp    
     PRIVATE ${SRCDIR}/src/ShaderProgram.cpp
     PRIVATE ${SRCDIR}/src/ShaderSystem.cpp
     PRIVATE ${SRCDIR}/src/Texture.cpp

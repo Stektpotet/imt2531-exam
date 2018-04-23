@@ -2,16 +2,23 @@
 
 namespace overkill
 {
-    Entity::Entity(C::Tag tag, glm::vec3 pos = glm::vec3(0,0,0), glm::vec3 rot = glm::vec3(0,0,0), 
+    Entity::Entity(C::Tag tag, int parentID = -1, glm::vec3 pos = glm::vec3(0,0,0), glm::vec3 rot = glm::vec3(0,0,0), 
                             glm::vec3 vel = glm::vec3(0,0,0), glm::vec3 angVel = glm::vec3(0,0,0))
     {
         m_tag = tag;
+        m_parentID = parentID;
         m_position = pos;
         m_rotation = rot;
         m_velocity = vel;
         m_angularVelocity = angVel;
     }
     
+    int Entity::getParent() 
+    {   return m_parentID;   }
+     
+    int Entity::getEntityID() 
+    {   return m_entityID;   }
+
     glm::vec3 Entity::getPosition()
     {   return m_position;  }
 
@@ -23,6 +30,12 @@ namespace overkill
 
     glm::vec3 Entity::getAngularVelocity()
     {   return m_angularVelocity;   }
+
+    void Entity::setParent(int parentID)
+    {   m_parentID = parentID;  }
+
+    void Entity::setEntityID(int ID)
+    {   m_entityID = ID;  }
 
     void Entity::setPosition(glm::vec3 pos)
     {   m_position = pos;   }

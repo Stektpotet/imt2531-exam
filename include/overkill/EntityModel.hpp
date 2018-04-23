@@ -20,7 +20,7 @@ private:
     glm::mat4 getModelMatrix();
 
 public:
-    EntityModel(C::Tag modelTag,
+    EntityModel(C::Tag modelTag, int parentID = -1,
                 glm::vec3 pos = glm::vec3(0,0,0), glm::vec3 rot = glm::vec3(0,0,0), 
                 glm::vec3 scale = glm::vec3(1,1,1), glm::vec3 vel = glm::vec3(0,0,0), 
                 glm::vec3 angVel = glm::vec3(0,0,0));

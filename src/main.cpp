@@ -27,6 +27,7 @@
 #include <overkill/TextureSystem.hpp>
 #include <overkill/ShaderSystem.hpp>
 #include <overkill/MaterialSystem.hpp>
+#include <overkill/Scene.hpp>
 #include <overkill/ModelSystem.hpp>
 #include <overkill/EntityModel.hpp>
 
@@ -58,17 +59,26 @@ int main()
 
     auto renderer = EdgeRenderer();
     
+    Scene scene;
+
     //translation * view * rotate(time*0.1*F, time*0.333334*F, time*0.1666666667*F) //From shader, old system.
     auto modelCubeObject = EntityModel("cube");
     auto modelCubeChildObject = EntityModel("cube");
     auto modelFloorObject = EntityModel("cube");
 
+    modelCubeObject.setEntityID(scene.addEntityModel(modelCubeObject));
+    modelCubeChildObject.setEntityID(scene.addEntityModel(modelCubeObject));
+    modelCubeChildObject.setParent(modelCubeObject.getEntityID());
+
+
     //modelCubeObject.setRotation(glm::vec3(45, 45, 45));
     //modelCubeObject.setAngularVelocity(glm::vec3(1, 3.4f, 1.67f));
-    modelCubeObject.setAngularVelocity(glm::vec3(0, 0.3f, 0));
-    modelCubeObject.setPosition(glm::vec3(0,2,0));
+    modelCubeObject.setAngularVelocity(glm::vec3(0, 0.4f, 0));
+    modelCubeObject.setPosition(glm::vec3(0,1,0));
+    modelCubeObject.setVelocity(glm::vec3(0.4f, 0, 0));
+    
 
-    modelCubeChildObject.setPosition(glm::vec3(0,2,3));
+    modelCubeChildObject.setPosition(glm::vec3(0,1,3));
 
 
     modelFloorObject.setPosition(glm::vec3(0, -4, 0));

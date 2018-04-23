@@ -3,10 +3,10 @@
 namespace overkill
 {
 
-    EntityModel::EntityModel(C::Tag modelTag,
+    EntityModel::EntityModel(C::Tag modelTag, int parentID,
                             glm::vec3 pos, glm::vec3 rot, 
                             glm::vec3 scale, glm::vec3 vel, 
-                            glm::vec3 angVel) : Entity(modelTag, pos, rot, vel, angVel)
+                            glm::vec3 angVel) : Entity(modelTag, parentID, pos, rot, vel, angVel)
     {
         m_modelID =  ModelSystem::getIdByTag(modelTag);
         m_scale = scale;
