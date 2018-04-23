@@ -56,12 +56,13 @@ int main()
 
     auto renderer = Renderer();
     //translation * view * rotate(time*0.1*F, time*0.333334*F, time*0.1666666667*F) //From shader, old system.
-    auto modelCubeObject = EntityModel("cube");
+    auto modelCubeObject = EntityModel("Suzanne");
     auto modelFloorObject = EntityModel("cube");
 
     modelCubeObject.setRotation(glm::vec3(45, 45, 45));
     modelCubeObject.setAngularVelocity(glm::vec3(1, 3.4f, 1.67f));
-    modelCubeObject.setPosition(glm::vec3(4,2,1));
+    modelCubeObject.setPosition(glm::vec3(4,10,1));
+    modelCubeObject.setScale(glm::vec3(10, 10, 10));
 
     modelFloorObject.setPosition(glm::vec3(0, -3, 0));
     modelFloorObject.setScale(glm::vec3(20, 0.5f, 20));

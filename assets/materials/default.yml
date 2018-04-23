@@ -1,5 +1,7 @@
-maps: 1
-  mainTexture: checkers
+maps: 0
 
-values: 1
-  transparency: .8
+values: 4
+  opacity: 1
+  intensity: 1
+  bumpiness: 1
+  specularity: 0
