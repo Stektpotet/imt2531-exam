@@ -11,7 +11,7 @@ def post(tag, extension):
 
 def scan_collection(collection_match):
 
-    filenames = glob.glob("./assets/"+collection_match)
+    filenames = glob.glob("../assets/" + collection_match)
     for fname in filenames:
 
         fname = os.path.basename(fname)
@@ -27,9 +27,9 @@ if __name__ == "__main__":
 
     running = True
     while running:
-        print()
-        collection_match = input("Query: ")
-        
+        #collection_match = input("Query: ")
+        collection_match = sys.stdin.readline()
+
         if collection_match == "EXIT":
             break
         
