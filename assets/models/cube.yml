@@ -67,7 +67,7 @@ mesh: innercube
     t: 11 10 12
 
 mesh: outercube
-    material: default
+    material: brick
     shader: base
     triangles: 12
     t: 14 15 16

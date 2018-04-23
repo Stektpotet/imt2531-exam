@@ -57,7 +57,8 @@ out vec4 out_color;
 
 uniform float time = 0;
 uniform sampler2D mainTexture;
+uniform float transparency = 1;
 
 void main() {
-    out_color = .5*vec4(texture(mainTexture, texCoord).rgb, 1);
+    out_color = transparency*vec4(texture(mainTexture, texCoord).rgb, 1);
 }

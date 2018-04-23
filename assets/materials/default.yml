@@ -1,4 +1,5 @@
 maps: 1
-  mainTexture: brickwall
+  mainTexture: checkers
 
-values: 0
+values: 1
+  transparency: .8
