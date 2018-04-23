@@ -14,7 +14,7 @@ namespace overkill
     float Input::m_camPanX = 0;
     float Input::m_camPanY = 0;
 
-    void Input::OnInputKeyPress(GLFWwindow* window, int keyCode, int scanCode, int mods)
+    void Input::OnInputKeyPress(GLFWwindow* window, int keyCode, int /*scanCode*/, int /*mods*/)
     {
         LOG_DEBUG("Pressing %i, as char: %c\n", keyCode, char(keyCode));
         if (keyCode == GLFW_KEY_ESCAPE)
@@ -39,7 +39,7 @@ namespace overkill
         }
     }
 
-    void Input::OnInputKeyHold(GLFWwindow* window, int keyCode, int scanCode, int mods)
+    void Input::OnInputKeyHold(GLFWwindow* /*window*/, int keyCode, int /*scanCode*/, int /*mods*/)
     {
         printf("Holding %i, as char: %c\n", keyCode, char(keyCode));
         if (keyCode == GLFW_KEY_W)
@@ -52,7 +52,7 @@ namespace overkill
         }
     }
 
-    void Input::OnInputKeyUnpress(GLFWwindow* window, int keyCode, int scanCode, int mods)
+    void Input::OnInputKeyUnpress(GLFWwindow* /*window*/, int keyCode, int /*scanCode*/, int /*mods*/)
     {
         printf("Unpressed %i, as char: %c\n", keyCode, char(keyCode));
     }
@@ -73,7 +73,7 @@ namespace overkill
         }
     }
 
-    void Input::OnCursorHover(GLFWwindow* window, double x, double y)
+    void Input::OnCursorHover(GLFWwindow* /*window*/, double x, double y)
     {
 
         //Camera rotation:
@@ -107,9 +107,9 @@ namespace overkill
 
         m_cursorX = x;  // Save current cursor pos.
         m_cursorY = y;  // important to do this last since the logic to rotate and pan
-    }                   // uses the difference between now and last mouse pos.
+    }                   // uses the difference between now sand last mouse pos.
 
-    void Input::OnScrollChange(GLFWwindow* window, double x, double y)
+    void Input::OnScrollChange(GLFWwindow* /*window*/, double x, double y)
     {
         // fovy += (y / 512) + 32;
         m_fovy -= y * C::ZoomSensitivity;
@@ -119,7 +119,7 @@ namespace overkill
         printf("Scroll: x: %f,\ty:%f\t\tfovy:%f\n", x, y, m_fovy);
     }
 
-    void Input::OnMouseClick(GLFWwindow* window, int button, int action, int mods)
+    void Input::OnMouseClick(GLFWwindow* /*window*/, int button, int action, int /*mods*/)
     {
         if (button == GLFW_MOUSE_BUTTON_LEFT)
         {
