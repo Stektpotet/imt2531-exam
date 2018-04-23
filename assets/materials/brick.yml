@@ -1,8 +1,10 @@
-maps: 2
+maps: 3
   mainTex: scifi
   bumpTex: scifi_nrm
+  bumpTex: scifi_spec
 
-values: 3
+values: 4
   opacity: 1
   intensity: 1
-  bumpiness: 0
+  bumpiness: 1
+  specularity: 0

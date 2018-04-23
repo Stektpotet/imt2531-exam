@@ -41,7 +41,8 @@ void TextureSystem::load()
         "brickwall",
         "brickwall-nrm",
         "scifi",
-        "scifi_nrm",
+		"scifi_nrm",
+		"scifi_spec",
         "example",
         "example_nrm"
     };

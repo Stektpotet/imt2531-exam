@@ -41,7 +41,7 @@ private:
     static std::unordered_map<C::Tag, std::set<GLuint>> m_mapUniformBufferTargets;
 
     static std::vector<UniformBuffer>           m_uniformBuffers;
-    static std::unordered_map<C::Tag, C::ID>    m_mapUniformBuffers;
+    static std::unordered_map<C::Tag, C::ID>    m_mapUniformBuffersID;
     static std::vector<ShaderProgram>           m_shaderPrograms;
     static std::unordered_map<C::Tag, C::ID>    m_mapShaderProgramID;
     static std::vector<UpdateCallback>          m_updateCallbacks;

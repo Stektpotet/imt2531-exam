@@ -12,14 +12,9 @@ namespace overkill
 
 struct UniformBufferLayout
 {
-	struct UniformValue
-	{
-		GLuint index;
-		GLuint size;
-	};
 
 private:
-	std::unordered_map<C::Tag, UniformValue> m_uniforms;
+	std::unordered_map<C::Tag, GLuint> m_uniforms;
 	GLuint m_blockSize;
 	GLuint m_instances;
 public:
@@ -29,7 +24,7 @@ public:
 	void push(const C::Tag& name, GLuint componentCount = 1)
 	{
 		const auto size = componentCount * GLTypeSize(type);
-		m_uniforms.emplace(std::make_pair(name, UniformValue{ m_blockSize, size }));
+		m_uniforms.emplace(std::make_pair(name, m_blockSize));
 		m_blockSize += size;
 	}
 	inline GLuint blockSize()  const { return m_blockSize; }
@@ -41,14 +36,10 @@ public:
 		auto search = m_uniforms.find(name); //@TODO discuss usage of at() as it works just as well here
 		if (search != m_uniforms.end())
 		{
-			return instance * m_blockSize + search->second.index;
+			return instance * m_blockSize + search->second;
 		}
 		LOG_ERROR("indexOfUniform: \"%s\" cannot be found in buffer!\n has it been added in the layout?", name.c_str());
 		return 0;
-	}
-	inline GLuint sizeOfUniform(const C::Tag& name) const
-	{
-		return m_uniforms.at(name).size; //error if it doesnt exist 
 	}
 
 	///TEMPLATE SPESCIALIZATIONS:
@@ -82,8 +73,8 @@ class UniformBuffer
 private:
     GLuint m_id;
     C::Tag m_name;
-public:
 	UniformBufferLayout m_blockLayout;
+public:
 
 	UniformBuffer(const char *name, const UniformBufferLayout& layout, const GLenum drawMode);
    
@@ -99,13 +90,9 @@ public:
 	{ 
 		return m_blockLayout.blockCount();
 	}
+
 	GLuint getUniformIndex(const C::Tag& name, const GLuint blockInstance = 0) const;
 	void update(const C::ID index, GLsizeiptr size, const void *data);
 };
 
 }
-
-
-//Shader definition
-//ShaderSystem onLoad() -> Shader program introspection -> list of uniform block names
-//Try lookup of uBlockName in ShaderSystem::m_uBlocks

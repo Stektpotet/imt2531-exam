@@ -4,7 +4,7 @@ namespace overkill
 {
 std::unordered_map<C::Tag, std::set<GLuint>> ShaderSystem::m_mapUniformBufferTargets;
 std::vector<UniformBuffer>                   ShaderSystem::m_uniformBuffers;
-std::unordered_map<C::Tag, C::ID>            ShaderSystem::m_mapUniformBuffers;
+std::unordered_map<C::Tag, C::ID>            ShaderSystem::m_mapUniformBuffersID;
 std::vector<ShaderProgram>                   ShaderSystem::m_shaderPrograms;
 std::unordered_map<C::Tag, C::ID>            ShaderSystem::m_mapShaderProgramID;
 std::vector<ShaderSystem::UpdateCallback>    ShaderSystem::m_updateCallbacks;
@@ -101,12 +101,12 @@ GLuint ShaderSystem::getBlockUniformLocation(const C::Tag& uBlock, const C::Tag&
 
 auto ShaderSystem::getUniformBufferIdByTag(const C::Tag& tag) -> C::ID
 {
-    return ShaderSystem::m_mapUniformBuffers[tag];
+    return ShaderSystem::m_mapUniformBuffersID[tag];
 }
 
 auto ShaderSystem::getUniformBufferByTag(const C::Tag& tag) -> const UniformBuffer&
 {
-    return ShaderSystem::m_uniformBuffers[m_mapShaderProgramID[tag]];
+    return ShaderSystem::m_uniformBuffers[m_mapUniformBuffersID[tag]];
 }
 
 auto ShaderSystem::getUniformBufferById(C::ID uBufferID) -> const UniformBuffer&
@@ -122,21 +122,25 @@ void ShaderSystem::load()
     //ShaderSystem::push("edge", "assets/shaders/edge.shader");
     
     //pushUniformBuffer("OK_Lights", sizeof(LightData) * 8);
-	auto matBufferLayout = UniformBufferLayout();
+	auto matBufferLayout = UniformBufferLayout(1);
 	matBufferLayout.push<GL_FLOAT_MAT4>("projection", 1);
 	matBufferLayout.push<GL_FLOAT_MAT4>("view", 1);
+	matBufferLayout.push<GL_FLOAT_VEC4>("view_position", 1);	
 	
 	//pushUniformBuffer("OK_Matrices",    sizeof(glm::mat4) * 2);
-	ShaderSystem::m_mapUniformBuffers["OK_Matrices"] = ShaderSystem::m_uniformBuffers.size(); //assign ID/index
-	auto buf = ShaderSystem::m_uniformBuffers.emplace_back(UniformBuffer("OK_Matrices", matBufferLayout, GL_DYNAMIC_DRAW));
+	ShaderSystem::m_mapUniformBuffersID["OK_Matrices"] = ShaderSystem::m_uniformBuffers.size(); //assign ID/index
+	auto buf = ShaderSystem::m_uniformBuffers.emplace_back(UniformBuffer("OK_Matrices", matBufferLayout, GL_STREAM_DRAW));
 
-	auto lightBufferLayout = UniformBufferLayout(8);
-	lightBufferLayout.push<GL_FLOAT_VEC3>("position", 1);	//alternative approach: .push<GL_FLOAT>("position", 3); but this might be prune to errors because of how std140 handles vec3
-	lightBufferLayout.push<GL_FLOAT_VEC3>("intensities", 1);
-	lightBufferLayout.push<GL_FLOAT>("spread", 1);
+	auto lightBufferLayout = UniformBufferLayout(1);
+	lightBufferLayout.push<GL_FLOAT_VEC4>("position");	//alternative approach: .push<GL_FLOAT>("position", 3); but this might be prune to errors because of how std140 handles vec3
+	lightBufferLayout.push<GL_FLOAT_VEC4>("intensities");
+	lightBufferLayout.push<GL_FLOAT>("spread");
+	lightBufferLayout.push<GL_FLOAT>("constant");
+	lightBufferLayout.push<GL_FLOAT>("linear");
+	lightBufferLayout.push<GL_FLOAT>("quadratic");
 
-	ShaderSystem::m_mapUniformBuffers["OK_Lights"] = ShaderSystem::m_uniformBuffers.size(); //assign ID/index
-	ShaderSystem::m_uniformBuffers.emplace_back(UniformBuffer("OK_Lights", lightBufferLayout, GL_DYNAMIC_DRAW));
+	ShaderSystem::m_mapUniformBuffersID["OK_Lights"] = ShaderSystem::m_uniformBuffers.size(); //assign ID/index
+	ShaderSystem::m_uniformBuffers.emplace_back(UniformBuffer("OK_Lights", lightBufferLayout, GL_STATIC_DRAW));
 
 	//pushUniformBuffer("OK_Lights",   sizeof(glm::vec4) * 2+sizeof(float));
 	//auto buf = getUniformBufferByTag("OK_Matrices");
@@ -144,35 +148,12 @@ void ShaderSystem::load()
 	GLsizei nameMaxLength;
 	
 	linkUniformBlocksForAll();
-	for (const auto&[blockName, shadersUsingTheBlock] : m_mapUniformBufferTargets)
-	{
-		GLuint shader = *(shadersUsingTheBlock.begin());
-
-		auto uBlockIndex = ShaderIntrospector::getUniformBlockIndex(shader, blockName);
-		if (uBlockIndex != GL_INVALID_INDEX) //this block did not exist in the shader
-		{
-			GLCall(glGetProgramiv(shader, GL_ACTIVE_UNIFORM_MAX_LENGTH, &nameMaxLength));
-			const auto& indices = ShaderIntrospector::getUniformBlockUniformIndices(shader, uBlockIndex);
-			for (const auto index : indices)
-			{
-				char* uniformName = (char*)alloca(nameMaxLength * sizeof(char));
-				GLint length, size;
-				GLenum type;
-				GLCall(glGetActiveUniform(shader, index, nameMaxLength, &length, &size, &type, uniformName));
-				GLsizei s = GLTypeSize(type);
-				LOG_INFO("#%u has: %s, with index: %u, and of type: %u, with the size: %i\n", uBlockIndex, uniformName, index, type, s);
-			}
-			continue;
-		}
-		LOG_ERROR("Failed obtaining size of block uniforms @ %s: INVALID INDEX");
-	}
-	
 	GLuint bindPoint = 0;
 	for (auto& buffer : m_uniformBuffers)
 	{
 		for (const auto& shader : m_shaderPrograms)
 		{
-			if (buffer.m_blockLayout.blockCount() == 1)
+			if (buffer.blockCount() == 1)
 			{
 				auto uBlockIndex = ShaderIntrospector::getUniformBlockIndex(GLuint(shader), C::Tag(buffer));
 				if (uBlockIndex != GL_INVALID_INDEX) //this block did exist in the shader
@@ -183,7 +164,7 @@ void ShaderSystem::load()
 			}
 			else
 			{
-				for (int blockInstance = 0; blockInstance < buffer.m_blockLayout.blockCount(); blockInstance++)
+				for (int blockInstance = 0; blockInstance < buffer.blockCount(); blockInstance++)
 				{
 					const auto& blockName = C::Tag(buffer) + '[' + std::to_string(blockInstance) + ']';
 					auto uBlockIndex = ShaderIntrospector::getUniformBlockIndex(GLuint(shader), blockName);
@@ -210,9 +191,17 @@ void ShaderSystem::reload()
     {
         shaderprog.clean();         
     }
+	// Remove all shaders
+	ShaderSystem::m_shaderPrograms.clear();
 
-    // Remove all shaders
-    ShaderSystem::m_shaderPrograms.clear();
+	// Delete from GPU
+	for (auto uBuffer : ShaderSystem::m_uniformBuffers)
+	{
+		uBuffer.clean();
+	}
+	// Remove all uniformBuffers
+	ShaderSystem::m_uniformBuffers.clear();
+
 
     // Load from file again
     ShaderSystem::load();

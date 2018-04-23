@@ -68,18 +68,22 @@ int main()
     Light light;
 
     struct LightData {
-        glm::vec3 position;
-        glm::vec3 intensities;
+        glm::vec4 position;
+        glm::vec4 intensities;
         float spread;
+		float constant;
+		float linear;
+		float quadratic;
+
     } lightData[8] = {
-        LightData{ { 0, 1, 0 },{ 0, 0, 1 }, 10.0f },
-        LightData{ { 1, 1, 0 },{ 0, 1, 0 }, 10.0f },
-        LightData{ { 3, 1, 0 },{ 0, 1, 1 }, 10.0f },
-        LightData{ { 0, -2, 0 },{ 1, 0, 0 }, 10.0f },
-        LightData{ { 0, 1, -4 },{ 1, 0, 1 }, 10.0f },
-        LightData{ { 0, -5, 0 },{ 1, 1, 0 }, 10.0f },
-        LightData{ { 0, 5, 0 },{ 1, 1, 1 }, 10.0f },
-        LightData{ { 0,3, 3 },{ 0.5, 0.5, 0.5 }, 10.0f },
+        LightData{ { 0, 4, 0, 0	},{ 2, 1, 0.5f	 , 0}, 10.0f, 10.0f, 10.0f, 10.0f },
+        LightData{ { 0, 3, 0, 0	},{ 0, 0, 1		 , 0}, 10.0f, 10.0f, 10.0f, 10.0f },
+        LightData{ { 3, 1, 0, 0	},{ 0, 1, 1		 , 0}, 10.0f, 10.0f, 10.0f, 10.0f },
+        LightData{ { 0, -2, 0,0	},{ 1, 0, 0		 , 0}, 10.0f, 10.0f, 10.0f, 10.0f },
+        LightData{ { 0, 1, -4,0	},{ 1, 0, 1		 , 0}, 10.0f, 10.0f, 10.0f, 10.0f },
+        LightData{ { 0, -5, 0,0	},{ 1, 1, 0		 , 0}, 10.0f, 10.0f, 10.0f, 10.0f },
+        LightData{ { 0, 5, 0,0	},{ 1, 1, 1		 , 0}, 10.0f, 10.0f, 10.0f, 10.0f },
+        LightData{ { 0,3, 3	,0	},{ 0.5, 0.5, 0.5, 0}, 10.0f, 10.0f, 10.0f, 10.0f },
     };
 
 
@@ -95,14 +99,42 @@ int main()
 	GLint uniformM2W;
 
 	auto matrixBuf = ShaderSystem::getUniformBufferByTag("OK_Matrices");
+	auto lightBuf = ShaderSystem::getUniformBufferByTag("OK_Lights");
 
-    shader.bind();
+	shader.bind();
 	uniformM2W  = shader.getUniformLocation("m2w");
     uniformTime = shader.getUniformLocation("time");
 
 	auto projectionIndex = matrixBuf.getUniformIndex("projection");
-	auto viewIndex = matrixBuf.getUniformIndex("view");
+	auto viewIndex       = matrixBuf.getUniformIndex("view");
+	auto viewPosIndex    = matrixBuf.getUniformIndex("view_position");
 
+	auto light0PosIndex			= lightBuf.getUniformIndex("position", 0);
+	auto light0IntensitiesIndex = lightBuf.getUniformIndex("intensities", 0);
+	auto light0Constant			= lightBuf.getUniformIndex("constant", 0);
+	auto light0Linear			= lightBuf.getUniformIndex("linear", 0);
+	auto light0Quadratic		= lightBuf.getUniformIndex("quadratic", 0);
+
+
+
+	auto light1PosIndex			= lightBuf.getUniformIndex("position", 1); // this could also be used as offset for all the other lights
+	auto light1IntensitiesIndex = lightBuf.getUniformIndex("intensities", 1);
+	auto light1Constant			= lightBuf.getUniformIndex("constant", 1);
+	auto light1Linear			= lightBuf.getUniformIndex("linear", 1);
+	auto light1Quadratic		= lightBuf.getUniformIndex("quadratic", 1);
+
+
+	lightBuf.update(light0PosIndex, sizeof(glm::vec4), glm::value_ptr(lightData[0].position));
+	lightBuf.update(light0IntensitiesIndex, sizeof(glm::vec4), glm::value_ptr(lightData[0].intensities));
+	lightBuf.update(light0Constant, sizeof(GLfloat),	&(lightData[0].constant));
+	lightBuf.update(light0Linear, sizeof(GLfloat),		&(lightData[0].linear));
+	lightBuf.update(light0Quadratic, sizeof(GLfloat),	&(lightData[0].quadratic));
+
+	lightBuf.update(light1PosIndex, sizeof(glm::vec4), glm::value_ptr(lightData[1].position));
+	lightBuf.update(light1IntensitiesIndex, sizeof(glm::vec4), glm::value_ptr(lightData[1].intensities));
+	lightBuf.update(light1Constant, sizeof(GLfloat),	&(lightData[1].constant));
+	lightBuf.update(light1Linear, sizeof(GLfloat),		&(lightData[1].linear));
+	lightBuf.update(light1Quadratic, sizeof(GLfloat),	&(lightData[1].quadratic));
 	//ShaderSystem::getUniformLocation("m2w");
 	//ShaderSystem::updateUniformBlock();
 	//glUniformMatrix4fv()
@@ -136,7 +168,7 @@ int main()
 
 		matrixBuf.update(projectionIndex, sizeof(glm::mat4), glm::value_ptr(projection));
 		matrixBuf.update(viewIndex, sizeof(glm::mat4), glm::value_ptr(view));
-
+		matrixBuf.update(viewPosIndex, sizeof(glm::vec4), glm::value_ptr(pivot));
         //GLCall(glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(projection)));
         //GLCall(glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(view)));
         GLCall(glUniform1f(uniformTime, (float)glfwGetTime()));
