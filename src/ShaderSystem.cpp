@@ -33,16 +33,21 @@ auto ShaderSystem::copyById(C::ID shaderProgramID) -> ShaderProgram
     return ShaderSystem::m_shaderPrograms[shaderProgramID];
 }
 
-void ShaderSystem::push(const C::Tag&& tag, const char* path) 
+void ShaderSystem::push(const C::Tag tag, const std::string& filepath) 
 {
     ShaderSystem::m_mapShaderProgramID[tag] = ShaderSystem::m_shaderPrograms.size();    
-    ShaderSystem::m_shaderPrograms.emplace_back( ShaderProgram(path) );
+    ShaderSystem::m_shaderPrograms.emplace_back( ShaderProgram(filepath.data()) );
 }
 
 void ShaderSystem::load() 
 {
-    ShaderSystem::push("base", "assets/shaders/base.glsl");
-    ShaderSystem::push("default", "assets/shaders/default.glsl");
+    std::vector<FileEvent> fevents = Watcher::popEvents("discovered", "shaders");
+    for (const auto& e : fevents) 
+    {
+        const auto filepath = C::ShadersFolder + ("/" + e.tag) + "." + e.extension;
+        LOG_DEBUG("Shaders from file: %s", filepath.data());
+        ShaderSystem::push(e.tag, filepath);
+    }
 }
 
 void ShaderSystem::reload() 
@@ -58,6 +63,7 @@ void ShaderSystem::reload()
     ShaderSystem::m_shaderPrograms.clear();
 
     // Load from file again
+    Watcher::discoverFiles();
     ShaderSystem::load();
     for(auto onUpdate : ShaderSystem::m_updateCallbacks)
     {

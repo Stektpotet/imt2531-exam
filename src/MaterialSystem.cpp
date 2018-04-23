@@ -29,6 +29,7 @@ auto MaterialSystem::getById(C::ID materialID) -> const Material&
 void MaterialSystem::reload() 
 {
     MaterialSystem::m_materials.clear();
+    Watcher::discoverFiles();
     MaterialSystem::load();
 
     for(auto onUpdate : MaterialSystem::m_updateCallbacks)
@@ -38,20 +39,21 @@ void MaterialSystem::reload()
     }
 }
 
+void MaterialSystem::push(const C::Tag tag, const std::string& filepath) 
+{
+    MaterialSystem::m_mapMaterialID[tag] = MaterialSystem::m_materials.size();
+    MaterialSystem::m_materials.emplace_back(Material(filepath));
+}
+
 void MaterialSystem::load()
 {
-    // TODO: Load these from the file system somehow
-    const std::vector<std::string> tags = {
-        "brick",
-        "default",
-    };
+    std::vector<FileEvent> fevents = Watcher::popEvents("discovered", "materials");
 
-    for(const auto tag : tags) {
-        const auto filepath = C::MaterialsFolder + tag + C::MaterialsExtension;
+    for(const auto e : fevents) {
 
+        const auto filepath = C::MaterialsFolder + ("/" + e.tag) + "." + e.extension;
         LOG_DEBUG("Material from file: %s", filepath.data());
-        MaterialSystem::m_mapMaterialID[tag] = MaterialSystem::m_materials.size();
-        MaterialSystem::m_materials.emplace_back(Material(filepath));
+        MaterialSystem::push(e.tag, filepath);
     }
 }
 

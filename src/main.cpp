@@ -15,8 +15,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#define TINYFILES_IMPLEMENTATION
-
 #include <overkill/Config.hpp>
 #include <overkill/Init.hpp>
 #include <overkill/Input.hpp>
@@ -29,6 +27,7 @@
 #include <overkill/MaterialSystem.hpp>
 #include <overkill/ModelSystem.hpp>
 #include <overkill/EntityModel.hpp>
+#include <overkill/Watcher.hpp>
 
 #define DEBUG 1
 
@@ -37,7 +36,7 @@ using namespace overkill;
 
 int main()
 {
-
+    // Init libraries + Watcher callbacks
 	auto window = Init::GLFW(
         C::VersionMajor, 
         C::VersionMinor, 
@@ -45,10 +44,9 @@ int main()
         C::WinHeight,
         C::WinName);
 
-    // Init libraries + Watcher callbacks
     Init::GLEW();
     Init::OpenGL(C::ClearColor); //(0.05f, 0.06f, 0.075f, 1.0f) for sexy dark blue-grey
-    Init::Watcher();
+    Watcher::discoverFiles();
 
     // Load resource subsystems
     TextureSystem::load();

@@ -67,12 +67,5 @@ void Init::OpenGL(const glm::vec4 background)
     GLPrintMaxContants(); 
 }
 
-void Init::Watcher() 
-{
-    Watcher::watchFile("brick", "assets/material/brick.yml", [](const ModifiedFile& mfile) {
-        LOG_INFO("File %s changed", mfile.path.c_str());
-    });
-}
-
 
 } // ::overkill

@@ -87,7 +87,7 @@ configure_directory(${SRCDIR}/assets/shaders ${BINDIR}/assets/shaders)
 configure_directory(${SRCDIR}/assets/models ${BINDIR}/assets/models)
 configure_directory(${SRCDIR}/assets/textures ${BINDIR}/assets/textures)
 
-
+configure_file(${SRCDIR}/tool/discover.py ${BINDIR}/discover.py COPYONLY)
 
 
 ###############################
@@ -154,6 +154,17 @@ target_link_libraries(
     PRIVATE SOIL
 )
 endif()
+
+# Test discover.py and test-discover.cpp
+add_executable(test_discover "${SRCDIR}/tool/test-discover.cpp")
+set_target_properties(
+    test_discover
+    PROPERTIES
+    CXX_STANDARD 17
+    CXX_STANDARD_REQUIRED ON
+    RUNTIME_OUTPUT_DIRECTORY "${BINDIR}"
+)
+
 
 
 message("CMAKE_BINARY_DIR: " ${BINDIR})

@@ -5,19 +5,11 @@ enc_temp_folder/
 CMakeSettings.json
 *.DS_Store
 
-# big assets
-*teapot-top.yml
-*teapot-base.yml
 
-
-
-# blender folder
-blender/*
-!blender/default.blend
-!blender/export.py
-
-# Ignore all assets/ by default
-#   Whitelist assets we want to keep
+# 
+# ASSETS WHITELIST
+#
+# * Whitelist assets we want to keep
 
 assets/textures/*
 !assets/textures/.gitkeep

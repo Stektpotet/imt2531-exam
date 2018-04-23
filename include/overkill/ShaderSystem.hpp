@@ -7,6 +7,8 @@
 #include <overkill/Config.hpp>
 #include <overkill/ShaderProgram.hpp>
 
+#include <overkill/Watcher.hpp>
+
 namespace overkill
 {
 
@@ -26,7 +28,7 @@ private:
     static std::vector<ShaderProgram> m_shaderPrograms;
     static std::unordered_map<C::Tag, C::ID> m_mapShaderProgramID;
     static std::vector<UpdateCallback> m_updateCallbacks;
-    static void push(const C::Tag&& tag, const char* path);
+    static void push(const C::Tag tag, const std::string& filepath);
 
 public:
     // <summary> Load all shader data onto GPU memory. 

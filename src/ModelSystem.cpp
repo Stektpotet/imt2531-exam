@@ -44,22 +44,17 @@ void ModelSystem::reload()
     ShaderSystem::unbindAll();
 
     // Finally load new data
+    Watcher::discoverFiles();
     ModelSystem::load();
 }
 
 void ModelSystem::load()
 {
-    std::vector<std::string> tags {
-        "cube",
-        "out",
-        "Suzanne",
-        "Icosphere"
-       // "teapot-base", // @TODO find a way to dynamically load the file names(tags) into the system
-       // "teapot-top",
-    };
-
-    for(auto tag: tags)
+    std::vector<FileEvent> fevents = Watcher::popEvents("discovered", "models");
+    
+    for(auto e: fevents)
     {   
+        auto tag = e.tag;
         // Create new modesl
         m_mapModelID[tag] = m_models.size();
         Model newModel;
@@ -68,7 +63,7 @@ void ModelSystem::load()
         newModel.m_tag = tag;
         
         // Read from modelfile
-        auto filepath = C::ModelsFolder + tag + C::ModelsExtension;
+        auto filepath = C::ModelsFolder + ("/" + tag) + "." + e.extension;
         auto filestring = Util::fileToString(filepath.data());
         auto p = Parser(filestring);
         LOG_DEBUG("Parsing: %s", filepath.data());

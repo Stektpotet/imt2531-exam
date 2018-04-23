@@ -22,13 +22,13 @@ namespace overkill
             glfwSetWindowShouldClose(window, 1);
         }
 
-        // PRESS 1 TO RELOAD MaterialSystem
-        else if(keyCode == GLFW_KEY_1) {
-            MaterialSystem::reload();
-        }
         // PRESS 2 TO RELOAD ShaderSystem
-        else if(keyCode == GLFW_KEY_2) {
+        else if(keyCode == GLFW_KEY_1) {
             ShaderSystem::reload();
+        }
+        // PRESS 1 TO RELOAD MaterialSystem
+        else if(keyCode == GLFW_KEY_2) {
+            MaterialSystem::reload();
         }
         // PRESS 3 TO RELOAD ModelSystem
         else if(keyCode == GLFW_KEY_3) {

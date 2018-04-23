@@ -72,7 +72,7 @@ auto Parser::nextLine() -> std::string
 auto Parser::nextKeyString() -> KeyString
 {
     auto line = nextLine();
-    LOG_DEBUG("%s", line.data());
+  //  LOG_DEBUG("%s", line.data());
     
     if(line == "")
         return KeyString{"","", PARSE_ERROR};
