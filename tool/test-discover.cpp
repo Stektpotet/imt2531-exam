@@ -12,7 +12,7 @@
 #ifdef WIN32
 const auto& popen = _popen;
 const auto& pclose = _pclose;
-constexpr char PYTHON_COMMAND[] = "C:\\Python36\\python.exe discover.py";
+constexpr char PYTHON_COMMAND[] = "C:\\tools\\Python36\\python.exe discover.py";
 #else
 constexpr char PYTHON_COMMAND[] = "/usr/bin/python3 discover.py";
 #endif
@@ -99,5 +99,7 @@ int main()
     auto modevents = Watcher::popEvents("discovered", "models");
     auto sceneevents = Watcher::popEvents("discovered", "scenes");
 
+
+    std::cin.get();
     return 0;
 }

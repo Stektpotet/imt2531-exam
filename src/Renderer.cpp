@@ -11,7 +11,7 @@ void Renderer::clear()
 void Renderer::draw(const VertexArray& va, const ElementBuffer& eb, const ShaderProgram& shader)
 {
     va.bind();
-    eb.bind();
+    eb.bind();  
     shader.bind();
     GLCall(glDrawElements(GL_TRIANGLES, eb.count(), GL_UNSIGNED_INT, nullptr));
     //
