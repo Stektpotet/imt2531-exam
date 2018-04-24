@@ -66,13 +66,13 @@ namespace overkill
         m_transformMatrix = getModelMatrix(parentMatrix);
         
 
-        printf("\n\nUpdate()\nparentMatrix %s\nentityID %d, \nm_position %f, %f, %f\nm_rotation %f, %f, %f\nm_angVel %f, %f, %f\ndeltatime %f", 
-                glm::to_string(parentMatrix).data(),
+        printf("\n\nUpdate()\n%s\nentityID %d, \nm_position %f, %f, %f\nm_rotation %f, %f, %f\nm_angVel %f, %f, %f\ndeltatime %f", 
                 m_entityID, 
                 m_position.x, m_position.y, m_position.z, 
                 m_rotation.x, m_rotation.y, m_rotation.z, 
                 m_angularVelocity.x, m_angularVelocity.y, m_angularVelocity.z, 
                 dt);
+        Util::printMatrix(parentMatrix, "parentMatrix:");
 
         if (m_childIDs.size() > 0)                  // If we actually have kids.
         {            

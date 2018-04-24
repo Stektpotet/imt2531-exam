@@ -4,6 +4,9 @@
 #include <fstream>
 #include <string>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
 #include <PMS/logger.h>
 #include <overkill/MaterialSystem.hpp>
 #include <overkill/ShaderSystem.hpp>
@@ -17,4 +20,5 @@ auto fileToString(const std::string& filepath) -> std::string;
 void everyTwoSeconds(float t);
 auto packNormal(float x, float y, float z) -> GLint;
 auto packUV(float u, float v) -> GLshort;
+void printMatrix(const glm::mat4& m, const std::string & name);
 }

@@ -10,8 +10,8 @@ namespace overkill
     char  C::WinName[C::StrSize] = "Assignment 2 - Cube";
     float C::AspectRatio     = (float)WinWidth / (float)WinHeight;
     
-    float C::FOV             = 88.0f;
-    float C::MaxFOV          = 88.2f;
+    float C::FOV             = 90.0f;
+    float C::MaxFOV          = 90.2f;
     float C::MinFOV          = 87.97f;
     float C::ZoomSensitivity = 0.0033f;
     float C::LookSensitivity = 0.013f;

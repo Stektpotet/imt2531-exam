@@ -2,8 +2,8 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/ext.hpp>
 
+#include <overkill/Util.hpp>
 #include <overkill/Material.hpp>
 #include <overkill/Entity.hpp>
 #include <overkill/ModelSystem.hpp>
