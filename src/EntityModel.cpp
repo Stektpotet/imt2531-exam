@@ -86,7 +86,7 @@ namespace overkill
 
     void EntityModel::draw(float t)
     {   
-        Renderer::draw(*this, t);
+        Renderer::draw(ModelSystem::getById(m_modelID), m_transformMatrix, t);
     }
 
 }

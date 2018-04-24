@@ -21,7 +21,7 @@ public:
     static void draw(const VertexArray& va, const ElementBuffer& eb, const ShaderProgram& shader);
     static void draw(const Model& model, glm::mat4 modelMatrix = glm::mat4(1));   // Model matrix is translation rotation and scale of the model.
    
-    static void draw( EntityModel& entity, float t );
+    static void draw(const Model& model, glm::mat4 modelMatrix, float t);
     //static void draw( EntityModel& entity, float t);
 };
 
