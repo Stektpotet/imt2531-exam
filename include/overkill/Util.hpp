@@ -19,6 +19,6 @@ namespace overkill::Util
 auto fileToString(const std::string& filepath) -> std::string;  
 void everyTwoSeconds(float t);
 auto packNormal(float x, float y, float z) -> GLint;
-auto packUV(float u, float v) -> GLshort;
+auto packUV(float u, float v) -> GLushort;
 void printMatrix(const glm::mat4& m, const std::string & name);
 }

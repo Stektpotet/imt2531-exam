@@ -12,7 +12,7 @@
 #ifdef WIN32
 const auto& popen = _popen;
 const auto& pclose = _pclose;
-constexpr char PYTHON_COMMAND[] = "C:\\tools\\Python36\\python.exe discover.py";
+constexpr char PYTHON_COMMAND[] = "C:\\tools\\Python36\\python.exe tool\\discover.py";
 #else
 constexpr char PYTHON_COMMAND[] = "/usr/bin/python3 discover.py";
 #endif

@@ -127,8 +127,8 @@ void ModelSystem::load()
         auto vbufLayout = VertexBufferAttribLayout();
 
         vbufLayout.push<GL_FLOAT>(3);                       //position;
-        vbufLayout.push<GL_FLOAT>(3);                       //normal
-        vbufLayout.push<GL_FLOAT>(2);                       //uv
+        vbufLayout.pushPacked<GL_INT_2_10_10_10_REV>(4);    //normal
+        vbufLayout.push<GL_UNSIGNED_SHORT>(2);        //uv
         vbufLayout.push<GL_UNSIGNED_BYTE>(4, GL_TRUE);      //color;
 
         newModel.m_vao.addBuffer(newModel.m_vbo, vbufLayout);

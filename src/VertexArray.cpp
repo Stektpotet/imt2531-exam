@@ -35,10 +35,7 @@ void VertexArray::addBuffer(const VertexBuffer& vb, const VertexBufferAttribLayo
                 (const void*)offset
             )
         );
-        if (attrib.type == GL_INT_2_10_10_10_REV)
-            offset += attrib.count;
-        else
-            offset += attrib.count * GLTypeSize(attrib.type);
+        offset += attrib.size;
         i++;
     }
 

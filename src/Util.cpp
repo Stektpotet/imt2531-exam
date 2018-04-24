@@ -46,13 +46,20 @@ auto Util::packNormal(float x, float y, float z) -> GLint
     return  ((GLint(z * MAX) & DISCARDMASK ) << 20) | ((GLint(y * MAX) & DISCARDMASK ) << 10) |  (GLint(x * MAX) & DISCARDMASK );
 }
 
-auto Util::packUV(float u, float v) -> GLshort
+auto Util::packUV(float u, float v) -> GLushort
 {
-    const auto MAX = 127;
-    const auto CLAMPER = 255;
+    float magnitude = sqrt(u * u + v * v);
+    u /= magnitude;
+    v /= magnitude;
+    
+    const auto MAX = 255; // 1111 1111
+    const auto DISCARDMASK = 511; //1111 1111 1111 1111
 
-    return (GLint(v * MAX) & CLAMPER) << 8 |
-           (GLint(u * MAX) & CLAMPER);
+    GLushort su = (GLushort(u * MAX) & DISCARDMASK) << 8;
+    GLushort sv = (GLushort(v * MAX) & DISCARDMASK);
+
+    return (GLushort(u * MAX) & DISCARDMASK) << 8 |
+           (GLushort(v * MAX) & DISCARDMASK);
 }
 
 void Util::printMatrix(const glm::mat4& m, const std::string & name)

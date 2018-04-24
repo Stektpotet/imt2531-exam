@@ -18,8 +18,8 @@ namespace overkill
 struct Vertex
 {
     GLfloat  x,y,z;
-    GLfloat  nx,ny,nz;
-    GLfloat  u,v;
+    GLint    n;
+    GLushort  u,v;
     GLubyte  r,g,b,a;
 };
 

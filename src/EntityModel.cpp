@@ -66,7 +66,7 @@ namespace overkill
         m_transformMatrix = getModelMatrix(parentMatrix);
         
 
-        printf("\n\nUpdate()\n%s\nentityID %d, \nm_position %f, %f, %f\nm_rotation %f, %f, %f\nm_angVel %f, %f, %f\ndeltatime %f", 
+        printf("\n\nUpdate()\n\nentityID %d, \nm_position %f, %f, %f\nm_rotation %f, %f, %f\nm_angVel %f, %f, %f\ndeltatime %f", 
                 m_entityID, 
                 m_position.x, m_position.y, m_position.z, 
                 m_rotation.x, m_rotation.y, m_rotation.z, 

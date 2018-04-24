@@ -76,10 +76,18 @@ GLuint ShaderIntrospector::getUniformBlockIndex(const GLuint program, const std:
     return index;
 }
 
-GLint ShaderIntrospector::getUniformBlockBinding(const GLuint program, GLuint uBlockIndex)
+GLint ShaderIntrospector::getActiveUniformCount(const GLuint program)
 {
-    GLint value;
-    //GLCall(glGetActiveUniformBlockiv(program, uBlockIndex))
-    return 0;
+    GLint count;
+    GLCall(glGetProgramiv(program, GL_ACTIVE_UNIFORMS, &count));
+    return count;
 }
+
+GLint ShaderIntrospector::getActiveAttribCount(const GLuint program)
+{
+    GLint count;
+    GLCall(glGetProgramiv(program, GL_ACTIVE_ATTRIBUTES, &count));
+    return count;
+}
+
 }

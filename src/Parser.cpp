@@ -177,18 +177,18 @@ auto Parser::nextKeyVertex() -> KeyVertex {
 
 
     // Parsing normal
-    //float nx, ny, nz;
-    ss >> vert.nx >> vert.ny >> vert.nz;
+    float nx, ny, nz;
+    ss >> nx >> ny >> nz;
     if(ss.fail()){
         return KeyVertex{"", {}, PARSE_ERROR};
     }
-   // vert.normal = Util::packNormal(nx, ny, nz);
+    vert.n = Util::packNormal(nx, ny, nz);
 
 
 
 
     // Parsing UV
- //   float u, v;
+    //float u, v;
     ss >> vert.u >> vert.v;
     if(ss.fail()){
         return KeyVertex{"", {}, PARSE_ERROR};

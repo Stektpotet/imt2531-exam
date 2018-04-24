@@ -60,11 +60,6 @@ int main()
     auto renderer = Renderer();
     //translation * view * rotate(time*0.1*F, time*0.333334*F, time*0.1666666667*F) //From shader, old system.
 
-    // TODO remove if compiles.
-    // Transform modelTransform;
-    // modelTransform.m_position = glm::vec3{ 0,0,0 };
-
-    Light light;
 
     struct LightData {
         glm::vec4 position;		//16->16
@@ -105,8 +100,6 @@ int main()
     auto viewIndex       = matrixBuf.getUniformIndex("view");
     auto viewPosIndex    = matrixBuf.getUniformIndex("view_position");
 
-    // @TODO make this getUniformIndex("light", 0)
-    // @note this could also be used as offset for all the other lights
     auto light0PosIndex  = lightBuf.getUniformIndex("light[0].position"); 
     auto light1PosIndex  = lightBuf.getUniformIndex("light[1].position"); 
     auto light2PosIndex  = lightBuf.getUniformIndex("light[2].position"); 

@@ -9,6 +9,7 @@ namespace overkill
 
 struct VertexBufferAttrib
 {
+    GLuint      size;
     GLuint      count;
     GLenum      type;
     GLboolean   normalized;
@@ -36,17 +37,19 @@ public:
 	template<GLenum type>
     void push(GLuint count, bool normalized = false)
     {
-        m_attributes.push_back({ count, type, normalized });
-		m_stride += count * GLTypeSize(type);
+        auto size = count * GLTypeSize(type);
+        m_attributes.push_back({ size, count, type, normalized });
+		m_stride += size;
 	}
-/*
-	template<>
-	void push<GL_INT_2_10_10_10_REV>(GLuint count, bool normalized)
-	{
-		m_attributes.push_back({ count, GL_INT_2_10_10_10_REV, normalized });
-        m_stride += count; //TODO allow for attributes to contain more than one withouth striding errors
-	}
-*/
+
+    template<GLenum type>
+    void pushPacked(GLuint componentCount, GLuint count = 1, bool normalized = false)
+    {
+        auto size = count * GLTypeSize(type);
+        m_attributes.push_back({ size, componentCount, type, normalized });
+        m_stride += size;
+    }
+
     inline const std::vector<VertexBufferAttrib> getAttributes() const { return m_attributes; }
     inline GLuint getStride() const { return m_stride; }
 };
