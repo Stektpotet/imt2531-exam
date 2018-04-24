@@ -1,38 +1,47 @@
 #pragma once
 #include <glm/glm.hpp>
 #include <string>
+#include <PMS/logger.h>
 
-namespace overkill::C
+namespace overkill
 {
+
+
+class C
+{
+public:
     using Tag = std::string;
     using ID  = int;
 
-    constexpr int VersionMajor = 4;
-    constexpr int VersionMinor = 1;
-    constexpr int WinWidth = 1000;
-    constexpr int WinHeight = 800;
-    constexpr char WinName[] = "Assignment 2 - Cube";
-    constexpr float FOV = 88.0f;
-    constexpr float MaxFOV = 88.2f;
-    constexpr float MinFOV = 87.97f;
-    constexpr float ZoomSensitivity = 0.0033f;
-    constexpr float LookSensitivity = 0.013f;
-    constexpr float PanSensitivity = 9;
-    constexpr float AspectRatio = (float)WinWidth / (float)WinHeight;
-    constexpr float NearClip = 0.1f;
-    constexpr float FarClip  = 100.0f;
-    constexpr float CameraOffset = -70;      //How far back the camera is from the center of the scene.
-    const glm::vec4 ClearColor { 0.05f, 0.06f, 0.075f, 1.0f }; // Sexy blue
+    constexpr static unsigned int StrSize = 80;
+    constexpr static float PI             = 3.14159265359f;
+    constexpr static char  Configpath[C::StrSize] = "config.yml";
+
+    static int   GLVersionMajor  ;
+    static int   GLVersionMinor  ;
+    static int   WinWidth        ;
+    static int   WinHeight       ;
+    static char  WinName[StrSize];
     
-    constexpr char PathBaseShader[] = "assets/shaders/base.shader";
-    constexpr char PathBaseTexture[] = "assets/textures/Checkers.jpg";
-    constexpr float PI = 3.14159265359f;
+    static float FOV             ;
+    static float MaxFOV          ;
+    static float MinFOV          ;
+    static float ZoomSensitivity ;
+    static float LookSensitivity ;
+    static float PanSensitivity  ;
+    static float AspectRatio     ;
+    static float NearClip        ;
+    static float FarClip         ;
+    static float CameraOffset    ;
+    static glm::vec4 ClearColor  ;
 
-    constexpr char TexturesFolder[]  = "assets/textures";
-    constexpr char ShadersFolder[]   = "assets/shaders";
-    constexpr char MaterialsFolder[] = "assets/materials";
-    constexpr char ModelsFolder[]    = "assets/models";
-    constexpr char ScenesFolder[]    = "assets/scenes";
+    static char TexturesFolder[StrSize];
+    static char ShadersFolder[StrSize];
+    static char MaterialsFolder[StrSize];
+    static char ModelsFolder[StrSize];
+    static char ScenesFolder[StrSize];
 
-    constexpr unsigned int MAX_LIGHTS = 8; //inject it into shaders
+    static unsigned int MAX_LIGHTS; //inject it into shaders
+};
+
 }

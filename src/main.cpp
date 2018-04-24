@@ -36,10 +36,12 @@ using namespace overkill;
 
 int main()
 {
+    Init::loadConfig();
+
     // Init libraries + Watcher callbacks
 	auto window = Init::GLFW(
-        C::VersionMajor, 
-        C::VersionMinor, 
+        C::GLVersionMajor, 
+        C::GLVersionMinor, 
         C::WinWidth, 
         C::WinHeight,
         C::WinName);
@@ -48,7 +50,7 @@ int main()
     Init::OpenGL(C::ClearColor); //(0.05f, 0.06f, 0.075f, 1.0f) for sexy dark blue-grey
     Watcher::pollEvents();
 
-    // Load resource subsystems
+    // Load resource subsystem
     TextureSystem::load();
     ShaderSystem::load();
     MaterialSystem::load();
@@ -60,9 +62,9 @@ int main()
     auto modelFloorObject = EntityModel("cube");
 
     modelCubeObject.setRotation(glm::vec3(45, 45, 45));
-    modelCubeObject.setAngularVelocity(glm::vec3(1, 3.4f, 1.67f));
+    modelCubeObject.setAngularVelocity(glm::vec3(1, 1, 0));
     modelCubeObject.setPosition(glm::vec3(4,10,1));
-    modelCubeObject.setScale(glm::vec3(10, 10, 10));
+    modelCubeObject.setScale(glm::vec3(2, 2, 2));
 
     modelFloorObject.setPosition(glm::vec3(0, -3, 0));
     modelFloorObject.setScale(glm::vec3(20, 0.5f, 20));

@@ -72,14 +72,23 @@ auto Parser::nextLine() -> std::string
 auto Parser::nextKeyString() -> KeyString
 {
     auto line = nextLine();
-  //  LOG_DEBUG("%s", line.data());
-    
-    if(line == "")
+        
+    //LOG_DEBUG("%s", line.data());
+
+    // ERROR If there was an error in the nextLine function()
+    if (line == "")
         return KeyString{"","", PARSE_ERROR};
+
+
+    // ERROR If there are no : separator on the line
+    if (line.find(":") == std::string::npos) 
+        return KeyString{"","", PARSE_ERROR};
+    
 
     std::string key = line.substr(0, line.find(":"));
     std::string valueString = "";
 
+    // If the value is not empty
     if (line.find(":") + 2 < line.size())
         valueString = line.substr(line.find(":") + 2);
 
@@ -240,6 +249,40 @@ auto Parser::nextKeyTriangle() -> KeyTriangle
     return KeyTriangle{key, tri, PARSE_SUCCESS };
 
 }
-auto Parser::nextKeyFilepath() -> KeyString { return KeyString{}; }
+
+
+auto Parser::nextKeyColor() -> KeyColor 
+{
+    auto[key, valueString, err] = nextKeyString();
+    
+    //LOG_ERROR("%s", valueString.data());
+
+    if (err == PARSE_ERROR)
+        return KeyColor{key, {}, PARSE_ERROR};
+
+    std::stringstream ss;
+    ss << valueString;
+
+    glm::vec4 color{};
+
+    ss >> color.r;
+    if(ss.fail()){
+        return KeyColor{key, {}, PARSE_ERROR};
+    }
+    ss >> color.g;
+    if(ss.fail()){
+        return KeyColor{key, {}, PARSE_ERROR};
+    }
+    ss >> color.b;
+    if(ss.fail()){
+        return KeyColor{key, {}, PARSE_ERROR};
+    }
+    ss >> color.a;
+    if(ss.fail()){
+        return KeyColor{key, {}, PARSE_ERROR};
+    }
+    return KeyColor{key, color, PARSE_SUCCESS };
+
+}
 
 }

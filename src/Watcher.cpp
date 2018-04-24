@@ -19,7 +19,7 @@ auto Watcher::popEvents(std::string eventType, std::string collection)->std::vec
     std::vector<FileEvent> result;
 
     // If matching event type and matching collection name
-    auto pred = [eventType, collection](const FileEvent& fevent) -> bool {
+    auto pred = [eventType, collection] (const FileEvent& fevent) -> bool {
         return fevent.event_t == eventType && fevent.collection == collection;
     };
 
@@ -46,15 +46,17 @@ void Watcher::pollEvents()
 
     FILE* pipe = popen(PYTHON_COMMAND, "r");
     if (!pipe) {
-        printf("FAILED OPENING python pipe\n");
-        return;
+        LOG_ERROR("FAILED OPENING python pipe");
     }
-    printf("OPENING python pipe %s\n", PYTHON_COMMAND);
+    LOG_INFO("OPENING python pipe %s", PYTHON_COMMAND);
 
 
     char* msg;
     while (msg = fgets(data, DATA_SIZE, pipe)) {
-        printf("event %s", msg);
+
+        // zero out newline character for prettyer print out
+        msg[strlen(msg)-1] = '\0'; 
+        LOG_INFO("event %s", msg);
 
 
         std::stringstream ss;
@@ -66,10 +68,10 @@ void Watcher::pollEvents()
     }
 
     if (int notclosed = pclose(pipe); notclosed) {
-        printf("FAILED CLOSING python pipe\n");
+        LOG_ERROR("FAILED CLOSING python pipe");
         return;
     }
-    printf("CLOSING python pipe\n");
+    LOG_INFO("CLOSING python pipe");
 }
 
 }

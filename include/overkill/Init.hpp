@@ -12,11 +12,14 @@
 #include <PMS/logger.h>
 
 #include <overkill/gl_caller.hpp>
+#include <overkill/Parser.hpp>
 #include <overkill/Input.hpp>
 
 
 namespace overkill::Init
 {
+
+void loadConfig();
 
 auto GLFW(
     const int openglMajor, 
