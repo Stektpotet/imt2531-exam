@@ -76,7 +76,7 @@ void ModelSystem::reload()
     ShaderSystem::unbindAll();
 
     // Finally load new data
-    Watcher::discoverFiles();
+    Watcher::pollEvents();
     ModelSystem::load();
 }
 

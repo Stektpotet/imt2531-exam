@@ -29,7 +29,7 @@ auto MaterialSystem::getById(C::ID materialID) -> const Material&
 void MaterialSystem::reload() 
 {
     MaterialSystem::m_materials.clear();
-    Watcher::discoverFiles();
+    Watcher::pollEvents();
     MaterialSystem::load();
 
     for(auto onUpdate : MaterialSystem::m_updateCallbacks)

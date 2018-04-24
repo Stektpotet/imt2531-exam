@@ -29,8 +29,14 @@ private:
     static std::vector<FileEvent> events;
 
 public:
+    static constexpr char EventDiscovered[]  = "discovered";
+    static constexpr char EventModified[]    = "modified";
+    static constexpr char EventDeleted[]     = "deleted";
+    static constexpr char EventMoved[]       = "moved";
+    static constexpr char EventCreated[]     = "created";
+
     static auto popEvents(std::string eventType, std::string collection)->std::vector<FileEvent>;
-    static void discoverFiles();
+    static void pollEvents();
 };
 
 }

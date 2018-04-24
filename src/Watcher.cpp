@@ -36,7 +36,8 @@ auto Watcher::popEvents(std::string eventType, std::string collection)->std::vec
     return result;
 }
 
-void Watcher::discoverFiles()
+
+void Watcher::pollEvents()
 {
     using namespace std::chrono_literals;
 
@@ -45,13 +46,15 @@ void Watcher::discoverFiles()
 
     FILE* pipe = popen(PYTHON_COMMAND, "r");
     if (!pipe) {
-        printf("FAILED OPENING the pipe\n");
+        printf("FAILED OPENING python pipe\n");
         return;
     }
+    printf("OPENING python pipe %s\n", PYTHON_COMMAND);
+
 
     char* msg;
     while (msg = fgets(data, DATA_SIZE, pipe)) {
-        printf("msg %s", msg);
+        printf("event %s", msg);
 
 
         std::stringstream ss;
@@ -63,10 +66,10 @@ void Watcher::discoverFiles()
     }
 
     if (int notclosed = pclose(pipe); notclosed) {
-        printf("FAILED CLOSING the pipe\n");
+        printf("FAILED CLOSING python pipe\n");
         return;
     }
-    printf("CLOSING the pipe\n");
+    printf("CLOSING python pipe\n");
 }
 
 }

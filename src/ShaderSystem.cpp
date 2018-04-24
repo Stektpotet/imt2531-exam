@@ -228,7 +228,7 @@ void ShaderSystem::reload()
 
 
     // Load from file again
-    Watcher::discoverFiles();
+    Watcher::pollEvents();
     ShaderSystem::load();
     for(auto onUpdate : ShaderSystem::m_updateCallbacks)
     {

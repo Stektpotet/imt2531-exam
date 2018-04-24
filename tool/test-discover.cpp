@@ -32,7 +32,7 @@ private:
 
 public:
     static auto popEvents(std::string eventType, std::string collection)->std::vector<FileEvent>;
-    static void discoverFiles();
+    static void pollEvents();
 };
 
 
@@ -58,7 +58,7 @@ auto Watcher::popEvents(std::string eventType, std::string collection)->std::vec
     return result;
 }
 
-void Watcher::discoverFiles()
+void Watcher::pollEvents()
 {
     using namespace std::chrono_literals;
 
@@ -92,7 +92,7 @@ void Watcher::discoverFiles()
 }
 int main()
 {
-    Watcher::discoverFiles();
+    Watcher::pollEvents();
     auto tevents = Watcher::popEvents("discovered", "textures");
     auto mevents = Watcher::popEvents("discovered", "shaders");
     auto matevents = Watcher::popEvents("discovered", "materials");

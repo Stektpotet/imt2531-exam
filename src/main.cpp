@@ -46,7 +46,7 @@ int main()
 
     Init::GLEW();
     Init::OpenGL(C::ClearColor); //(0.05f, 0.06f, 0.075f, 1.0f) for sexy dark blue-grey
-    Watcher::discoverFiles();
+    Watcher::pollEvents();
 
     // Load resource subsystems
     TextureSystem::load();

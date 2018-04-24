@@ -1,2 +1,0 @@
-Use shader introspection find which shaders need to attach to the uniform block points, resulting in sets of shaders where binding point would be the key.
-this way we can loop through them
