@@ -50,6 +50,7 @@ target_sources(
     PRIVATE ${SRCDIR}/src/gl_util.cpp
     PRIVATE ${SRCDIR}/src/Entity.cpp
     PRIVATE ${SRCDIR}/src/EntityModel.cpp
+    PRIVATE ${SRCDIR}/src/EntityCamera.cpp
     PRIVATE ${SRCDIR}/src/Init.cpp
     PRIVATE ${SRCDIR}/src/Input.cpp
     PRIVATE ${SRCDIR}/src/Material.cpp
