@@ -111,6 +111,7 @@ void ModelSystem::load()
 
         // Iterate vertices
         std::vector<Vertex> vertices;
+        vertices.reserve(vertexCount);
         for(int i = 0; i < vertexCount; ++i) 
         {
             auto[vertexKey, vertex, err2] = p.nextKeyVertex();
@@ -167,7 +168,7 @@ void ModelSystem::load()
             }
 
             std::vector<GLuint> indices;
-
+            indices.reserve(triCount*3);
             LOG_DEBUG("tricount: %d", triCount);
             // Triangles 
             for(int j = 0; j < triCount; ++j) 
