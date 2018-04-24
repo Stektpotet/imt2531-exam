@@ -13,6 +13,8 @@
 namespace overkill 
 {
 
+
+struct KeyColor    { std::string key; glm::vec4 color;       int parseerror; };
 struct KeyInteger  { std::string key; int i;             int parseerror; };
 struct KeyFloat    { std::string key; float fp;          int parseerror; };
 struct KeyString   { std::string key; std::string str;   int parseerror; };
@@ -40,7 +42,7 @@ public:
     auto nextKeyFloat()    -> KeyFloat;
     auto nextKeyVertex()   -> KeyVertex;
     auto nextKeyTriangle() -> KeyTriangle;
-    auto nextKeyFilepath() -> KeyString;
+    auto nextKeyColor()    -> KeyColor;
 };
 
 

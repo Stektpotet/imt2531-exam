@@ -37,10 +37,12 @@ using namespace overkill;
 
 int main()
 {
+    Init::loadConfig();
+
     // Init libraries + Watcher callbacks
 	auto window = Init::GLFW(
-        C::VersionMajor, 
-        C::VersionMinor, 
+        C::GLVersionMajor, 
+        C::GLVersionMinor, 
         C::WinWidth, 
         C::WinHeight,
         C::WinName);
@@ -49,7 +51,7 @@ int main()
     Init::OpenGL(C::ClearColor); //(0.05f, 0.06f, 0.075f, 1.0f) for sexy dark blue-grey
     Watcher::pollEvents();
 
-    // Load resource subsystems
+    // Load resource subsystem
     TextureSystem::load();
     ShaderSystem::load();
     MaterialSystem::load();

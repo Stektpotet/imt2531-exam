@@ -67,7 +67,7 @@ mesh: innercube
 
 mesh: outercube
     material: brick
-    shader: edge
+    shader: base
     triangles: 12
     t: 14 15 16
     t: 16 17 14

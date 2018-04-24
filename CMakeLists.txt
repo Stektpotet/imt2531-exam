@@ -44,6 +44,7 @@ set_target_properties(
 
 target_sources(
     cube
+    PRIVATE ${SRCDIR}/src/Config.cpp
     PRIVATE ${SRCDIR}/src/ElementBuffer.cpp
 	PRIVATE ${SRCDIR}/src/gl_caller.cpp
     PRIVATE ${SRCDIR}/src/gl_util.cpp
@@ -92,6 +93,7 @@ configure_directory(${SRCDIR}/assets/models ${BINDIR}/assets/models)
 configure_directory(${SRCDIR}/assets/textures ${BINDIR}/assets/textures)
 
 configure_file(${SRCDIR}/tool/discover.py ${BINDIR}/discover.py COPYONLY)
+configure_file(${SRCDIR}/config.yml ${BINDIR}/config.yml COPYONLY)
 
 
 ###############################

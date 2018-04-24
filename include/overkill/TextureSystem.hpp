@@ -12,6 +12,8 @@
 namespace overkill
 {
 
+class C;
+
 class TextureSystem 
 {
 private:
