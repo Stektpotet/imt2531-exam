@@ -12,6 +12,7 @@
 
 namespace overkill
 {
+    class Renderer;
 
 class EntityModel : public Entity
 {
@@ -20,24 +21,23 @@ private:
     glm::vec3 m_scale;
     glm::mat4 m_transformMatrix;
 
-    glm::mat4 getModelMatrix(glm::mat4 parentModelMatrix = glm::mat4(1));
-
 
 public:
-    EntityModel(C::Tag modelTag, int entityID = -1,
+    EntityModel(C::Tag modelTag, int entityID,
                 glm::vec3 pos = glm::vec3(0,0,0), glm::vec3 rot = glm::vec3(0,0,0), 
                 glm::vec3 scale = glm::vec3(1,1,1), glm::vec3 vel = glm::vec3(0,0,0), 
                 glm::vec3 angVel = glm::vec3(0,0,0));
 
     int getModel();
     glm::vec3 getScale();
+    glm::mat4 getModelMatrix(glm::mat4 parentModelMatrix = glm::mat4(1));
     void setModelByID(int modelID);
     void setModelByTag(C::Tag tag);
     void setScale(glm::vec3 scale = glm::vec3(1));
     void addChild(int childID);
 
     void update(float dt, glm::mat4 parentMatrix = glm::mat4(1));
-    void draw();
+    void draw(float t);
 };
 
 }

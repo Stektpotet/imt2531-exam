@@ -26,7 +26,7 @@ public:
     static EntityModel* getEntityModel(int ID);
 
     static void update(float dt);   // Cass update function for all root entities.
-    static void draw();
+    static void draw(float t);
 
 };
 

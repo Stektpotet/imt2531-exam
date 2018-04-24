@@ -1,45 +1,75 @@
-#pragma once
 #include <overkill/Watcher.hpp>
-
-#include <tinyheaders/tinyfiles.h>
-
 
 namespace overkill
 {
 
-std::vector<ModifiedFile> Watcher::m_modifiedFiles;
+#ifdef WIN32
+    const auto& popen = _popen;
+    const auto& pclose = _pclose;
+    constexpr char PYTHON_COMMAND[] = "C:\\tools\\Python36\\python.exe discover.py";
+#else
+    constexpr char PYTHON_COMMAND[] = "/usr/bin/python3 discover.py";
+#endif
 
-void Watcher::watchFile(const std::string tag, const std::string path, ModifiedFile::Callback callback) 
+
+std::vector<FileEvent> Watcher::events;
+
+auto Watcher::popEvents(std::string eventType, std::string collection)->std::vector<FileEvent>
 {
-    ModifiedFile mfile = ModifiedFile{
-        tag,
-        path,
-        callback
-    };
-    Watcher::m_modifiedFiles.push_back(mfile);
+    std::vector<FileEvent> result;
 
-    auto status = tfGetFileTime(mfile.path.c_str(), &(mfile.modTime));
+    // If matching event type and matching collection name
+    auto pred = [eventType, collection](const FileEvent& fevent) -> bool {
+        return fevent.event_t == eventType && fevent.collection == collection;
+    };
+
+    auto foundit = std::find_if(Watcher::events.begin(), Watcher::events.end(), pred);
+    while ( foundit != Watcher::events.end() )
+    {
+        auto erasedCopy = *foundit;
+        Watcher::events.erase(foundit);
+        result.push_back(erasedCopy);
+
+        foundit = std::find_if(Watcher::events.begin(), Watcher::events.end(), pred);
+    }
+
+    return result;
 }
 
-void Watcher::scanFiles()
+
+void Watcher::pollEvents()
 {
-#ifdef WIN32
+    using namespace std::chrono_literals;
 
-    LOG_DEBUG("Scanning files...");
+    const int DATA_SIZE = 128;
+    char  data[DATA_SIZE] = "\n";
 
-    for (auto mfile : Watcher::m_modifiedFiles)
-    {
-        tfFILETIME newmodTime;
-
-        auto status = tfGetFileTime(mfile.path.c_str(), &newmodTime);
-
-        LOG_DEBUG("new %u vs old %u", newmodTime.time.dwLowDateTime, mfile.modTime.time.dwLowDateTime);
-
-        if (newmodTime.time.dwLowDateTime != mfile.modTime.time.dwLowDateTime)
-            mfile.callback(mfile);
-        // @todo implement the same for Mac and Linux. Windows uses DWORD as time type. Unix systems uses time_t.
+    FILE* pipe = popen(PYTHON_COMMAND, "r");
+    if (!pipe) {
+        printf("FAILED OPENING python pipe\n");
+        return;
     }
-#endif
+    printf("OPENING python pipe %s\n", PYTHON_COMMAND);
+
+
+    char* msg;
+    while (msg = fgets(data, DATA_SIZE, pipe)) {
+        printf("event %s", msg);
+
+
+        std::stringstream ss;
+        FileEvent fevent;
+        ss << msg;
+        ss >> fevent.event_t >> fevent.collection >> fevent.tag >> fevent.extension;
+
+        events.push_back(fevent);
+    }
+
+    if (int notclosed = pclose(pipe); notclosed) {
+        printf("FAILED CLOSING python pipe\n");
+        return;
+    }
+    printf("CLOSING python pipe\n");
 }
 
 }

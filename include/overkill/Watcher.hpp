@@ -1,31 +1,42 @@
 #pragma once
-#include <string>
+
+#include <iostream>
+#include <cstdio>
+#include <cstdlib>  
 #include <vector>
+#include <sstream>
+#include <chrono>
+#include <thread>
+#include <iomanip>
+#include <iostream>
+#include <algorithm>
 
-#include <tinyheaders/tinyfiles.h>
-#include <PMS/logger.h>
 
-namespace overkill
+namespace overkill 
 {
 
-struct ModifiedFile
+struct FileEvent
 {
-    using Callback = void(*)(const ModifiedFile& mfile);
-
+    std::string event_t;          // discovered (created, deleted, modified, moved)
+    std::string collection;
     std::string tag;
-    std::string path;
-    Callback    callback;
-    tfFILETIME  modTime;
+    std::string extension;
 };
 
 class Watcher
 {
-    static std::vector<ModifiedFile> m_modifiedFiles;
+private:
+    static std::vector<FileEvent> events;
+
 public:
+    static constexpr char EventDiscovered[]  = "discovered";
+    static constexpr char EventModified[]    = "modified";
+    static constexpr char EventDeleted[]     = "deleted";
+    static constexpr char EventMoved[]       = "moved";
+    static constexpr char EventCreated[]     = "created";
 
-    static void watchFile(const std::string tag, const std::string path, ModifiedFile::Callback callback);
-    static void scanFiles();
+    static auto popEvents(std::string eventType, std::string collection)->std::vector<FileEvent>;
+    static void pollEvents();
 };
-
 
 }

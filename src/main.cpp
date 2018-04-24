@@ -15,8 +15,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#define TINYFILES_IMPLEMENTATION
-
 #include <overkill/Config.hpp>
 #include <overkill/Init.hpp>
 #include <overkill/Input.hpp>
@@ -30,6 +28,7 @@
 #include <overkill/Scene.hpp>
 #include <overkill/ModelSystem.hpp>
 #include <overkill/EntityModel.hpp>
+#include <overkill/Watcher.hpp>
 
 #define DEBUG 1
 
@@ -38,7 +37,7 @@ using namespace overkill;
 
 int main()
 {
-
+    // Init libraries + Watcher callbacks
 	auto window = Init::GLFW(
         C::VersionMajor, 
         C::VersionMinor, 
@@ -46,10 +45,9 @@ int main()
         C::WinHeight,
         C::WinName);
 
-    // Init libraries + Watcher callbacks
     Init::GLEW();
     Init::OpenGL(C::ClearColor); //(0.05f, 0.06f, 0.075f, 1.0f) for sexy dark blue-grey
-    Init::Watcher();
+    Watcher::pollEvents();
 
     // Load resource subsystems
     TextureSystem::load();
@@ -57,73 +55,109 @@ int main()
     MaterialSystem::load();
     ModelSystem::load();
 
-    auto renderer = EdgeRenderer();
-    
+    auto renderer = Renderer();
     //translation * view * rotate(time*0.1*F, time*0.333334*F, time*0.1666666667*F) //From shader, old system.
 
-    //SCALE -> ROTATE -> TRANSLATE
+    // TODO remove if compiles.
+    // Transform modelTransform;
+    // modelTransform.m_position = glm::vec3{ 0,0,0 };
+
+    Light light;
+
+    struct LightData {
+        glm::vec4 position;		//16->16
+        glm::vec4 intensities;	//16->32
+        float spread;			//4 ->36
+		float constant;			//4	->40
+		float linear;			//4 ->44
+		float quadratic;		//4 ->48
+
+    } lightData[8] = {
+        LightData{ { 0, 4, 0, 0	},{ 1.5f, 0, 0	 , 0}, /*0.0f, 0.0f, 0.0f, 0.0f    */ },        
+		LightData{ { 1.5f, 0, 0, 0 },{ 0, 0, 1.5f	 , 0 },/* 0.0f, 0.0f, 0.0f, 0.0f   */     },
+        LightData{ { 3, 1, 0, 0	},{ 0, 1.5f, 0		 , 0}, /*10.0f, 10.0f, 10.0f, 10.0f*/ },
+        LightData{ { 0, -2, 0,0	},{ 1, 0, 0		 , 0}, /*10.0f, 10.0f, 10.0f, 10.0f*/ },
+        LightData{ { 0, 1, -4,0	},{ 1, 0, 1		 , 0}, /*10.0f, 10.0f, 10.0f, 10.0f*/ },
+        LightData{ { 0, -5, 0,0	},{ 1, 1, 0		 , 0}, /*10.0f, 10.0f, 10.0f, 10.0f*/ },
+        LightData{ { 0, 5, 0,0	},{ 1, 1, 1		 , 0}, /*10.0f, 10.0f, 10.0f, 10.0f*/ },
+        LightData{ { 0,3, 3	,0	},{ 0.5, 0.5, 0.5, 0}, /*10.0f, 10.0f, 10.0f, 10.0f*/ },
+    };
+
     glm::mat4 projection = glm::perspective(C::FOV, C::AspectRatio, C::NearClip, C::FarClip);
-    glm::mat4 camera = glm::mat4(1); 
-    glm::mat4 pivot = glm::translate(glm::mat4(1),glm::vec3(0, 0, C::CameraOffset));  //Camera pos in world.
+    glm::mat4 camera = glm::mat4(1);
+    glm::mat4 pivot = glm::translate(glm::mat4(1), glm::vec3(0, 0, C::CameraOffset));  //Camera pos in world.
     glm::mat4 view = glm::mat4(1);
+    // TODO remove if compiles.
+    // glm::mat4 m2w = modelTransform.modelToWorld();
 
-    //GLCall(glSetUn)
-    GLint uniformMVP, uniformTime;
-    GLint uniformMVP2, uniformTime2;
-    GLint uniformView;                                  //Will communicate camera orientation to shader.
 
-    auto modelCubeObject = EntityModel("cube");
     Scene::loadScene();
 
-    //TODO move to shader system:
-    for (auto mesh : ModelSystem::getById(modelCubeObject.getModel()).m_meshes)
-    {
-        mesh.m_shaderProgram.bind();
-        uniformMVP = mesh.m_shaderProgram.getUniformLocation("projection");
-        uniformTime = mesh.m_shaderProgram.getUniformLocation("time");
-        uniformView = mesh.m_shaderProgram.getUniformLocation("view");
-        GLCall(glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(projection)));
-    }
-
     float oldT = 0, t = 0, dt = 0;
+
+	auto matrixBuf = ShaderSystem::getUniformBufferByTag("OK_Matrices");
+	auto lightBuf = ShaderSystem::getUniformBufferByTag("OK_Lights");
+
+    // Get Uniform buffer indicies
+    auto projectionIndex = matrixBuf.getUniformIndex("projection");
+    auto viewIndex       = matrixBuf.getUniformIndex("view");
+    auto viewPosIndex    = matrixBuf.getUniformIndex("view_position");
+
+    // @TODO make this getUniformIndex("light", 0)
+    // @note this could also be used as offset for all the other lights
+    auto light0PosIndex  = lightBuf.getUniformIndex("light[0].position"); 
+    auto light1PosIndex  = lightBuf.getUniformIndex("light[1].position"); 
+    auto light2PosIndex  = lightBuf.getUniformIndex("light[2].position"); 
+
     for(;;)
     {
-        t = glfwGetTime();
+        t = (float)glfwGetTime();
         dt = t - oldT;
         if ((glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS || glfwWindowShouldClose(window) != 0))
             break;
 
-        // auto model = ModelSystem::getByTag("cube");          // This is a hack, its beting loaded every frame in case it was
-        Renderer::clear();                                      // changed by keypress.
-        // Renderer::draw(model, glm::mat4(1));                 // Replaced by new model, however some of old models components are still being used.
-        
+        Renderer::clear();
         Scene::update(dt);
-
-        // Set uniforms global shaders
-        for (auto mesh : ModelSystem::getById(modelCubeObject.getModel()).m_meshes)
-        {
-            mesh.m_shaderProgram.bind();
-            GLCall(glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(projection)));
-            GLCall(glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(view)));
-            GLCall(glUniform1f(uniformTime, 0));
-        }
-
-        Scene::draw();      // Draws all the models in the scene.
-
-		//@TODO shader.bindDynamic()
+        
+        
+        // UPDATE CAMERA DATA
         projection = glm::perspective(Input::m_fovy, C::AspectRatio, 0.1f, -100.0f);
         camera = glm::rotate(glm::mat4(1), (Input::m_camRotX), glm::vec3(0.0f, 1.0f, 0.0f));
         camera = glm::rotate(glm::mat4(1), (Input::m_camRotY), glm::vec3(1.0f, 0.0f, 0.0f)) * camera;
-        pivot = glm::translate(glm::mat4(1),glm::vec3(Input::m_camPanX, Input::m_camPanY, C::CameraOffset));  //Camera pos in world.
-        
+        pivot = glm::translate(glm::mat4(1), glm::vec3(Input::m_camPanX, Input::m_camPanY, C::CameraOffset));  
         view = pivot * camera;
         glm::inverse(view); //To reverse both axis, so controls are not reverse.
 
+
+        // UPDATE LIGHT DATA
+        lightData[0].position = glm::vec4(10 * sin(3 * t), 0, 10 * cos(3 * t), 0);
+        lightData[0].intensities = glm::vec4(1.5f * sin(1.33*t), 1.5 * cos(1.33*t), 0, 0);
+
+        lightData[1].position = glm::vec4(10 * sin(1.33*t), 10 * cos(1.33*t), 0, 0);
+        lightData[1].intensities = glm::vec4(1.5f * sin(1.33*t + C::PI / 3), 1.5 * cos(1.33*t + C::PI / 3), 0, 0);
+
+        lightData[2].position = glm::vec4(0, 10 * sin(4.377*t), 10 * cos(4.377*t), 0);
+        lightData[2].intensities = glm::vec4(1.5f * sin(1.33*t + (C::PI * 2 / 3)), 1.5 * cos(1.33*t + (C::PI * 2 / 3)), 0, 0);
+
+
+        // UPDATE GLOBAL UNIFORM BUFFERS
+        lightBuf.update(light0PosIndex, 16, &(lightData[0].position));
+        lightBuf.update(light0PosIndex + 16, 16, &(lightData[0].intensities));
+        
+        lightBuf.update(light1PosIndex, 16, &(lightData[1].position));
+        lightBuf.update(light1PosIndex + 16, 16, &(lightData[1].intensities));
+        
+        lightBuf.update(light2PosIndex, 16, &(lightData[2].position));
+        lightBuf.update(light2PosIndex + 16, 16, &(lightData[2].intensities));
+        
+        matrixBuf.update(projectionIndex, sizeof(glm::mat4), glm::value_ptr(projection));
+        matrixBuf.update(viewIndex, sizeof(glm::mat4), glm::value_ptr(view));
+        matrixBuf.update(viewPosIndex, sizeof(glm::vec4), glm::value_ptr(pivot));
+
+        Scene::draw(t);      // Draws all the models in the scene.
+
         glfwSwapBuffers(window);
         glfwPollEvents();
-
-        // LIVE UPDATE SHADER AND MATERIALS
-        // Util::everyTwoSeconds(t);
 
         oldT = t;
     }

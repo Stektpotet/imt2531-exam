@@ -1,7 +1,10 @@
-maps: 2
+maps: 3
+  mainTex: scifi
+  bumpTex: scifi_nrm
+  specTex: scifi_spec
 
-  mainTexture: brickwall
-  specularTex: brickwall-nrm
-
-values: 1
-  test: 0.5
+values: 4
+  opacity: 1
+  intensity: 1
+  bumpiness: 1
+  specularity: 0

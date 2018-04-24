@@ -73,10 +73,21 @@ namespace overkill
         m_position += m_velocity * dt;
         m_rotation += m_angularVelocity * dt;
         
-        printf("\n\n\nm_rotation %f, %f, %f\nm_angVel %f, %f, %f\ndeltatime %f", 
+/*        printf("\n\n\nm_rotation %f, %f, %f\nm_angVel %f, %f, %f\ndeltatime %f", 
                 m_rotation.x, m_rotation.y, m_rotation.z, 
                 m_angularVelocity.x, m_angularVelocity.y, m_angularVelocity.z, 
-                dt);
+                dt);*/
     }
 
+	auto Transform::modelToWorld() -> glm::mat4
+	{
+		auto m2w = glm::scale(glm::mat4(1), m_scale);
+
+		m2w = glm::rotate(m2w, m_rotation.x, right);
+		m2w = glm::rotate(m2w, m_rotation.y, up);
+		m2w = glm::rotate(m2w, m_rotation.z, forward);
+
+		m2w = glm::translate(m2w, m_position);
+		return m2w;
+	}
 }

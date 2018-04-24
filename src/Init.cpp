@@ -64,14 +64,7 @@ void Init::OpenGL(const glm::vec4 background)
     GLCall(glEnable(GL_DEPTH_TEST)); //enabled to avoid ugly artifacts that depend on the angle of view and drawing order
     GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
-    GLPrintMaxContants(); 
-}
-
-void Init::Watcher() 
-{
-    Watcher::watchFile("brick", "assets/material/brick.yml", [](const ModifiedFile& mfile) {
-        LOG_INFO("File %s changed", mfile.path.c_str());
-    });
+    GLPrintMaxConstants(); 
 }
 
 

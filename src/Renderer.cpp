@@ -1,5 +1,4 @@
 #include <overkill/Renderer.hpp>
-
 namespace overkill
 {
 
@@ -12,7 +11,7 @@ void Renderer::clear()
 void Renderer::draw(const VertexArray& va, const ElementBuffer& eb, const ShaderProgram& shader)
 {
     va.bind();
-    eb.bind();
+    eb.bind();  
     shader.bind();
     GLCall(glDrawElements(GL_TRIANGLES, eb.count(), GL_UNSIGNED_INT, nullptr));
     //
@@ -37,17 +36,25 @@ void Renderer::draw(const Model& model, glm::mat4 modelMatrix)
     // UNBIND [optional]... discuss
 }
 
-void EdgeRenderer::drawEdged(const VertexArray & va, const ElementBuffer & eb, const ShaderProgram& shader, const ShaderProgram& edgeShader) const
+void Renderer::draw( EntityModel& entity, float t) 
 {
-    va.bind();
-    eb.bind();
-    shader.bind();
+    auto model = ModelSystem::getById( entity.getModel() );
+    auto m2w   = entity.getModelMatrix();
 
-    GLCall(glDrawElements(GL_TRIANGLES, eb.count(), GL_UNSIGNED_INT, nullptr));
+    model.m_vao.bind();
 
-    edgeShader.bind();
-    GLCall(glLineWidth(1.0f))
-        GLCall(glDrawElements(GL_LINE_STRIP, eb.count(), GL_UNSIGNED_INT, nullptr));
+    for (auto mesh : model.m_meshes)
+    {
+        mesh.m_ebo.bind();
+
+        auto& shader = mesh.m_shaderProgram;
+        shader.bind();
+
+        GLCall(glUniform1f(shader.getUniformLocation("time"), t));
+        GLCall(glUniformMatrix4fv(shader.getUniformLocation("m2w"), 1, GL_FALSE, glm::value_ptr(m2w)));
+        GLCall(glDrawElements(GL_TRIANGLES, mesh.m_ebo.count(), GL_UNSIGNED_INT, nullptr));
+    }
 }
+
 
 }

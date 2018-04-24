@@ -9,8 +9,8 @@ namespace overkill::C
 
     constexpr int VersionMajor = 4;
     constexpr int VersionMinor = 1;
-    constexpr int WinWidth = 800;
-    constexpr int WinHeight = 600;
+    constexpr int WinWidth = 1000;
+    constexpr int WinHeight = 800;
     constexpr char WinName[] = "Assignment 2 - Cube";
     constexpr float FOV = 88.0f;
     constexpr float MaxFOV = 88.2f;
@@ -22,25 +22,17 @@ namespace overkill::C
     constexpr float NearClip = 0.1f;
     constexpr float FarClip  = 100.0f;
     constexpr float CameraOffset = -70;      //How far back the camera is from the center of the scene.
-    const glm::vec4 ClearColor { 1.0f, .8f, .6f, 1.0f};
+    const glm::vec4 ClearColor { 0.05f, 0.06f, 0.075f, 1.0f }; // Sexy blue
+    
     constexpr char PathBaseShader[] = "assets/shaders/base.shader";
     constexpr char PathBaseTexture[] = "assets/textures/Checkers.jpg";
     constexpr float PI = 3.14159265359f;
 
-    constexpr char TexturesFolder[]  = "assets/textures/";
-    constexpr char TexturesExtension[]  = ".jpg";
+    constexpr char TexturesFolder[]  = "assets/textures";
+    constexpr char ShadersFolder[]   = "assets/shaders";
+    constexpr char MaterialsFolder[] = "assets/materials";
+    constexpr char ModelsFolder[]    = "assets/models";
+    constexpr char ScenesFolder[]    = "assets/scenes";
 
-    constexpr char ShadersFolder[]   = "assets/shaders/";
-    constexpr char ShadersExtension[]   = ".glsl";
-
-    constexpr char MaterialsFolder[] = "assets/materials/";
-    constexpr char MaterialsExtension[] = ".yml";
-
-    constexpr char ModelsFolder[]    = "assets/models/";
-    constexpr char ModelsExtension[]    = ".yml";
-
-    constexpr char ScenesFolder[]    = "assets/scenes/";
-    constexpr char ScenesExtension[]    = ".yml";
-
-       
+    constexpr unsigned int MAX_LIGHTS = 8; //inject it into shaders
 }

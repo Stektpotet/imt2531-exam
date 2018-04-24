@@ -1,4 +1,7 @@
-maps: 1
-  mainTexture: brickwall
+maps: 0
 
-values: 0
+values: 4
+  opacity: 1
+  intensity: 1
+  bumpiness: 1
+  specularity: 0

@@ -29,6 +29,7 @@ class Parser
     int startofline =  0;
     int endofline = 9999999;
     int linecount = 0;
+    std::string currentLine = "<top>";
     const std::string whitelistedCharacters = "0123456789abcdefghijklmnopqrstuvwxyzæøåABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅ-:";
 
 public:

@@ -5,6 +5,40 @@ enc_temp_folder/
 CMakeSettings.json
 *.DS_Store
 
-# big assets
-*teapot-top.yml
-*teapot-base.yml
+
+# 
+# ASSETS WHITELIST
+#
+# * Whitelist assets we want to keep
+
+assets/textures/*
+!assets/textures/.gitkeep
+!assets/textures/brickwall-nrm.jpg
+!assets/textures/brickwall.jpg
+!assets/textures/checkers.jpg
+
+assets/shaders/*
+!assets/shaders/.gitkeep
+!assets/shaders/base.glsl
+!assets/shaders/default.glsl
+
+assets/materials/*
+!assets/materials/.gitkeep
+!assets/materials/default.yml
+
+assets/models/*
+!assets/models/.gitkeep
+!assets/models/cube.yml
+!assets/models/Icosphere.yml
+!assets/models/Suzanne.yml
+
+assets/scenes/*
+!assets/scenes/.gitkeep
+
+
+
+tool/*
+tool/discover.py
+tool/default.blend
+tool/export.py
+tool/test-discover.cpp

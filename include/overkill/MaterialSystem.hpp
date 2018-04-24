@@ -31,6 +31,7 @@ private:
     static std::unordered_map<C::Tag, C::ID> m_mapMaterialID;
     static std::vector<UpdateCallback> m_updateCallbacks;
     
+    static void push(const C::Tag tag, const std::string& filepath);
 
 public:
 
