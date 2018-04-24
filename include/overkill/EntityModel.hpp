@@ -23,7 +23,7 @@ private:
 
 
 public:
-    EntityModel(C::Tag modelTag, int entityID,
+    EntityModel(C::Tag modelTag, C::Tag EntityTag, int entityID,
                 glm::vec3 pos = glm::vec3(0,0,0), glm::vec3 rot = glm::vec3(0,0,0), 
                 glm::vec3 scale = glm::vec3(1,1,1), glm::vec3 vel = glm::vec3(0,0,0), 
                 glm::vec3 angVel = glm::vec3(0,0,0));

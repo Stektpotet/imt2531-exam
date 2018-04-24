@@ -2,11 +2,11 @@
 
 namespace overkill
 {
-    Entity::Entity(C::Tag tag, int entityID = -1, glm::vec3 pos = glm::vec3(0,0,0), glm::vec3 rot = glm::vec3(0,0,0), 
+    Entity::Entity(C::Tag entityTag, int entityID = -1, glm::vec3 pos = glm::vec3(0,0,0), glm::vec3 rot = glm::vec3(0,0,0), 
                             glm::vec3 vel = glm::vec3(0,0,0), glm::vec3 angVel = glm::vec3(0,0,0))
     {
         m_entityID = entityID;
-        m_tag = tag;
+        m_entityTag = entityTag;
         m_position = pos;
         m_rotation = rot;
         m_velocity = vel;
@@ -78,16 +78,4 @@ namespace overkill
                 m_angularVelocity.x, m_angularVelocity.y, m_angularVelocity.z, 
                 dt);*/
     }
-
-	auto Transform::modelToWorld() -> glm::mat4
-	{
-		auto m2w = glm::scale(glm::mat4(1), m_scale);
-
-		m2w = glm::rotate(m2w, m_rotation.x, right);
-		m2w = glm::rotate(m2w, m_rotation.y, up);
-		m2w = glm::rotate(m2w, m_rotation.z, forward);
-
-		m2w = glm::translate(m2w, m_position);
-		return m2w;
-	}
 }

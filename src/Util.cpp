@@ -3,6 +3,18 @@
 namespace overkill 
 {
 
+auto Transform::modelToWorld() -> glm::mat4
+	{
+		auto m2w = glm::scale(glm::mat4(1), m_scale);
+
+		m2w = glm::rotate(m2w, m_rotation.x, right);
+		m2w = glm::rotate(m2w, m_rotation.y, up);
+		m2w = glm::rotate(m2w, m_rotation.z, forward);
+
+		m2w = glm::translate(m2w, m_position);
+		return m2w;
+	}
+
 auto Util::fileToString(const std::string& filepath) -> std::string
 {
     std::ifstream infile(filepath);

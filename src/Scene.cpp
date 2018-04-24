@@ -14,17 +14,17 @@ namespace overkill
     void Scene::loadScene()
     {   
         int count = 0;
-        auto modelCubeObject = EntityModel("cube", count++, glm::vec3(0, 0, 0), 
+        auto modelCubeObject = EntityModel("cube", "parentCube", count++, glm::vec3(0, 0, 0), 
                                 glm::vec3(0), glm::vec3(1),
                                 glm::vec3(0.8f, 0, 0), 
                                 glm::vec3(1, 3.4f, 1.67f));
-        auto modelCubeChildObject = EntityModel("cube", count++, glm::vec3(2.0f, 0, 0));
+        auto modelCubeChildObject = EntityModel("cube", "childCube", count++, glm::vec3(2.0f, 0, 0));
 
-        auto modelSuzanneObject = EntityModel("Suzanne", count++, glm::vec3(4,10,1),
+        auto modelSuzanneObject = EntityModel("Suzanne", "Suzanne", count++, glm::vec3(4,10,1),
                                 glm::vec3(45, 45, 45),glm::vec3(5, 5, 5),
                                 glm::vec3(0), glm::vec3(1, 3.4f, 1.67f));
 
-        auto modelFloorObject = EntityModel("cube", count++, glm::vec3(0, -3, 0), glm::vec3(0), glm::vec3(20, 0.5f, 20));
+        auto modelFloorObject = EntityModel("cube", "floor", count++, glm::vec3(0, -3, 0), glm::vec3(0), glm::vec3(20, 0.5f, 20));
         
 
         addEntityModel(modelCubeObject);    // Add models to container. Any changes made after this will be lost.
