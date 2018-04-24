@@ -164,6 +164,7 @@ int main()
         oldT = t;
     }
 
+    Scene::clean(); 
     glfwDestroyWindow(window);
     glfwTerminate();
 	return 0;

@@ -38,11 +38,6 @@ namespace overkill
     {  
         return m_scale;  
     }
-    void EntityModel::addChild(int childID)
-    {   
-        Scene::removeRoot(childID);
-        m_childIDs.push_back(childID);  
-    }
 
     void EntityModel::setModelByID(int modelID)
     {   
@@ -72,14 +67,16 @@ namespace overkill
                 m_rotation.x, m_rotation.y, m_rotation.z, 
                 m_angularVelocity.x, m_angularVelocity.y, m_angularVelocity.z, 
                 dt);
-        Util::printMatrix(parentMatrix, "parentMatrix:");
+        Util::printMatrix(parentMatrix, "ParentMatrix:");
+        Util::printMatrix(m_transformMatrix, "TransormMatrix:");
+
 
         if (m_childIDs.size() > 0)                  // If we actually have kids.
         {            
             for (const auto child : m_childIDs)     // For every childID in childIDs-vector.
             {
                 printf("\n\nI am entityID %d Updating child with entityID %d.\n", m_entityID, child);
-                Scene::getEntityModel(child)-> update(dt, m_transformMatrix);
+                Scene::getEntity(child)-> update(dt, m_transformMatrix);
             }
         }
     }

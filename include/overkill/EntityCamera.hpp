@@ -5,7 +5,7 @@
 
 #include <overkill/Config.hpp>
 #include <overkill/Entity.hpp>
-
+#include <overkill/Scene.hpp>
 
 
 namespace overkill
@@ -30,7 +30,7 @@ public:
                 float FOV = C::FOV, float aspectRatio = C::AspectRatio, 
                 float nearClip = C::NearClip, float farClip = C::FarClip);
 
-
+    void update(float dt);
 
 };
 

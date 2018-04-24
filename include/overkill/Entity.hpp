@@ -20,7 +20,6 @@ protected:
     glm::vec3 m_rotation;
     glm::vec3 m_velocity;
     glm::vec3 m_angularVelocity;
-    void update(float dt);  
 
 public:
     Entity(C::Tag entityTag, int entityID, glm::vec3 pos, glm::vec3 rot, glm::vec3 vel, glm::vec3 angVel);
@@ -36,6 +35,8 @@ public:
     void setVelocity(glm::vec3 vel);
     void setAngularVelocity(glm::vec3 angVel); 
 
+    virtual void update(float dt, glm::mat4 /*transformMatrix*/ = glm::mat4(1));  
+    virtual void draw(float /*t*/);
 };
 
 }

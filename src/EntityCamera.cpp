@@ -27,6 +27,18 @@ glm::mat4 EntityCamera::getViewMatrix(glm::mat4 parentModelMatrix)
     return view;   
 }
 
+void EntityCamera::update(float dt)
+{
+
+        if (m_childIDs.size() > 0)                  // If we actually have kids.
+        {            
+            for (const auto child : m_childIDs)     // For every childID in childIDs-vector.
+            {
+                printf("\n\nI am entityID %d Updating child with entityID %d.\n", m_entityID, child);
+                Scene::getEntity(child)-> update(dt, m_viewMatrix);
+            }
+        }
+}
 
 
 }

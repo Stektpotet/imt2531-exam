@@ -68,7 +68,7 @@ namespace overkill
         m_angularVelocity = angVel; 
     }
 
-    void Entity::update(float dt)
+    void Entity::update(float dt, glm::mat4 /*transformMatrix*/)
     {
         m_position += m_velocity * dt;
         m_rotation += m_angularVelocity * dt;
@@ -77,5 +77,10 @@ namespace overkill
                 m_rotation.x, m_rotation.y, m_rotation.z, 
                 m_angularVelocity.x, m_angularVelocity.y, m_angularVelocity.z, 
                 dt);*/
+    }
+
+    void Entity::draw(float t)
+    {
+
     }
 }
