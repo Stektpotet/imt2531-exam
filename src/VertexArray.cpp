@@ -28,7 +28,7 @@ void VertexArray::addBuffer(const VertexBuffer& vb, const VertexBufferAttribLayo
         GLCall(
             glVertexAttribPointer(
                 i,
-                attrib.count,
+                attrib.componentCount,
                 attrib.type,
                 attrib.normalized,
                 layout.getStride(),

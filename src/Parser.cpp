@@ -188,12 +188,12 @@ auto Parser::nextKeyVertex() -> KeyVertex {
 
 
     // Parsing UV
-    //float u, v;
-    ss >> vert.u >> vert.v;
+    float u, v;
+    ss >> u >> v;
     if(ss.fail()){
         return KeyVertex{"", {}, PARSE_ERROR};
     }
-    //vert.uv = Util::packUV(u, v);
+    vert.uv = Util::packUV(u, v);
 
 
 

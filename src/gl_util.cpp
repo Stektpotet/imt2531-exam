@@ -169,6 +169,7 @@ auto GLTypeSize(const GLenum type) -> GLsizei
         case GL_UNSIGNED_SHORT:                 return sizeof(GLushort);
         case GL_INT_2_10_10_10_REV:             return sizeof(GLint);
         case GL_UNSIGNED_INT_2_10_10_10_REV:    return sizeof(GLuint);
+        case GL_NONE:                           return 1;
         default:
             printf("WARNING!\nGLenum type: %u not supported!!!", type);
             return 0;

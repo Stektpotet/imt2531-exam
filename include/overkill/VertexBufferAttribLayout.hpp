@@ -10,7 +10,7 @@ namespace overkill
 struct VertexBufferAttrib
 {
     GLuint      size;
-    GLuint      count;
+    GLuint      componentCount;
     GLenum      type;
     GLboolean   normalized;
 };

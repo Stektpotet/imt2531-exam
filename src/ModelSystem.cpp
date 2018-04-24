@@ -121,18 +121,21 @@ void ModelSystem::load()
             vertices.push_back(vertex);
         }
 
-        // Buffer vertex data to GPU VAO and VBO
-        newModel.m_vbo = VertexBuffer(vertices.data(), vertices.size() * sizeof(Vertex));
-        
+
+
         auto vbufLayout = VertexBufferAttribLayout();
 
-        vbufLayout.push<GL_FLOAT>(3);                       //position;
-        vbufLayout.pushPacked<GL_INT_2_10_10_10_REV>(4);    //normal
-        vbufLayout.push<GL_UNSIGNED_SHORT>(2);        //uv
-        vbufLayout.push<GL_UNSIGNED_BYTE>(4, GL_TRUE);      //color;
+        vbufLayout.push<GL_FLOAT>(3);                       //position -> 0  -> 12
+        vbufLayout.pushPacked<GL_INT_2_10_10_10_REV>(4);    //normal   -> 12 -> 16
+        vbufLayout.push<GL_UNSIGNED_BYTE>(4, GL_TRUE);      //color;   -> 16 -> 20
+        vbufLayout.pushPacked<GL_UNSIGNED_SHORT>(2);        //uv       -> 20 -> 22
+        vbufLayout.push<GL_BYTE>(2);                        //alignment-> 22 -> 24 == sizeof(Vertex)
+
+
+        // Buffer vertex data to GPU VAO and VBO
+        newModel.m_vbo = VertexBuffer(vertices.data(), vertices.size() * vbufLayout.getStride()); //@NOTE: if there are exploding mesh issues this probably has to do with alignment issues, your GPU preffers data packed 4 by 4 bytes
 
         newModel.m_vao.addBuffer(newModel.m_vbo, vbufLayout);
-
         //
         // MESHES
         //
