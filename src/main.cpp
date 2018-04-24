@@ -59,31 +59,7 @@ int main()
 
     auto renderer = EdgeRenderer();
     
-    Scene scene;
-
     //translation * view * rotate(time*0.1*F, time*0.333334*F, time*0.1666666667*F) //From shader, old system.
-    auto modelCubeObject = EntityModel("cube");
-    auto modelCubeChildObject = EntityModel("cube");
-    auto modelFloorObject = EntityModel("cube");
-
-    modelCubeObject.setEntityID(scene.addEntityModel(modelCubeObject));
-    modelCubeChildObject.setEntityID(scene.addEntityModel(modelCubeObject));
-    modelCubeChildObject.setParent(modelCubeObject.getEntityID());
-
-
-    //modelCubeObject.setRotation(glm::vec3(45, 45, 45));
-    //modelCubeObject.setAngularVelocity(glm::vec3(1, 3.4f, 1.67f));
-    modelCubeObject.setAngularVelocity(glm::vec3(0, 0.4f, 0));
-    modelCubeObject.setPosition(glm::vec3(0,1,0));
-    modelCubeObject.setVelocity(glm::vec3(0.4f, 0, 0));
-    
-
-    modelCubeChildObject.setPosition(glm::vec3(0,1,3));
-
-
-    modelFloorObject.setPosition(glm::vec3(0, -4, 0));
-    modelFloorObject.setScale(glm::vec3(20, 0.1f, 20));
-
 
     //SCALE -> ROTATE -> TRANSLATE
     glm::mat4 projection = glm::perspective(C::FOV, C::AspectRatio, C::NearClip, C::FarClip);
@@ -95,6 +71,9 @@ int main()
     GLint uniformMVP, uniformTime;
     GLint uniformMVP2, uniformTime2;
     GLint uniformView;                                  //Will communicate camera orientation to shader.
+
+    auto modelCubeObject = EntityModel("cube");
+    Scene::loadScene();
 
     //TODO move to shader system:
     for (auto mesh : ModelSystem::getById(modelCubeObject.getModel()).m_meshes)
@@ -118,8 +97,7 @@ int main()
         Renderer::clear();                                      // changed by keypress.
         // Renderer::draw(model, glm::mat4(1));                 // Replaced by new model, however some of old models components are still being used.
         
-        modelCubeObject.update(dt);
-        modelFloorObject.update(dt);
+        Scene::update(dt);
 
         // Set uniforms global shaders
         for (auto mesh : ModelSystem::getById(modelCubeObject.getModel()).m_meshes)
@@ -130,9 +108,7 @@ int main()
             GLCall(glUniform1f(uniformTime, 0));
         }
 
-        modelCubeObject.draw();    //Important: currently uses the old model's 0th mesh's shader to draw. Also true for the camera.
-        modelCubeChildObject.draw();
-        modelFloorObject.draw();    //Important: currently uses the old model's 0th mesh's shader to draw. Also true for the camera.
+        Scene::draw();      // Draws all the models in the scene.
 
 		//@TODO shader.bindDynamic()
         projection = glm::perspective(Input::m_fovy, C::AspectRatio, 0.1f, -100.0f);
@@ -142,9 +118,6 @@ int main()
         
         view = pivot * camera;
         glm::inverse(view); //To reverse both axis, so controls are not reverse.
-
-
-
 
         glfwSwapBuffers(window);
         glfwPollEvents();
