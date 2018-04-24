@@ -8,7 +8,7 @@ namespace overkill
     const auto& pclose = _pclose;
     constexpr char PYTHON_COMMAND[] = "C:\\tools\\Python36\\python.exe discover.py";
 #else
-    constexpr char PYTHON_COMMAND[] = "/usr/bin/python3 discover.py";
+    constexpr char PYTHON_COMMAND[] = "/usr/bin/python3 tool/discover.py";
 #endif
 
 
