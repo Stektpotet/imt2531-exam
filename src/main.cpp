@@ -132,15 +132,22 @@ int main()
 
 
         // UPDATE LIGHT DATA
-        lightData[0].position = glm::vec4(10 * sin(3 * t), 0, 10 * cos(3 * t), 0);
-        lightData[0].intensities = glm::vec4(1.5f * sin(1.33*t), 1.5 * cos(1.33*t), 0, 0);
+        lightData[0].position = glm::vec4(10 * sin(3 * t), (sin(0.666f*t) + 2.0f), 10 * cos(3 * t), 0);
+        //lightData[0].intensities = glm::vec4(0.85f *(sin(0.33*t)*0.5f+1), 0.85f * (cos(0.33*t)*0.5f + 1), 0, 0);
 
-        lightData[1].position = glm::vec4(10 * sin(1.33*t), 10 * cos(1.33*t), 0, 0);
-        lightData[1].intensities = glm::vec4(1.5f * sin(1.33*t + C::PI / 3), 1.5 * cos(1.33*t + C::PI / 3), 0, 0);
+        lightData[1].position = glm::vec4(10 * sin(1.33*t), (sin(0.999f*t) + 2.0f), 10 * cos(1.33*t), 0);
+        //lightData[1].intensities = glm::vec4(0.85f * (sin(1.33*t + C::PI / 3)*0.5f+1), 0, 0.85f * (cos(1.33*t + C::PI / 3)*0.5f + 1), 0);
 
-        lightData[2].position = glm::vec4(0, 10 * sin(4.377*t), 10 * cos(4.377*t), 0);
-        lightData[2].intensities = glm::vec4(1.5f * sin(1.33*t + (C::PI * 2 / 3)), 1.5 * cos(1.33*t + (C::PI * 2 / 3)), 0, 0);
+        lightData[2].position = glm::vec4(10 * sin(4.377*t), (sin(0.333f*t)+2.0f), 10 * cos(4.377*t), 0);
+        //lightData[2].intensities = glm::vec4(0, 0.85f * (cos(1.33*t + (C::PI * 2 / 3))*0.5f + 1), 0.85f * (sin(1.33*t + (C::PI * 2 / 3))*0.5f + 1), 0);
 
+        // UPDATE GLOBAL UNIFORM BUFFERS
+        lightBuf.update(light0PosIndex, 32, &(lightData[0]));
+        //lightBuf.update(light0PosIndex + 16, 16, &(lightData[0].intensities));
+        
+        lightBuf.update(light1PosIndex, 32, &(lightData[1]));
+        
+        lightBuf.update(light2PosIndex, 32, &(lightData[2]));
 
         // UPDATE GLOBAL UNIFORM BUFFERS
         lightBuf.update(light0PosIndex, 16, &(lightData[0].position));
