@@ -18,21 +18,21 @@ namespace overkill
                                 glm::vec3(0), glm::vec3(1),
                                 glm::vec3(0.8f, 0, 0), 
                                 glm::vec3(1, 3.4f, 1.67f));
+        auto modelCubeChildObject = EntityModel("cube", count++, glm::vec3(2.2f, 0, 0));
 
         auto modelSuzanneObject = EntityModel("Suzanne", count++, glm::vec3(4,10,1),
-                                glm::vec3(45, 45, 45),glm::vec3(10, 10, 10),
+                                glm::vec3(45, 45, 45),glm::vec3(5, 5, 5),
                                 glm::vec3(0), glm::vec3(1, 3.4f, 1.67f));
 
         auto modelFloorObject = EntityModel("cube", count++, glm::vec3(0, -3, 0), glm::vec3(0), glm::vec3(20, 0.5f, 20));
         
-        auto modelCubeChildObject = EntityModel("cube", count++, glm::vec3(2.2f, 0, 0));
 
         addEntityModel(modelCubeObject);    // Add models to container. Any changes made after this will be lost.
         addEntityModel(modelCubeChildObject);
         addEntityModel(modelSuzanneObject);    // Add models to container. Any changes made after this will be lost.
         addEntityModel(modelFloorObject);    // Add models to container. Any changes made after this will be lost.
 
-        getEntityModel(0)-> addChild(1);      // Set entity with id 1 as a child of entity with id 0.
+        getEntityModel(modelCubeObject.getEntityID())-> addChild(modelCubeChildObject.getEntityID());      // Set entity with id 1 as a child of entity with id 0.
 
         // Doing this loop to set material for each mesh in each model should not be nessecary, because its already done in model system.
         for (auto entityModel : m_modelEntities) 
