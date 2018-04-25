@@ -110,22 +110,21 @@ int main()
 
         Renderer::clear();
         Scene::update(dt);
+        {
+            // UPDATE LIGHT DATA
+            lightData[0].position = glm::vec4(-15, 2, 20 * cos(0.999f * t), 0);
+            //lightData[0].intensities = glm::vec4(0.85f *(sin(0.33*t)*0.5f+1), 0.85f * (cos(0.33*t)*0.5f + 1), 0, 0);
 
-        // UPDATE LIGHT DATA
-        lightData[0].position = glm::vec4(-15, 2, 20 * cos(0.999f * t), 0);
-        //lightData[0].intensities = glm::vec4(0.85f *(sin(0.33*t)*0.5f+1), 0.85f * (cos(0.33*t)*0.5f + 1), 0, 0);
+            lightData[1].position = glm::vec4(0, 2, 20 * cos(1.333f*t), 0);
+            //lightData[1].intensities = glm::vec4(0.85f * (sin(1.33*t + C::PI / 3)*0.5f+1), 0, 0.85f * (cos(1.33*t + C::PI / 3)*0.5f + 1), 0);
 
-        lightData[1].position = glm::vec4(0, 2, 20 * cos(1.333f*t), 0);
-        //lightData[1].intensities = glm::vec4(0.85f * (sin(1.33*t + C::PI / 3)*0.5f+1), 0, 0.85f * (cos(1.33*t + C::PI / 3)*0.5f + 1), 0);
-
-        lightData[2].position = glm::vec4(15, 2, 20 * cos(1.666*t), 0);
-        //lightData[2].intensities = glm::vec4(0, 0.85f * (cos(1.33*t + (C::PI * 2 / 3))*0.5f + 1), 0.85f * (sin(1.33*t + (C::PI * 2 / 3))*0.5f + 1), 0);
+            lightData[2].position = glm::vec4(15, 2, 20 * cos(1.666*t), 0);
+            //lightData[2].intensities = glm::vec4(0, 0.85f * (cos(1.33*t + (C::PI * 2 / 3))*0.5f + 1), 0.85f * (sin(1.33*t + (C::PI * 2 / 3))*0.5f + 1), 0);
 
             // UPDATE GLOBAL UNIFORM BUFFERS
+        
             lightBuf.update(light0PosIndex, 16, &(lightData[0]));
-            
             lightBuf.update(light1PosIndex, 16, &(lightData[1]));
-            
             lightBuf.update(light2PosIndex, 16, &(lightData[2]));
         }
 
