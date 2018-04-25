@@ -3,10 +3,10 @@
 namespace overkill
 {
 
-    EntityModel::EntityModel(C::Tag modelTag, int entityID,
+    EntityModel::EntityModel(C::Tag modelTag, C::Tag entityTag, int entityID,
                             glm::vec3 pos, glm::vec3 rot, 
                             glm::vec3 scale, glm::vec3 vel, 
-                            glm::vec3 angVel) : Entity(modelTag, entityID, pos, rot, vel, angVel)
+                            glm::vec3 angVel) : Entity(entityTag, entityID, pos, rot, vel, angVel)
     {
         m_modelID =  ModelSystem::getIdByTag(modelTag);
         m_scale = scale;
@@ -38,11 +38,6 @@ namespace overkill
     {  
         return m_scale;  
     }
-    void EntityModel::addChild(int childID)
-    {   
-        Scene::removeRoot(childID);
-        m_childIDs.push_back(childID);  
-    }
 
     void EntityModel::setModelByID(int modelID)
     {   
@@ -62,24 +57,25 @@ namespace overkill
     {
         m_position += m_velocity * dt;
         m_rotation += m_angularVelocity * dt;
-        
-        m_transformMatrix = getModelMatrix(parentMatrix);
-        
 
-        printf("\n\nUpdate()\n\nentityID %d, \nm_position %f, %f, %f\nm_rotation %f, %f, %f\nm_angVel %f, %f, %f\ndeltatime %f", 
-                m_entityID, 
+        m_transformMatrix = getModelMatrix(parentMatrix);
+
+        printf("\n\nUpdate()\n\nentityID %d, entiryTag %s, \nm_position %f, %f, %f\nm_rotation %f, %f, %f\nm_angVel %f, %f, %f\ndeltatime %f\n", 
+                m_entityID,  m_entityTag.data(),
                 m_position.x, m_position.y, m_position.z, 
                 m_rotation.x, m_rotation.y, m_rotation.z, 
                 m_angularVelocity.x, m_angularVelocity.y, m_angularVelocity.z, 
                 dt);
-        Util::printMatrix(parentMatrix, "parentMatrix:");
+        Util::printMatrix(parentMatrix, "ParentMatrix:");
+        Util::printMatrix(m_transformMatrix, "TransormMatrix:");
+
 
         if (m_childIDs.size() > 0)                  // If we actually have kids.
         {            
             for (const auto child : m_childIDs)     // For every childID in childIDs-vector.
             {
                 printf("\n\nI am entityID %d Updating child with entityID %d.\n", m_entityID, child);
-                Scene::getEntityModel(child)-> update(dt, m_transformMatrix);
+                Scene::getEntity(child)-> update(dt, m_transformMatrix);
             }
         }
     }

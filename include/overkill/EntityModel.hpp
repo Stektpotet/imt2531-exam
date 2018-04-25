@@ -6,13 +6,14 @@
 #include <overkill/Util.hpp>
 #include <overkill/Material.hpp>
 #include <overkill/Entity.hpp>
+#include <overkill/Scene.hpp>
 #include <overkill/ModelSystem.hpp>
 #include <overkill/Renderer.hpp>
-#include <overkill/Scene.hpp>
 
 namespace overkill
 {
-    class Renderer;
+
+class Renderer;
 
 class EntityModel : public Entity
 {
@@ -23,7 +24,7 @@ private:
 
 
 public:
-    EntityModel(C::Tag modelTag, int entityID,
+    EntityModel(C::Tag modelTag, C::Tag EntityTag, int entityID,
                 glm::vec3 pos = glm::vec3(0,0,0), glm::vec3 rot = glm::vec3(0,0,0), 
                 glm::vec3 scale = glm::vec3(1,1,1), glm::vec3 vel = glm::vec3(0,0,0), 
                 glm::vec3 angVel = glm::vec3(0,0,0));
@@ -34,7 +35,6 @@ public:
     void setModelByID(int modelID);
     void setModelByTag(C::Tag tag);
     void setScale(glm::vec3 scale = glm::vec3(1));
-    void addChild(int childID);
 
     void update(float dt, glm::mat4 parentMatrix = glm::mat4(1));
     void draw(float t);
