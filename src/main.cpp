@@ -49,18 +49,14 @@ int main()
         C::WinName);
 
     Init::GLEW();
-    Init::OpenGL(C::ClearColor); //(0.05f, 0.06f, 0.075f, 1.0f) for sexy dark blue-grey
+    Init::OpenGL(C::ClearColor);
     Watcher::pollEvents();
 
     // Load resource subsystem
     TextureSystem::load();
     ShaderSystem::load();
     MaterialSystem::load();
-
     ModelSystem::load();
-
-    auto renderer = Renderer();
-    //translation * view * rotate(time*0.1*F, time*0.333334*F, time*0.1666666667*F) //From shader, old system.
 
 
     struct LightData {
@@ -82,17 +78,7 @@ int main()
         LightData{ { 0,3, 3	,0	},{ 0.5, 0.5, 0.5, 0}, /*10.0f, 10.0f, 10.0f, 10.0f*/ },
     };
 
-    glm::mat4 projection = glm::perspective(C::FOV, C::AspectRatio, C::NearClip, C::FarClip);
-    glm::mat4 camera = glm::mat4(1);
-    glm::mat4 pivot = glm::translate(glm::mat4(1), glm::vec3(0, 0, C::CameraOffset));  //Camera pos in world.
-    glm::mat4 view = glm::mat4(1);
-    // TODO remove if compiles.
-    // glm::mat4 m2w = modelTransform.modelToWorld();
-
-
     Scene::loadScene();
-            // Doing this loop to set material for each mesh in each model should not be nessecary, because its already done in model system.
-
 
     float oldT = 0, t = 0, dt = 0;
 
@@ -113,7 +99,6 @@ int main()
     lightBuf.update(restOfTheLights, 32 * 5, &(lightData[3]));
 
 
-
     for(;;)
     {
         t = (float)glfwGetTime();
@@ -123,38 +108,35 @@ int main()
 
         Renderer::clear();
         Scene::update(dt);
-        
-        
-        // // UPDATE CAMERA DATA
+
+        // UPDATE LIGHT DATA        
+        {
+            lightData[0].position = glm::vec4(10 * sin(3 * t), (sin(0.666f*t) + 2.0f), 10 * cos(3 * t), 0);
+            //lightData[0].intensities = glm::vec4(0.85f *(sin(0.33*t)*0.5f+1), 0.85f * (cos(0.33*t)*0.5f + 1), 0, 0);
+
+            lightData[1].position = glm::vec4(10 * sin(1.33*t), (sin(0.999f*t) + 2.0f), 10 * cos(1.33*t), 0);
+            //lightData[1].intensities = glm::vec4(0.85f * (sin(1.33*t + C::PI / 3)*0.5f+1), 0, 0.85f * (cos(1.33*t + C::PI / 3)*0.5f + 1), 0);
+
+            lightData[2].position = glm::vec4(10 * sin(4.377*t), (sin(0.333f*t)+2.0f), 10 * cos(4.377*t), 0);
+            //lightData[2].intensities = glm::vec4(0, 0.85f * (cos(1.33*t + (C::PI * 2 / 3))*0.5f + 1), 0.85f * (sin(1.33*t + (C::PI * 2 / 3))*0.5f + 1), 0);
+
+            // UPDATE GLOBAL UNIFORM BUFFERS
+            lightBuf.update(light0PosIndex, 32, &(lightData[0]));
+            
+            lightBuf.update(light1PosIndex, 32, &(lightData[1]));
+            
+            lightBuf.update(light2PosIndex, 32, &(lightData[2]));
+        }
+
+        // UPDATE CAMERA MATRICES
         {
             CameraTransform cameraTransform = ((EntityCamera*)Scene::getEntityByTag("camera"))-> m_cameraTransform;
-            projection = cameraTransform.projectionMatrix;
-            view = cameraTransform.viewMatrix;
+            matrixBuf.update(projectionIndex, sizeof(glm::mat4), glm::value_ptr(cameraTransform.projectionMatrix));
+            matrixBuf.update(viewIndex, sizeof(glm::mat4), glm::value_ptr(cameraTransform.viewMatrix));
         }
-        
 
-        // UPDATE LIGHT DATA
-        lightData[0].position = glm::vec4(10 * sin(3 * t), (sin(0.666f*t) + 2.0f), 10 * cos(3 * t), 0);
-        //lightData[0].intensities = glm::vec4(0.85f *(sin(0.33*t)*0.5f+1), 0.85f * (cos(0.33*t)*0.5f + 1), 0, 0);
-
-        lightData[1].position = glm::vec4(10 * sin(1.33*t), (sin(0.999f*t) + 2.0f), 10 * cos(1.33*t), 0);
-        //lightData[1].intensities = glm::vec4(0.85f * (sin(1.33*t + C::PI / 3)*0.5f+1), 0, 0.85f * (cos(1.33*t + C::PI / 3)*0.5f + 1), 0);
-
-        lightData[2].position = glm::vec4(10 * sin(4.377*t), (sin(0.333f*t)+2.0f), 10 * cos(4.377*t), 0);
-        //lightData[2].intensities = glm::vec4(0, 0.85f * (cos(1.33*t + (C::PI * 2 / 3))*0.5f + 1), 0.85f * (sin(1.33*t + (C::PI * 2 / 3))*0.5f + 1), 0);
-
-        // UPDATE GLOBAL UNIFORM BUFFERS
-        lightBuf.update(light0PosIndex, 32, &(lightData[0]));
-        
-        lightBuf.update(light1PosIndex, 32, &(lightData[1]));
-        
-        lightBuf.update(light2PosIndex, 32, &(lightData[2]));
-
-        matrixBuf.update(projectionIndex, sizeof(glm::mat4), glm::value_ptr(projection));
-        matrixBuf.update(viewIndex, sizeof(glm::mat4), glm::value_ptr(view));
-        matrixBuf.update(viewPosIndex, sizeof(glm::vec4), glm::value_ptr(pivot));
-
-        Scene::draw(t);      // Draws all the models in the scene.
+        // Draws all the models in the scene.
+        Scene::draw(t);     
 
         glfwSwapBuffers(window);
         glfwPollEvents();
