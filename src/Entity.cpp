@@ -82,8 +82,8 @@ namespace overkill
         printf("\n\nUpdate()\n\nentityID %d, entiryTag %s, \nm_position %f, %f, %f\nm_rotation %f, %f, %f\nm_angVel %f, %f, %f\ndeltatime %f\n", 
                 m_entityID,  m_entityTag.data(),
                 m_position.x, m_position.y, m_position.z, 
-                m_rotation.x, m_rotation.y, m_rotation.z, 
-                m_angularVelocity.x, m_angularVelocity.y, m_angularVelocity.z, 
+                glm::degrees(m_rotation.x), glm::degrees(m_rotation.y), glm::degrees(m_rotation.z), 
+                glm::degrees(m_angularVelocity.x), glm::degrees(m_angularVelocity.y), glm::degrees(m_angularVelocity.z), 
                 dt);    
         }
 
