@@ -12,7 +12,7 @@ MaxFOV: 88.2
 MinFOV: 87.97
 ZoomSensitivity: 0.0033
 LookSensitivity: 0.013
-PanSensitivity: 9
+PanSensitivity: 4
 NearClip: 0.1
 FarClip: 100.0
 CameraOffset: -70
