@@ -133,7 +133,7 @@ vec3 OK_PointLight(in vec3 position, in vec3 intensities, in float constant, in 
     float distance = length(position - fragVert);
     float attenuation = 1.0 / (constant + linear * distance + quadratic * (distance * distance));
 
-    return pointLight*attenuation + I_back * intensities*thickness;
+    return pointLight*attenuation + I_back * intensities;// thickness; // @bug commented out thickness because it is undefined
 }
 
 void main() {

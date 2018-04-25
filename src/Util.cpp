@@ -56,7 +56,6 @@ auto Util::packNormal(float x, float y, float z) -> GLint
     const auto DISCARDMASK = 1023;
     const auto MAX = 511;        //01 1111 1111
     GLint r = ((GLint(z * MAX) & DISCARDMASK) << 20) | ((GLint(y * MAX) & DISCARDMASK) << 10) | (GLint(x * MAX) & DISCARDMASK);
-    printf("%i\n", r);
     return r;
 }
 
