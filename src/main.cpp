@@ -127,10 +127,9 @@ int main()
         
         // // UPDATE CAMERA DATA
         projection = glm::perspective(Input::m_fovy, C::AspectRatio, 0.1f, -100.0f);
-        view = ((EntityCamera*)Scene::getEntity(0))-> m_viewMatrix;
+        view = ((EntityCamera*)Scene::getEntityByTag("camera"))-> m_viewMatrix;
         glm::inverse(view);
         
-        // view = ((EntityCamera*)Scene::getEntityByTag("camera"))-> m_viewMatrix;
 
         // UPDATE LIGHT DATA
         lightData[0].position = glm::vec4(10 * sin(3 * t), (sin(0.666f*t) + 2.0f), 10 * cos(3 * t), 0);

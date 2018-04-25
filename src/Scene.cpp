@@ -65,20 +65,20 @@ namespace overkill
         return m_entities[ID];
     }
 
-    // Entity* Scene::getEntityByTag(const C::Tag tag)
-    // {
-    //     auto comp = [tag](Entity* entity)       // Lambda to compare two entities by tag.
-    //     {
-    //         return (entity-> getTag() == tag);
-    //     };
+    Entity* Scene::getEntityByTag(const C::Tag tag)
+    {
+        auto comp = [tag](Entity* entity)       // Lambda to compare two entities by tag.
+        {
+            return (entity-> getTag() == tag);
+        };
 
-    //     auto entityToGet = std::find(m_entities.begin(), m_entities.end(), comp);
-    //     // if (entityToGet == m_entities.end())
-    //     // {
-    //     //     LOG_ERROR("Attempt to find entity that does not exist.");
-    //     // }
-    //     return *entityToGet;
-    // }
+        auto entityToGet = std::find_if(m_entities.begin(), m_entities.end(), comp);
+        if (entityToGet == m_entities.end())
+        {
+            LOG_ERROR("Attempt to find entity that does not exist.");
+        }
+        return *entityToGet;
+    }
 
     void Scene::update(float dt)
     {
