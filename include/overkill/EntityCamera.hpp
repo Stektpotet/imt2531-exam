@@ -13,9 +13,9 @@ namespace overkill
     
 struct CameraTransform      // Not to be confused with the cameras actual transform defined in Entity.
 {                           // This struct is used to convey info to main and shader.
-    glm::vec3 position;
-    glm::mat4 viewMatrix;
     glm::mat4 projectionMatrix;
+    glm::mat4 viewMatrix;
+    glm::vec4 position;
 };
 
 class EntityCamera : public Entity
@@ -27,6 +27,7 @@ private:
     float m_farClip;
 
     glm::mat4 getViewMatrix(glm::mat4 parentMatrix = glm::mat4(1));
+    glm::mat4 getModelMatrix(glm::mat4 parentMatrix = glm::mat4(1));
 
 public:
     CameraTransform m_cameraTransform;

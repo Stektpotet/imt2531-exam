@@ -13,6 +13,7 @@ namespace overkill
 
 class Entity
 {
+
 protected:
     C::Tag m_entityTag;                 // Tag that is uniqe for every entity type; cameraEntiry, lightEntiry, modelEntity.    
     int m_entityID;                     // ID scene uses to keep track of all entities. Also parentID.
@@ -21,6 +22,7 @@ protected:
     glm::vec3 m_rotation;
     glm::vec3 m_velocity;
     glm::vec3 m_angularVelocity;
+    glm::mat4 m_transformMatrix;
 
 public:
     Entity(C::Tag entityTag, int entityID, glm::vec3 pos, glm::vec3 rot, glm::vec3 vel, glm::vec3 angVel);

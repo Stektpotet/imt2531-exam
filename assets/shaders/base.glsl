@@ -112,26 +112,27 @@ vec3 OK_PointLight(in vec3 position, in vec3 intensities, in float constant, in 
     vec3 lightDir = normalize(position - fragVert);
     float diffusion = max(dot(norm, lightDir), 0.0);
     vec3 diffuse = diffusion * intensities;
+	
+    vec3 spec = texture(specTex, texCoord).rgb;
 
     // Specularity
-    //float specularStrength = 0.5;
-    //vec3 viewDir = normalize(view_position.xyz - fragVert);
-    //vec3 reflectDir = reflect(-lightDir, norm);
-    //float specPower = pow(max(dot(viewDir, reflectDir), 0.0), 32);
-    //vec3 specular = specularStrength * specPower *  intensities;
+    float specularStrength = 0.5;
+    vec3 viewDir = normalize(view_position.xyz - fragVert);
+    vec3 reflectDir = reflect(-lightDir, norm);
+    float specPower = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+    vec3 specular = specularStrength * specPower *  intensities * spec;
 
     // Attenuation
     float distance = length(position - fragVert);
     float attenuation = 1.0 / (constant + linear * distance + quadratic * distance * distance);
 
-    return (ambient*attenuation + diffuse * attenuation /*+ specular*specularity*attenuation*/);
+    return (ambient*attenuation + diffuse * attenuation + specular*specularity*attenuation);
 }
 
 void main() {
 
     vec3 diff = texture(mainTex, texCoord).rgb;
     vec3 bump = texture(bumpTex, texCoord).rgb;
-    vec3 spec = texture(specTex, texCoord).rgb;
 
     vec3 light0 = OK_PointLight(light[0].position.xyz, light[0].intensities.rgb ,light[0].constant, light[0].linear, light[0].quadratic);
     vec3 light1 = OK_PointLight(light[1].position.xyz, light[1].intensities.rgb ,light[1].constant, light[1].linear, light[1].quadratic);

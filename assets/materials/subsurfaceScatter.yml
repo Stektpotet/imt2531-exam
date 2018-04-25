@@ -1,7 +1,10 @@
 maps: 0
 
-values: 4
+values: 7
   opacity: 1
   intensity: 1
   bumpiness: 1
   specularity: 1
+  distortion: 0.3
+  scatterPower: 11
+  scatterScale: 0.2

@@ -20,8 +20,6 @@ class EntityModel : public Entity
 private:
     int m_modelID;         // What model with id will be used to draw Entity.
     glm::vec3 m_scale;
-    glm::mat4 m_transformMatrix;
-
 
 public:
     EntityModel(C::Tag modelTag, C::Tag EntityTag, int entityID,
