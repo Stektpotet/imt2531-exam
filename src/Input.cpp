@@ -37,19 +37,42 @@ namespace overkill
         else if(keyCode == GLFW_KEY_4) {
 
         }
+
+        if (char(keyCode) == 'W')
+        {
+            Entity* camera = Scene::getEntityByTag("camera");
+            camera -> setPosition(camera -> getPosition() + glm::vec3(0, 0, C::PanSensitivity));
+        }
+        if (char(keyCode) == 'S')
+        {
+            Entity* camera = Scene::getEntityByTag("camera");
+            camera -> setPosition(camera -> getPosition() + glm::vec3(0, 0, -C::PanSensitivity));
+        }
+        if (char(keyCode) == 'D')
+        {
+            Entity* camera = Scene::getEntityByTag("camera");
+            camera -> setPosition(camera -> getPosition() + glm::vec3(-C::PanSensitivity, 0, 0));
+        }
+        if (char(keyCode) == 'A')
+        {
+            Entity* camera = Scene::getEntityByTag("camera");
+            camera -> setPosition(camera -> getPosition() + glm::vec3(C::PanSensitivity, 0, 0));
+        }
+        if (char(keyCode) == 'Q')
+        {
+            Entity* camera = Scene::getEntityByTag("camera");
+            camera -> setPosition(camera -> getPosition() + glm::vec3(0, -C::PanSensitivity, 0));
+        }
+        if (char(keyCode) == 'E')
+        {
+            Entity* camera = Scene::getEntityByTag("camera");
+            camera -> setPosition(camera -> getPosition() + glm::vec3(0, C::PanSensitivity, 0));
+        }
     }
 
     void Input::OnInputKeyHold(GLFWwindow* /*window*/, int keyCode, int /*scanCode*/, int /*mods*/)
     {
         printf("Holding %i, as char: %c\n", keyCode, char(keyCode));
-        if (keyCode == GLFW_KEY_W)
-        {
-
-        }
-        if (keyCode == GLFW_KEY_S)
-        {
-
-        }
     }
 
     void Input::OnInputKeyUnpress(GLFWwindow* /*window*/, int keyCode, int /*scanCode*/, int /*mods*/)

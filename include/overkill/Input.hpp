@@ -4,6 +4,8 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+
+#include <overkill/Scene.hpp>
 #include <overkill/Config.hpp>
 #include <overkill/MaterialSystem.hpp>
 #include <overkill/ShaderSystem.hpp>
