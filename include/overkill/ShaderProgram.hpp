@@ -36,7 +36,7 @@ private:
     std::unordered_map<std::string, GLint> uniforms;
     std::unordered_map<std::string, GLint> uniformBlocks;
 
-    void construct(const std::string& vert, const std::string& frag, const std::string& geom);
+    auto construct(const std::string& vert, const std::string& frag, const std::string& geom) -> GLenum;
 
     GLuint id;
 public:
@@ -59,7 +59,6 @@ public:
     GLint getUniformLocation(const std::string& name) const;
 
     static ShaderSource ParseProgram(const std::string& file);
-    static GLuint CompileShader(GLuint type, const std::string& source);
     GLuint getUniformBlockIndex(const std::string& blockName) const;
     
 };

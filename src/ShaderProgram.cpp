@@ -1,41 +1,60 @@
 ﻿#include <overkill/ShaderProgram.hpp>
-
+#include <overkill/ShaderIntrospector.hpp>
 
 namespace overkill 
 {
 
-void ShaderProgram::construct(const std::string& vert, const std::string& frag, const std::string& geom)
+auto ShaderProgram::construct(const std::string& vert, const std::string& frag, const std::string& geom) -> GLenum
 {
-    GLCall(id = glCreateProgram());
-    const auto attachShader = [this](const std::string& src, GLuint type)
-    {
-        if (!src.empty())
+
+    const auto attachShader = [](const GLuint programId, const std::string& source, GLuint type) -> GLenum
+    {   
+        // Just ignore if the shader source is empty
+        if (!source.empty())
         {
-            auto shader = ShaderProgram::CompileShader(type, src);
-            GLCall(glAttachShader(id, shader));
-            GLCall(glDeleteShader(shader)); //it may be that I'm supposed to call glDetachShader() instead.. not sure for now tho
-        }
+            GLenum err = 0;
+            GLuint shaderId;
+            GLCall_ReturnIfError(shaderId = glCreateShader(type));
+
+            const char* src = source.data();
+            GLCall_ReturnIfError(glShaderSource(shaderId, 1, &src, nullptr));
+            GLCall_ReturnIfError(glCompileShader(shaderId));
+
+            err = ShaderIntrospector::printCompileStatus(shaderId);
+            if (err)
+                return err;
+
+            GLCall_ReturnIfError(glAttachShader(programId, shaderId));
+            GLCall_ReturnIfError(glDeleteShader(shaderId)); //it may be that I'm supposed to call glDetachShader() instead.. not sure for now tho
+        } 
+        return 0;
     };
-    attachShader(vert, GL_VERTEX_SHADER);
-    attachShader(frag, GL_FRAGMENT_SHADER);
-    attachShader(geom, GL_GEOMETRY_SHADER);
 
-    GLCall(glLinkProgram(id));
-    int result;
-    GLCall(glGetProgramiv(id, GL_LINK_STATUS, &result));
-    if (!result)
-    {
-        int length;
-        GLCall(glGetProgramiv(id, GL_INFO_LOG_LENGTH, &length));
-        char* message = (char*)alloca(length * sizeof(char));
-        GLCall(glGetProgramInfoLog(id, length, &length, message));
-        std::cout << "\nFailed to link program: " << id << std::endl;
-        std::cout << message << std::endl;
-        GLCall(glDeleteProgram(id));
+    GLenum err = 0;
+    GLuint programId;
+    GLCall_ReturnIfError( programId = glCreateProgram() );
 
-        std::cin.get();
-        return;
-    }
+
+    err = attachShader(programId, vert, GL_VERTEX_SHADER);
+    if (err) 
+        return err;
+
+    err = attachShader(programId, frag, GL_FRAGMENT_SHADER);
+    if (err) 
+        return err;
+    
+    err = attachShader(programId, geom, GL_GEOMETRY_SHADER);
+    if (err) 
+        return err;
+
+    GLCall_ReturnIfError(glLinkProgram(programId));
+    err = ShaderIntrospector::printLinkStatus(programId);
+    if (err)
+        return err;
+
+    id = programId;    // @SO FAR SO GOOD
+
+
 
     ///https://stackoverflow.com/questions/440144/in-opengl-is-there-a-way-to-get-a-list-of-all-uniforms-attribs-used-by-a-shade
    
@@ -67,24 +86,20 @@ void ShaderProgram::construct(const std::string& vert, const std::string& frag, 
     GLCall(glGetProgramiv(id, GL_ACTIVE_UNIFORMS, &count));
     LOG_INFO("\n\nActive uniforms: %i", count);
 
+
+
     for (GLuint i = 0; i < count; i++)
     {
         char* uniformName = (char*)alloca(nameMaxLength * sizeof(char));
         GLCall(glGetActiveUniform(id, i, nameMaxLength, &length, &size, &type, uniformName));
         LOG_INFO("Uniform #%u, Type: %u, Name: %s", i, type, uniformName);
-        if (length > 15)
-        {
-            LOG_WARN(R"(
-    Uniform #%d, %s of type %u: 
-    names of uniforms should generally be shorter than 15 characters
-    for optimal lookup time, if %s is not touched very often this may still be OK)",
-                i, uniformName, type, uniformName
-            );
-        }
+
         GLint location;
         GLCall(location = glGetUniformLocation(id, uniformName));
         uniforms.insert({ uniformName, location });
     }
+
+
     auto uBlockCount = ShaderIntrospector::getActiveBlockCount(id);
     uniformBlocks.reserve(uBlockCount);
     for (GLint i = 0; i < uBlockCount; i++)
@@ -103,8 +118,9 @@ void ShaderProgram::construct(const std::string& vert, const std::string& frag, 
         }
     }
     
-
     GLCall(glValidateProgram(id));
+
+    return 0;
 }
 
 ShaderProgram::ShaderProgram(const std::string& vert, const std::string& frag, const std::string& geom)
@@ -186,31 +202,7 @@ GLuint ShaderProgram::getUniformBlockIndex(const std::string & blockName) const
     return index;
 }
 
-GLuint ShaderProgram::CompileShader(GLuint type, const std::string& source)
-{
-    GLuint id;
-    GLCall(id = glCreateShader(type));
-    const char* src = source.c_str();
-    GLCall(glShaderSource(id, 1, &src, nullptr));
-    GLCall(glCompileShader(id));
 
-    int result;
-    GLCall(glGetShaderiv(id, GL_COMPILE_STATUS, &result));
-    if (!result)
-    {
-        int length;
-        GLCall(glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length));
-        char* message = (char*)alloca(length * sizeof(char));
-        GLCall(glGetShaderInfoLog(id, length, &length, message));
-        std::cout << "Failed to compile shader: " << ::ShaderTypeName(type) << std::endl;
-        std::cout << message << std::endl;
-        GLCall(glDeleteShader(id));
-
-        std::cin.get();
-        return 0;
-    }
-    return id;
-}
 
 ShaderSource ShaderProgram::ParseProgram(const std::string& file)
 {

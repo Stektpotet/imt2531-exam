@@ -33,6 +33,46 @@ const std::vector<GLint>& ShaderIntrospector::getUniformLocations(const GLuint p
 }*/
 
 
+GLenum ShaderIntrospector::printCompileStatus(const GLuint shaderid )
+{
+    GLenum err;
+    GLint result;
+    GLCall_ReturnIfError(glGetShaderiv(shaderid, GL_COMPILE_STATUS, &result));
+    if (!result)
+    {
+        int length;
+        GLCall_ReturnIfError(glGetShaderiv(shaderid, GL_INFO_LOG_LENGTH, &length));
+        char* message = (char*)alloca(length * sizeof(char));
+        GLCall_ReturnIfError(glGetShaderInfoLog(shaderid, length, &length, message));
+        GLCall_ReturnIfError(glDeleteShader(shaderid));
+
+        LOG_WARN("GL_COMPILE_STATUS: %s", message);
+        return 1;
+    }
+    return 0;
+}
+
+GLenum ShaderIntrospector::printLinkStatus(const GLuint programid) 
+{
+    GLenum err;
+    GLint result;
+    GLCall(glGetProgramiv(programid, GL_LINK_STATUS, &result));
+
+    if (!result)
+    {
+        int length;
+        GLCall(glGetProgramiv(programid, GL_INFO_LOG_LENGTH, &length));
+        char* message = (char*)alloca(length * sizeof(char));
+        GLCall(glGetProgramInfoLog(programid, length, &length, message));
+        GLCall(glDeleteProgram(programid));
+
+        LOG_WARN("GL_LINK_STATUS: %s", message);
+        std::cin.get();
+        return 1;
+    }
+    return 0; 
+}
+
 //UNIFORM BLOCKS
 
 GLint ShaderIntrospector::getActiveBlockCount(const GLuint program)
@@ -47,6 +87,8 @@ const std::string ShaderIntrospector::getUnifromBlockName(const GLuint program, 
     //nameMaxLength = the longest name of a block for the given program
     GLint nameMaxLength, length;
     GLCall(glGetActiveUniformBlockiv(program, uBlockIndex, GL_UNIFORM_BLOCK_NAME_LENGTH, &nameMaxLength));
+    
+    
     char* name = (char*)alloca(nameMaxLength * sizeof(char));
     GLCall(glGetActiveUniformBlockName(program, uBlockIndex, nameMaxLength, &length, name));
     return std::string(name);

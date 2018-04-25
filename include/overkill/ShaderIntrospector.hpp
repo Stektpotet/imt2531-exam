@@ -1,28 +1,30 @@
 #pragma once
 
 #include <overkill/gl_caller.hpp>
+#include <PMS/logger.h>
 #include <string>
 #include <vector>
 
 namespace overkill
 {
-class ShaderIntrospector
+namespace ShaderIntrospector
 {
-public:
 
     //UNIFORM BLOCKS
-    static GLint  getActiveBlockCount(const GLuint program);
-    static const  std::vector<GLint> getUniformBlockUniformIndices(const GLuint program, const GLuint uBlockIndex);
-    static const  std::string getUnifromBlockName(const GLuint program, const GLint uBlockIndex);
-    static GLuint getUniformBlockIndex(const GLuint program, const std::string& name);
+    GLint  getActiveBlockCount(const GLuint program);
+    const  std::vector<GLint> getUniformBlockUniformIndices(const GLuint program, const GLuint uBlockIndex);
+    const  std::string getUnifromBlockName(const GLuint program, const GLint uBlockIndex);
+    GLuint getUniformBlockIndex(const GLuint program, const std::string& name);
 
     //UNIFROMS
-    static GLint  getActiveUniformCount(const GLuint program);
+    GLint  getActiveUniformCount(const GLuint program);
 
 
     //ATTRIBUTES
-    static GLint  getActiveAttribCount(const GLuint program);
-
+    GLint  getActiveAttribCount(const GLuint program);
+    
+    GLenum printCompileStatus(const GLuint shaderid);
+    GLenum printLinkStatus(const GLuint programid);
 };
 
 }

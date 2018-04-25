@@ -49,6 +49,8 @@ private:
 
     static std::vector<UpdateCallback>          m_updateCallbacks;
 
+    static auto makeShaderProgram() -> ShaderProgram;
+
     static void push(const C::Tag tag, const std::string& filepath);
     static void pushUniformBuffer(const C::Tag&& tag, GLuint size);
     static void linkUniformBlocks();

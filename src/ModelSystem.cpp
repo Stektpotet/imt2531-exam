@@ -112,6 +112,8 @@ void ModelSystem::load()
         // Iterate vertices
         std::vector<Vertex> vertices;
         vertices.reserve(vertexCount);
+        LOG_DEBUG("vertexcount: %d", vertexCount);
+
         for(int i = 0; i < vertexCount; ++i) 
         {
             auto[vertexKey, vertex, err2] = p.nextKeyVertex();
