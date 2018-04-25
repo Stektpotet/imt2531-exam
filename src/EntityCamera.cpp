@@ -34,21 +34,21 @@ void EntityCamera::update(float dt, glm::mat4 parentMatrix)
 
         m_viewMatrix = getViewMatrix(parentMatrix);
 
-        printf("\n\nUpdate()\n\nentityID %d, entityTag %s, \nm_position %f, %f, %f\nm_rotation %f, %f, %f\nm_angVel %f, %f, %f\ndeltatime %f\n", 
-                m_entityID, m_entityTag.data(),
-                m_position.x, m_position.y, m_position.z, 
-                m_rotation.x, m_rotation.y, m_rotation.z, 
-                m_angularVelocity.x, m_angularVelocity.y, m_angularVelocity.z, 
-                dt);
-        Util::printMatrix(parentMatrix, "ParentMatrix:");
-        Util::printMatrix(m_viewMatrix, "ViewMatrix:");
+        //LOG_DEBUG("\n\nUpdate()\n\nentityID %d, entityTag %s, \nm_position %f, %f, %f\nm_rotation %f, %f, %f\nm_angVel %f, %f, %f\ndeltatime %f\n", 
+        //        m_entityID, m_entityTag.data(),
+        //        m_position.x, m_position.y, m_position.z, 
+        //        m_rotation.x, m_rotation.y, m_rotation.z, 
+        //        m_angularVelocity.x, m_angularVelocity.y, m_angularVelocity.z, 
+        //        dt);
+        //Util::printMatrix(parentMatrix, "ParentMatrix:");
+        //Util::printMatrix(m_viewMatrix, "ViewMatrix:");
 
 
         if (m_childIDs.size() > 0)                  // If we actually have kids.
         {            
             for (const auto child : m_childIDs)     // For every childID in childIDs-vector.
             {
-                printf("\n\nI am entityID () %d Updating child with entityID %d.\n", m_entityID, child);
+                //LOG_DEBUG("\n\nI am entityID () %d Updating child with entityID %d.\n", m_entityID, child);
                 Scene::getEntity(child)-> update(dt, m_viewMatrix);
             }
         }

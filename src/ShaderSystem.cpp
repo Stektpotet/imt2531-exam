@@ -141,6 +141,20 @@ void ShaderSystem::load()
     auto lightStructLayout = BlockLayout("light");
     lightStructLayout.push("position", 16);
     lightStructLayout.push("intensities", 16);
+    lightStructLayout.push("constant", 4);
+    lightStructLayout.push("linear", 4);
+    lightStructLayout.push("quadratic", 4);
+    lightStructLayout.push("alignment", 4);
+
+    //@REF: http://sunandblackcat.com/tipFullView.php?l=eng&topicid=21&topic=OpenGL-Uniform-Buffer-Objects
+    /*@NOTE:
+    If you are using std140 format, then you can manually calculate offset for each uniform variable. 
+    Locations of uniform variables must be aligned in memory relative to the start of the buffer. 
+    If alignment for type of uniform variable is 16 bytes, 
+    then uniform variable can be placed only on bytes equal to multiple of 16 - 0, 16, 32, 48, etc. 
+    std140 layout rules for different types of data in GLSL:
+    */
+
 
     lightBufferLayout.pushBlock(lightStructLayout, 8);
 	//lightBufferLayout.push<GL_FLOAT_VEC4>("intensities");

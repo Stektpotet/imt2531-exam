@@ -79,12 +79,12 @@ namespace overkill
         m_rotation += m_angularVelocity * dt;
         
 
-        printf("\n\nUpdate()\n\nentityID %d, entiryTag %s, \nm_position %f, %f, %f\nm_rotation %f, %f, %f\nm_angVel %f, %f, %f\ndeltatime %f\n", 
-                m_entityID,  m_entityTag.data(),
-                m_position.x, m_position.y, m_position.z, 
-                m_rotation.x, m_rotation.y, m_rotation.z, 
-                m_angularVelocity.x, m_angularVelocity.y, m_angularVelocity.z, 
-                dt);    
+        //LOG_DEBUG("\n\nUpdate()\n\nentityID %d, entiryTag %s, \nm_position %f, %f, %f\nm_rotation %f, %f, %f\nm_angVel %f, %f, %f\ndeltatime %f\n",
+        //        m_entityID,  m_entityTag.data(),
+        //        m_position.x, m_position.y, m_position.z, 
+        //        m_rotation.x, m_rotation.y, m_rotation.z, 
+        //        m_angularVelocity.x, m_angularVelocity.y, m_angularVelocity.z, 
+        //        dt);    
         }
 
     void Entity::draw(float t)

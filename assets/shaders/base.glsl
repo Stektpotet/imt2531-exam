@@ -91,17 +91,17 @@ layout(std140) uniform OK_Matrices{
 struct OK_Light {
     vec4 position;
     vec4 intensities;
+	float constant;
+	float linear;
+	float quadratic;
+	float alignment;
 };
 
 layout(std140) uniform OK_Lights{
     OK_Light light[MAX_LIGHTS];
-//float spread;
-//float constant;
-//float linear;
-//float quadratic;
 };
 
-vec3 OK_PointLight(in vec3 position, in vec3 intensities/*, in float constant, in float linear, in float quadratic*/) {
+vec3 OK_PointLight(in vec3 position, in vec3 intensities, in float constant, in float linear, in float quadratic) {
     //Ambience
     float ambientStrength = 0.1;
     vec3 ambient = ambientStrength * intensities;
@@ -121,8 +121,8 @@ vec3 OK_PointLight(in vec3 position, in vec3 intensities/*, in float constant, i
     //vec3 specular = specularStrength * specPower *  intensities;
 
     // Attenuation
-    //float distance = length(position - fragVert);
-    float attenuation = 1.0; // /(constant + linear * distance + quadratic * (distance * distance));
+    float distance = length(position - fragVert);
+    float attenuation = 1.0 / (constant + linear * distance + quadratic * distance * distance);
 
     return (ambient*attenuation + diffuse * attenuation /*+ specular*specularity*attenuation*/);
 }
@@ -133,16 +133,16 @@ void main() {
     vec3 bump = texture(bumpTex, texCoord).rgb;
     vec3 spec = texture(specTex, texCoord).rgb;
 
-    vec3 light0 = OK_PointLight(light[0].position.xyz, light[0].intensities.rgb /*,light[0].constant,light[0].linear, light[0].quadratic*/);
-    vec3 light1 = OK_PointLight(light[1].position.xyz, light[1].intensities.rgb /*,light[1].constant,light[1].linear, light[1].quadratic*/);
-    vec3 light2 = OK_PointLight(light[2].position.xyz, light[2].intensities.rgb /*,light[1].constant,light[1].linear, light[1].quadratic*/);
-    vec3 light3 = OK_PointLight(light[3].position.xyz, light[3].intensities.rgb /*,light[1].constant,light[1].linear, light[1].quadratic*/);
-    vec3 light4 = OK_PointLight(light[4].position.xyz, light[4].intensities.rgb /*,light[1].constant,light[1].linear, light[1].quadratic*/);
-    vec3 light5 = OK_PointLight(light[5].position.xyz, light[5].intensities.rgb /*,light[1].constant,light[1].linear, light[1].quadratic*/);
-    vec3 light6 = OK_PointLight(light[6].position.xyz, light[6].intensities.rgb /*,light[1].constant,light[1].linear, light[1].quadratic*/);
-    vec3 light7 = OK_PointLight(light[7].position.xyz, light[7].intensities.rgb /*,light[1].constant,light[1].linear, light[1].quadratic*/);
+    vec3 light0 = OK_PointLight(light[0].position.xyz, light[0].intensities.rgb ,light[0].constant, light[0].linear, light[0].quadratic);
+    vec3 light1 = OK_PointLight(light[1].position.xyz, light[1].intensities.rgb ,light[1].constant, light[1].linear, light[1].quadratic);
+    vec3 light2 = OK_PointLight(light[2].position.xyz, light[2].intensities.rgb ,light[2].constant, light[2].linear, light[2].quadratic);
+//    vec3 light3 = OK_PointLight(light[3].position.xyz, light[3].intensities.rgb /*,light[1].constant,light[1].linear, light[1].quadratic*/);
+//    vec3 light4 = OK_PointLight(light[4].position.xyz, light[4].intensities.rgb /*,light[1].constant,light[1].linear, light[1].quadratic*/);
+//    vec3 light5 = OK_PointLight(light[5].position.xyz, light[5].intensities.rgb /*,light[1].constant,light[1].linear, light[1].quadratic*/);
+//    vec3 light6 = OK_PointLight(light[6].position.xyz, light[6].intensities.rgb /*,light[1].constant,light[1].linear, light[1].quadratic*/);
+//    vec3 light7 = OK_PointLight(light[7].position.xyz, light[7].intensities.rgb /*,light[1].constant,light[1].linear, light[1].quadratic*/);
 
     //out_color = vec4(fragNormal, 1)*0.2 + 0.8*vec4(texture(mainTex, texCoord).rgb , vertex_color_out.a);
-    out_color = vec4((light0 + light1 + light2 + light3 + light4 + light5 + light6 + light7) * diff, 1);
+    out_color = vec4((light0 + light1 + light2 /* + light3 + light4 + light5 + light6 + light7*/) * diff, 1);
 }
 //out_color = vec4(texture(mainTexture, texCoord).rgb * vertex_color_out.rgb, vertex_color_out.a);

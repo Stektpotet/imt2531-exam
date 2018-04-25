@@ -28,7 +28,16 @@ namespace overkill
     void Scene::loadScene()
     {   
         int count = 0;
-        auto camera = new EntityCamera("camera", count++, glm::vec3(0, 0, -40), glm::vec3(30, 0, 0), glm::vec3(3, -1, 0), glm::vec3(-5, 6, 0));
+        auto camera = new EntityCamera("camera", count++,
+            glm::vec3(0, -20.0f, -20),  // Pos.
+            glm::vec3(45, 0, 0),        // Rot.
+            glm::vec3(0),               // Vel.
+            glm::vec3(0),               // AngVel.
+            88,                         // FOV.
+            1.25,                       // aspectRatio.
+            0.1f,                       // NearClip.
+            1000);                      // FarClip.
+
 
         auto modelCubeObject = new EntityModel("cube", "parentCube", count++, glm::vec3(0, 0, 0), 
                                 glm::vec3(0), glm::vec3(1),

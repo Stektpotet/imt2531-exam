@@ -120,6 +120,7 @@ ShaderProgram::ShaderProgram(const std::string& filePath)
 
 void ShaderProgram::clean()
 {
+    uniforms.clear();
     unbind();
     GLCall(glDeleteProgram(id));
 }

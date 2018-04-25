@@ -73,7 +73,7 @@ auto Util::packUV(float u, float v) -> GLushort
 
 void Util::printMatrix(const glm::mat4& m, const std::string & name)
 {
-    printf("\n%s\t 4x4\n%f, %f, %f, %f,\n%f, %f, %f, %f,\n%f, %f, %f, %f,\n%f, %f, %f, %f,\n", 
+    LOG_DEBUG("\n%s\t 4x4\n%f, %f, %f, %f,\n%f, %f, %f, %f,\n%f, %f, %f, %f,\n%f, %f, %f, %f,\n",
         name.c_str(),
         m[0][0], m[0][1], m[0][2], m[0][3],
         m[1][0], m[1][1], m[1][2], m[1][3], 
