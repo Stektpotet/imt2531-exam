@@ -64,10 +64,10 @@ int main()
     struct LightData {
         glm::vec4 position;		//16->16
         glm::vec4 intensities;	//16->32
-        float spread;			//4 ->36
-		float constant;			//4	->40
-		float linear;			//4 ->44
-		float quadratic;		//4 ->48
+  //      float spread;			//4 ->36
+		//float constant;			//4	->40
+		//float linear;			//4 ->44
+		//float quadratic;		//4 ->48
 
     } lightData[8] = {
         LightData{ { 0, 4, 0, 0	},{ 1.5f, 0, 0	 , 0}, /*0.0f, 0.0f, 0.0f, 0.0f    */ },        
@@ -103,6 +103,12 @@ int main()
     auto light0PosIndex  = lightBuf.getUniformIndex("light[0].position"); 
     auto light1PosIndex  = lightBuf.getUniformIndex("light[1].position"); 
     auto light2PosIndex  = lightBuf.getUniformIndex("light[2].position"); 
+    auto restOfTheLights = lightBuf.getUniformIndex("light[3].position");
+
+    //push data on the nondynamic area of the light uBuffer
+    lightBuf.update(restOfTheLights, 32 * 5, &(lightData[3]));
+
+
 
     for(;;)
     {
@@ -136,22 +142,11 @@ int main()
 
         // UPDATE GLOBAL UNIFORM BUFFERS
         lightBuf.update(light0PosIndex, 32, &(lightData[0]));
-        //lightBuf.update(light0PosIndex + 16, 16, &(lightData[0].intensities));
         
         lightBuf.update(light1PosIndex, 32, &(lightData[1]));
         
         lightBuf.update(light2PosIndex, 32, &(lightData[2]));
 
-        // UPDATE GLOBAL UNIFORM BUFFERS
-        lightBuf.update(light0PosIndex, 16, &(lightData[0].position));
-        lightBuf.update(light0PosIndex + 16, 16, &(lightData[0].intensities));
-        
-        lightBuf.update(light1PosIndex, 16, &(lightData[1].position));
-        lightBuf.update(light1PosIndex + 16, 16, &(lightData[1].intensities));
-        
-        lightBuf.update(light2PosIndex, 16, &(lightData[2].position));
-        lightBuf.update(light2PosIndex + 16, 16, &(lightData[2].intensities));
-        
         matrixBuf.update(projectionIndex, sizeof(glm::mat4), glm::value_ptr(projection));
         matrixBuf.update(viewIndex, sizeof(glm::mat4), glm::value_ptr(view));
         matrixBuf.update(viewPosIndex, sizeof(glm::vec4), glm::value_ptr(pivot));
