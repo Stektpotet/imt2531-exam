@@ -29,21 +29,22 @@ namespace overkill
     {   
         int count = 0;
         auto camera = new EntityCamera("camera", count++, 
-                                    glm::vec3(0, -7, -70),     // Pos.
-                                    glm::vec3(37, 0, 0),        // Rot.
+                                    glm::vec3(0, -7, -25),        // Pos.
+                                    glm::vec3(22, 0, 0),       // Rot.
                                     glm::vec3(0, 0, 0),         // Vel.
-                                    glm::vec3(0, 20, 0),        // AngVel.
+                                    glm::vec3(0, 0, 0),         // AngVel.
                                     60,                         // FOV.
                                     1.25,                       // aspectRatio.
                                     0.1f,                       // NearClip.
                                     -100);                      // FarClip.
+        auto debugCamPos = new EntityModel("cube", "cameraPos", count++, glm::vec3(0, 0, 0), glm::vec3(0), glm::vec3(0.001f));
 
         auto modelCubeObject = new EntityModel("cube", "parentCube", count++, glm::vec3(0, 0, 0), 
                                 glm::vec3(0), glm::vec3(1),
                                 glm::vec3(0, 0, 0), 
                                 glm::vec3(1, 3.4f, 1.67f));
         auto modelCubeChildObject = new EntityModel("cube", "childCube", count++, glm::vec3(2.0f, 0, 0));
-
+            
         auto modelSuzanneObject = new EntityModel("Suzanne", "Suzanne", count++, glm::vec3(4,10,1),
                                 glm::vec3(45, 45, 45),glm::vec3(5, 5, 5),
                                 glm::vec3(0), glm::vec3(1, 3.4f, 1.67f));
@@ -51,11 +52,12 @@ namespace overkill
         auto modelFloorObject = new EntityModel("cube", "floor", count++, glm::vec3(0, -36, 0), glm::vec3(0), glm::vec3(30, 30, 30));
         
         addEntity(camera);    // Add models to container. Any changes made after this will be lost.
+        addEntity(debugCamPos);
         addEntity(modelCubeObject);    // Add models to container. Any changes made after this will be lost.
         addEntity(modelCubeChildObject);
         addEntity(modelSuzanneObject);    // Add models to container. Any changes made after this will be lost.
         addEntity(modelFloorObject);    // Add models to container. Any changes made after this will be lost.
-
+        setChild(camera->getEntityID(), debugCamPos->getEntityID());
         setChild(modelCubeObject-> getEntityID(), modelCubeChildObject-> getEntityID());      // Set entity with id 1 as a child of entity with id 0.
     }
 

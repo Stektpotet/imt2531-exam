@@ -66,9 +66,9 @@ int main()
 		float quadratic;		//4 ->48
 
     } lightData[8] = {
-        LightData{ { -15, 2, 10, 0 },{ 5, 0, 0, 0},  1.0f, 0.03125f, 0.0625f },
-		LightData{ { 0,   2, 10, 0 },{ 0, 5, 0, 0 }, 1.0f, 0.03125f, 0.0625f },
-        LightData{ { 15,  2, 10, 0 },{ 0, 0, 5, 0},  1.0f, 0.03125f, 0.0625f },
+        LightData{ { -15, 2, 10, 0 },{ 8, 0, 0, 0},  1.0f, 0.03125f, 0.0625f },
+		LightData{ { 0,   2, 10, 0 },{ 0, 8, 0, 0 }, 1.0f, 0.03125f, 0.0625f },
+        LightData{ { 15,  2, 10, 0 },{ 0, 0, 8, 0},  1.0f, 0.03125f, 0.0625f },
         LightData{ { 0, -2, 0,0	},{ 1, 0, 0		 , 0}, /*10.0f, 10.0f, 10.0f, 10.0f*/ },
         LightData{ { 0, 1, -4,0	},{ 1, 0, 1		 , 0}, /*10.0f, 10.0f, 10.0f, 10.0f*/ },
         LightData{ { 0, -5, 0,0	},{ 1, 1, 0		 , 0}, /*10.0f, 10.0f, 10.0f, 10.0f*/ },
@@ -85,8 +85,6 @@ int main()
 
     // Get Uniform buffer indicies
     auto projectionIndex = matrixBuf.getUniformIndex("projection");
-    auto viewIndex       = matrixBuf.getUniformIndex("view");
-    auto viewPosIndex    = matrixBuf.getUniformIndex("view_position");
 
     auto light0PosIndex  = lightBuf.getUniformIndex("light[0].position"); 
     auto light1PosIndex  = lightBuf.getUniformIndex("light[1].position"); 
@@ -111,13 +109,13 @@ int main()
         Scene::update(dt);
         {
             // UPDATE LIGHT DATA
-            lightData[0].position = glm::vec4(-15, 2, 20 * cos(0.999f * t), 0);
+            lightData[0].position = glm::vec4(20*sin(0.999f * t), 3, 20 * cos(0.999f * t), 0);
             //lightData[0].intensities = glm::vec4(0.85f *(sin(0.33*t)*0.5f+1), 0.85f * (cos(0.33*t)*0.5f + 1), 0, 0);
 
-            lightData[1].position = glm::vec4(0, 2, 20 * cos(1.333f*t), 0);
+            lightData[1].position = glm::vec4(20*sin(1.333f*t), 3, 20 * cos(1.333f*t), 0);
             //lightData[1].intensities = glm::vec4(0.85f * (sin(1.33*t + C::PI / 3)*0.5f+1), 0, 0.85f * (cos(1.33*t + C::PI / 3)*0.5f + 1), 0);
 
-            lightData[2].position = glm::vec4(15, 2, 20 * cos(1.666*t), 0);
+            lightData[2].position = glm::vec4(20* sin(1.666f*t), 3, 20 * cos(1.666f*t), 0);
             //lightData[2].intensities = glm::vec4(0, 0.85f * (cos(1.33*t + (C::PI * 2 / 3))*0.5f + 1), 0.85f * (sin(1.33*t + (C::PI * 2 / 3))*0.5f + 1), 0);
 
             // UPDATE GLOBAL UNIFORM BUFFERS
@@ -130,8 +128,7 @@ int main()
         // UPDATE CAMERA MATRICES
         {
             CameraTransform cameraTransform = ((EntityCamera*)Scene::getEntityByTag("camera"))-> m_cameraTransform;
-            matrixBuf.update(projectionIndex, sizeof(glm::mat4), glm::value_ptr(cameraTransform.projectionMatrix));
-            matrixBuf.update(viewIndex, sizeof(glm::mat4), glm::value_ptr(cameraTransform.viewMatrix));
+            matrixBuf.update(projectionIndex, sizeof(CameraTransform), &cameraTransform);
         }
 
         // Draws all the models in the scene.

@@ -15,16 +15,16 @@ assets/textures/*
 !assets/textures/.gitkeep
 !assets/textures/brickwall-nrm.jpg
 !assets/textures/brickwall.jpg
-!assets/textures/checkers.jpg
+!assets/textures/_default.jpg
 
 assets/shaders/*
 !assets/shaders/.gitkeep
 !assets/shaders/base.glsl
-!assets/shaders/default.glsl
+!assets/shaders/_default.glsl
 
 assets/materials/*
 !assets/materials/.gitkeep
-!assets/materials/default.yml
+!assets/materials/_default.yml
 
 assets/models/*
 !assets/models/.gitkeep

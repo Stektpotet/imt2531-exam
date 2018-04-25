@@ -157,11 +157,6 @@ void ShaderSystem::load()
 
 
     lightBufferLayout.pushBlock(lightStructLayout, 8);
-	//lightBufferLayout.push<GL_FLOAT_VEC4>("intensities");
-	//lightBufferLayout.push<GL_FLOAT>("spread");
-	//lightBufferLayout.push<GL_FLOAT>("constant");
-	//lightBufferLayout.push<GL_FLOAT>("linear");
-	//lightBufferLayout.push<GL_FLOAT>("quadratic");
 
 	ShaderSystem::m_mapUniformBuffersID["OK_Lights"] = ShaderSystem::m_uniformBuffers.size(); //assign ID/index
 	ShaderSystem::m_uniformBuffers.emplace_back(UniformBuffer("OK_Lights", lightBufferLayout, GL_DYNAMIC_DRAW));

@@ -79,6 +79,9 @@ uniform float opacity = 0;
 uniform float specularity = 1;
 uniform float intensity = 1;
 uniform float bumpiness = 1;
+uniform float distortion = 1;
+uniform float scatterPower = 1;
+uniform float scatterScale = 1;
 
 uniform mat4 m2w;
 
@@ -103,47 +106,44 @@ layout(std140) uniform OK_Lights{
 
 vec3 OK_PointLight(in vec3 position, in vec3 intensities, in float constant, in float linear, in float quadratic) {
     //Ambience
-    float ambientStrength = 0.1;
+    float ambientStrength = 0.2;
     vec3 ambient = ambientStrength * intensities;
 
-    vec3 bump = texture(bumpTex, texCoord).rgb*intensity;
     // Diffussion
-    vec3 norm = normalize(fragNormal*bump);
+    vec3 norm = normalize(fragNormal);
     vec3 lightDir = normalize(position - fragVert);
     float diffusion = max(dot(norm, lightDir), 0.0);
     vec3 diffuse = diffusion * intensities;
-	
-    vec3 spec = texture(specTex, texCoord).rgb;
 
     // Specularity
     float specularStrength = 0.5;
     vec3 viewDir = normalize(view_position.xyz - fragVert);
     vec3 reflectDir = reflect(-lightDir, norm);
     float specPower = pow(max(dot(viewDir, reflectDir), 0.0), 32);
-    vec3 specular = specularStrength * specPower *  intensities * spec;
+    vec3 specular = specularStrength * specPower *  intensities;
+
+	vec3 pointLight = (ambient + diffuse + specular*specularity);
+
+
+	//SubSurface Scatter
+	vec3 H = normalize(lightDir + norm * distortion);
+	float I_back = pow(clamp(dot(viewDir, -H),0.0,1.0), scatterPower) * scatterScale;
 
     // Attenuation
     float distance = length(position - fragVert);
-    float attenuation = 1.0 / (constant + linear * distance + quadratic * distance * distance);
+    float attenuation = 1.0 / (constant + linear * distance + quadratic * (distance * distance));
 
-    return (ambient*attenuation + diffuse * attenuation + specular*specularity*attenuation);
+    return pointLight*attenuation + I_back * intensities;// thickness; // @bug commented out thickness because it is undefined
 }
 
 void main() {
 
-    vec3 diff = texture(mainTex, texCoord).rgb;
-    vec3 bump = texture(bumpTex, texCoord).rgb;
-
     vec3 light0 = OK_PointLight(light[0].position.xyz, light[0].intensities.rgb ,light[0].constant, light[0].linear, light[0].quadratic);
-    vec3 light1 = OK_PointLight(light[1].position.xyz, light[1].intensities.rgb ,light[1].constant, light[1].linear, light[1].quadratic);
+	vec3 light1 = OK_PointLight(light[1].position.xyz, light[1].intensities.rgb ,light[1].constant, light[1].linear, light[1].quadratic);
     vec3 light2 = OK_PointLight(light[2].position.xyz, light[2].intensities.rgb ,light[2].constant, light[2].linear, light[2].quadratic);
-//    vec3 light3 = OK_PointLight(light[3].position.xyz, light[3].intensities.rgb /*,light[1].constant,light[1].linear, light[1].quadratic*/);
-//    vec3 light4 = OK_PointLight(light[4].position.xyz, light[4].intensities.rgb /*,light[1].constant,light[1].linear, light[1].quadratic*/);
-//    vec3 light5 = OK_PointLight(light[5].position.xyz, light[5].intensities.rgb /*,light[1].constant,light[1].linear, light[1].quadratic*/);
-//    vec3 light6 = OK_PointLight(light[6].position.xyz, light[6].intensities.rgb /*,light[1].constant,light[1].linear, light[1].quadratic*/);
-//    vec3 light7 = OK_PointLight(light[7].position.xyz, light[7].intensities.rgb /*,light[1].constant,light[1].linear, light[1].quadratic*/);
 
-    //out_color = vec4(fragNormal, 1)*0.2 + 0.8*vec4(texture(mainTex, texCoord).rgb , vertex_color_out.a);
-    out_color = vec4((light0 + light1 + light2 /* + light3 + light4 + light5 + light6 + light7*/) * diff, 1);
+    out_color = vec4((light0 + light1 + light2), opacity);
 }
-//out_color = vec4(texture(mainTexture, texCoord).rgb * vertex_color_out.rgb, vertex_color_out.a);
+//  distortion: 0.3
+//  scatterPower: 10
+//  scatterScale: 0.2

@@ -44,8 +44,8 @@ v:  0.162456  0.499995  0.850654    0.162  0.500  0.851    0.000  0.000   255 25
 
 meshes: 1
 mesh: blendermesh
-material: default
-shader: default
+material: subsurfaceScatter
+shader: subsurfaceScatter
 triangles: 80
 t: 0 13 12
 t: 1 13 15
