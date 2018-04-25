@@ -11,12 +11,12 @@
 namespace overkill
 {
     
-// struct CameraTransform      // Not to be confused with the cameras actual transform defined in Entity.
-// {                           // This struct is used to convey info to main and shader.
-
-//     glm::mat4 m_viewMatrix;
-//     glm::mat4 m_projectionMatrix;
-// };
+struct CameraTransform      // Not to be confused with the cameras actual transform defined in Entity.
+{                           // This struct is used to convey info to main and shader.
+    glm::vec3 position;
+    glm::mat4 viewMatrix;
+    glm::mat4 projectionMatrix;
+};
 
 class EntityCamera : public Entity
 {
@@ -29,7 +29,7 @@ private:
     glm::mat4 getViewMatrix(glm::mat4 parentMatrix = glm::mat4(1));
 
 public:
-    glm::mat4 m_viewMatrix;
+    CameraTransform m_cameraTransform;
 
     EntityCamera(C::Tag entityTag, int entityID, 
                 glm::vec3 pos = glm::vec3(0,0,0), glm::vec3 rot = glm::vec3(0,0,0), 

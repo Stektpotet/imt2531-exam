@@ -127,20 +127,21 @@ int main()
         
         
         // // UPDATE CAMERA DATA
-        projection = glm::perspective(Input::m_fovy, C::AspectRatio, 0.1f, -100.0f);
-        view = ((EntityCamera*)Scene::getEntity(0))-> m_viewMatrix;
-        glm::inverse(view);
+        {
+            CameraTransform cameraTransform = ((EntityCamera*)Scene::getEntityByTag("camera"))-> m_cameraTransform;
+            projection = cameraTransform.projectionMatrix;
+            view = cameraTransform.viewMatrix;
+        }
         
-        // view = ((EntityCamera*)Scene::getEntityByTag("camera"))-> m_viewMatrix;
 
         // UPDATE LIGHT DATA
-        lightData[0].position = glm::vec4(-15, 2, 20 * cos(3 * t), 0);
+        lightData[0].position = glm::vec4(-15, 2, 20 * cos(0.999f * t), 0);
         //lightData[0].intensities = glm::vec4(0.85f *(sin(0.33*t)*0.5f+1), 0.85f * (cos(0.33*t)*0.5f + 1), 0, 0);
 
-        lightData[1].position = glm::vec4(0, 2, 20 * cos(1.33*t), 0);
+        lightData[1].position = glm::vec4(0, 2, 20 * cos(1.333f*t), 0);
         //lightData[1].intensities = glm::vec4(0.85f * (sin(1.33*t + C::PI / 3)*0.5f+1), 0, 0.85f * (cos(1.33*t + C::PI / 3)*0.5f + 1), 0);
 
-        lightData[2].position = glm::vec4(15, 2, 20 * cos(4.377*t), 0);
+        lightData[2].position = glm::vec4(15, 2, 20 * cos(1.666*t), 0);
         //lightData[2].intensities = glm::vec4(0, 0.85f * (cos(1.33*t + (C::PI * 2 / 3))*0.5f + 1), 0.85f * (sin(1.33*t + (C::PI * 2 / 3))*0.5f + 1), 0);
 
         // UPDATE GLOBAL UNIFORM BUFFERS
