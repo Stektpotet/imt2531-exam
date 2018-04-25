@@ -57,12 +57,11 @@ namespace overkill
     {
         m_position += m_velocity * dt;
         m_rotation += m_angularVelocity * dt;
-        
-        m_transformMatrix = getModelMatrix(parentMatrix);
-        
 
-        printf("\n\nUpdate()\n\nentityID %d, \nm_position %f, %f, %f\nm_rotation %f, %f, %f\nm_angVel %f, %f, %f\ndeltatime %f", 
-                m_entityID, 
+        m_transformMatrix = getModelMatrix(parentMatrix);
+
+        printf("\n\nUpdate()\n\nentityID %d, entiryTag %s, \nm_position %f, %f, %f\nm_rotation %f, %f, %f\nm_angVel %f, %f, %f\ndeltatime %f\n", 
+                m_entityID,  m_entityTag.data(),
                 m_position.x, m_position.y, m_position.z, 
                 m_rotation.x, m_rotation.y, m_rotation.z, 
                 m_angularVelocity.x, m_angularVelocity.y, m_angularVelocity.z, 

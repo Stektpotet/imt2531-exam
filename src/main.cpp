@@ -28,6 +28,7 @@
 #include <overkill/Scene.hpp>
 #include <overkill/ModelSystem.hpp>
 #include <overkill/EntityModel.hpp>
+#include <overkill/EntityCamera.hpp>
 #include <overkill/Watcher.hpp>
 
 #define DEBUG 1
@@ -55,6 +56,7 @@ int main()
     TextureSystem::load();
     ShaderSystem::load();
     MaterialSystem::load();
+
     ModelSystem::load();
 
     auto renderer = Renderer();
@@ -89,6 +91,8 @@ int main()
 
 
     Scene::loadScene();
+            // Doing this loop to set material for each mesh in each model should not be nessecary, because its already done in model system.
+
 
     float oldT = 0, t = 0, dt = 0;
 
@@ -115,14 +119,12 @@ int main()
         Scene::update(dt);
         
         
-        // UPDATE CAMERA DATA
+        // // UPDATE CAMERA DATA
         projection = glm::perspective(Input::m_fovy, C::AspectRatio, 0.1f, -100.0f);
-        camera = glm::rotate(glm::mat4(1), (Input::m_camRotX), glm::vec3(0.0f, 1.0f, 0.0f));
-        camera = glm::rotate(glm::mat4(1), (Input::m_camRotY), glm::vec3(1.0f, 0.0f, 0.0f)) * camera;
-        pivot = glm::translate(glm::mat4(1), glm::vec3(Input::m_camPanX, Input::m_camPanY, C::CameraOffset));  
-        view = pivot * camera;
-        glm::inverse(view); //To reverse both axis, so controls are not reverse.
-
+        view = ((EntityCamera*)Scene::getEntity(0))-> m_viewMatrix;
+        glm::inverse(view);
+        
+        // view = ((EntityCamera*)Scene::getEntityByTag("camera"))-> m_viewMatrix;
 
         // UPDATE LIGHT DATA
         lightData[0].position = glm::vec4(10 * sin(3 * t), (sin(0.666f*t) + 2.0f), 10 * cos(3 * t), 0);

@@ -8,11 +8,16 @@ namespace overkill
         m_entityID = entityID;
         m_entityTag = entityTag;
         m_position = pos;
-        m_rotation = rot;
+        m_rotation = glm::radians(rot);
         m_velocity = vel;
-        m_angularVelocity = angVel;
+        m_angularVelocity = glm::radians(angVel);
     }
      
+    C::Tag Entity::getTag()
+    {
+        return m_entityTag;
+    }
+
     int Entity::getEntityID() 
     {   
         return m_entityID;   
@@ -25,7 +30,7 @@ namespace overkill
 
     glm::vec3 Entity::getRotation()
     {   
-        return m_rotation;  
+        return glm::degrees(m_rotation);  
     }
 
     glm::vec3 Entity::getVelocity()
@@ -35,7 +40,7 @@ namespace overkill
 
     glm::vec3 Entity::getAngularVelocity()
     {   
-        return m_angularVelocity;   
+        return glm::degrees(m_angularVelocity);   
     }
 
     void Entity::addChild(int childID)
@@ -55,7 +60,7 @@ namespace overkill
 
     void Entity::setRotation(glm::vec3 rot)
     {   
-        m_rotation = rot;   
+        m_rotation = glm::radians(rot);   
     }
 
     void Entity::setVelocity(glm::vec3 vel)
@@ -65,7 +70,7 @@ namespace overkill
 
     void Entity::setAngularVelocity(glm::vec3 angVel)
     {   
-        m_angularVelocity = angVel; 
+        m_angularVelocity = glm::radians(angVel); 
     }
 
     void Entity::update(float dt, glm::mat4 /*transformMatrix*/)
@@ -73,11 +78,14 @@ namespace overkill
         m_position += m_velocity * dt;
         m_rotation += m_angularVelocity * dt;
         
-/*        printf("\n\n\nm_rotation %f, %f, %f\nm_angVel %f, %f, %f\ndeltatime %f", 
+
+        printf("\n\nUpdate()\n\nentityID %d, entiryTag %s, \nm_position %f, %f, %f\nm_rotation %f, %f, %f\nm_angVel %f, %f, %f\ndeltatime %f\n", 
+                m_entityID,  m_entityTag.data(),
+                m_position.x, m_position.y, m_position.z, 
                 m_rotation.x, m_rotation.y, m_rotation.z, 
                 m_angularVelocity.x, m_angularVelocity.y, m_angularVelocity.z, 
-                dt);*/
-    }
+                dt);    
+        }
 
     void Entity::draw(float t)
     {

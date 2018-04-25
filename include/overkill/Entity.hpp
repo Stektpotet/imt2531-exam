@@ -5,6 +5,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+// #include <overkill/Scene.hpp>
 #include <overkill/Config.hpp>
 
 namespace overkill 
@@ -23,6 +24,7 @@ protected:
 
 public:
     Entity(C::Tag entityTag, int entityID, glm::vec3 pos, glm::vec3 rot, glm::vec3 vel, glm::vec3 angVel);
+    C::Tag getTag();
     int getEntityID();
     glm::vec3 getPosition();
     glm::vec3 getRotation();
