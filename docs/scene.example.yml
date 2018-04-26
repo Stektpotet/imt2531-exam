@@ -1,3 +1,10 @@
+# [Proposal] - scene.example.yml
+
+```md
+# 1 camera per scene
+
+cameras: 1
+
 camera: maincam
   position: 0 0 -20
   rotation: 0 0 0
@@ -9,10 +16,11 @@ camera: maincam
   nearClip: 0.1
   farClip: -100
 
+# Define entities from bottom up
+# Childrens first, then parents
+modelEntities: 4
 
-entities: 4
-
-entity: childCube
+modelEntity: childCube
   model: cube
   position: 8 0 0
   rotation: 0 0 0
@@ -21,7 +29,8 @@ entity: childCube
   spin: 0 -360 0
   children: 0
 
-entity: parentCube
+
+modelEntity: parentCube
   model: cube
   position: 0 0 0
   rotation: 0 0 0
@@ -32,28 +41,32 @@ entity: parentCube
     child: childCube
 
 
-entity: Suzanne
+modelEntity: grandParent
   model: Suzanne
   position: 4 10 1
   rotation: 45 45 45
   scale: 5 5 5
   velocity: 0 0 0
   spin: 1 3.4 1.67
+  children: 1
+    parentCube
+
+
+pointlights: 1
+
+light: red
+  position: 0 0 0       # vec3[x, y, z]
+  intensities: 1 1 1    # vec3[red, green, blue]
+  falloff: 1.0 0.3 0.06 # contant, linear, quadratic
   children: 0
 
+######POSSIBLY DIRECTIONALLIGHT???? questionmark??
 
-entity: floor
-  model: cube
-  position: 0 -36 0
-  rotation: 0 0 0
-  scale: 30 30 30
-  velocity: 0 0 0
-  spin: 0 0 0
-  children: 0
+directionalLight: 1
+
+directionalLight: sun
+  position: 0 0 0    # vec3[x,y,z]
+  rotation: 0 0 0    # vec3[x,y,z] direction is derived from
 
 
-roots: 3
-  root: maincam
-  root: parentCube
-  root: Suzanne
-  root: floor
+```

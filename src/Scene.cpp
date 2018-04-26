@@ -29,25 +29,29 @@ namespace overkill
     {   
         int count = 0;
         auto camera = new EntityCamera("camera", count++, 
-                                    glm::vec3(0, 0, -20),        // Pos.
-                                    glm::vec3(0, 0, 0),       // Rot.
+                                    glm::vec3(0, 0, -20),       // Pos.
+                                    glm::vec3(0, 0, 0),         // Rot.
                                     glm::vec3(0, 0, 0),         // Vel.
                                     glm::vec3(0, 0, 0),         // AngVel.
-                                    FREELOOK,                   // CameraMode FREELOOK, ORBITAL
+                                    ORBITAL,                    // CameraMode FREELOOK, ORBITAL
                                     60,                         // FOV.
                                     1.25,                       // aspectRatio.
                                     0.1f,                       // NearClip.
                                     -100);                      // FarClip.
+
         auto debugCamPos = new EntityModel("cube", "cameraPos", count++, glm::vec3(0, 0, 0), glm::vec3(0), glm::vec3(0.001f));
+
+        auto modelCubeChildObject = new EntityModel("cube", "childCube", count++, glm::vec3(8.0f, 0, 0),
+                                glm::vec3(0, 0, 0), glm::vec3(0.5f),
+                                glm::vec3(0, 0, 0), 
+                                glm::vec3(0, -360, 0));
+        
 
         auto modelCubeObject = new EntityModel("cube", "parentCube", count++, glm::vec3(0, 0, 0), 
                                 glm::vec3(0), glm::vec3(2),
                                 glm::vec3(0, 0, 0), 
                                 glm::vec3(0, 90, 0));
-        auto modelCubeChildObject = new EntityModel("cube", "childCube", count++, glm::vec3(8.0f, 0, 0),
-                                glm::vec3(0, 0, 0), glm::vec3(0.5f),
-                                glm::vec3(0, 0, 0), 
-                                glm::vec3(0, -360, 0));
+
             
         auto modelSuzanneObject = new EntityModel("Suzanne", "Suzanne", count++, glm::vec3(4,10,1),
                                 glm::vec3(45, 45, 45),glm::vec3(5, 5, 5),
