@@ -49,7 +49,7 @@ void main() {
     //fragNormal = vec3(rotatedNormal);
     vertex_color_out = rotatedNormal;
     texCoord = uv;
-    fragNormal = normalize(mat3(transpose(inverse(m2w))) * normal);
+    fragNormal = mat3(transpose(inverse(m2w))) * normal;
 
     vec4 out_position = MVP(position);
     gl_Position = out_position;
@@ -71,44 +71,38 @@ out vec4 out_color;
 
 uniform float time = 0;
 
-uniform sampler2D mainTex;
-uniform sampler2D bumpTex;
-uniform sampler2D specTex;
-
 uniform float opacity = 0;
 uniform float specularity = 1;
 uniform float intensity = 1;
-uniform float bumpiness = 1;
 uniform float distortion = 1;
 uniform float scatterPower = 1;
 uniform float scatterScale = 1;
 uniform float scatterThickness = 1;
-uniform float shininess;
 
 uniform mat4 m2w;
 
 layout(std140) uniform OK_Matrices{
-    mat4 projection;			//64b
-    mat4 view;					//64b
-    vec4 view_position;			//16b
-};								//144b
+    mat4 projection;
+    mat4 view;
+    vec4 view_position;
+};
 
 struct OK_Light_Directional {
-	vec4 direction;				//16b
-	vec4 intensities;			//16b
-};								//32b
+	vec4 direction;
+	vec4 intensities;
+};
 
-struct OK_Light_Point {			
-    vec4 position;				//16b
-    vec4 intensities;			//16b
-	float constant;				//4b
-	float linear;				//4b
-	float quadratic;			//4b
-	float alignment;			//4b
-};								//48b
+struct OK_Light_Point {
+    vec4 position;
+    vec4 intensities;
+	float constant;
+	float linear;
+	float quadratic;
+	float alignment;
+};
 
 layout(std140) uniform OK_Lights{
-    OK_Light_Point light[MAX_LIGHTS];	//MAX_LIGHTS * 48b
+    OK_Light_Point light[MAX_LIGHTS];
 	OK_Light_Directional sun;
 };
 
@@ -117,20 +111,17 @@ vec3 OK_PointLight(in vec3 position, in vec3 intensities, in float constant, in 
     float ambientStrength = 0.1;
     vec3 ambient = ambientStrength * intensities;
 
-    vec3 bump = texture(bumpTex, texCoord).rgb*intensity;
     // Diffussion
-    vec3 norm = normalize(fragNormal*bump);
+    vec3 norm = normalize(fragNormal);
     vec3 lightDir = normalize(position - fragVert);
     float diffusion = max(dot(norm, lightDir), 0.0);
     vec3 diffuse = diffusion * intensities;
-	
-    vec3 spec = texture(specTex, texCoord).rgb;
 
     // Specularity
     vec3 viewDir = normalize(view_position.xyz - fragVert);
     vec3 reflectDir = reflect(-lightDir, norm);
     float specPower = pow(max(dot(viewDir, reflectDir), 0.0), 32);
-    vec3 specular = specularity * specPower *  intensities * spec;
+    vec3 specular = specularity * specPower *  intensities;
 
     // Attenuation
     float distance = length(position - fragVert);
@@ -152,14 +143,14 @@ vec3 OK_DirectionalLight(in vec3 lightDir, in vec3 intensities) {
 
 	//Diffuse
     vec3 norm = normalize(fragNormal);
-    lightDir = normalize(lightDir);
+    lightDir = -normalize(lightDir);
     float diffusion = max(dot(norm, lightDir), 0.0);
     vec3 diffuse = diffusion * intensities;
 
 	//Specularity
     vec3 viewDir = normalize(view_position.xyz - fragVert);
     vec3 reflectDir = reflect(-lightDir, norm);
-    float specPower = pow(max(dot(viewDir, reflectDir), 0.0), shininess);
+    float specPower = pow(max(dot(viewDir, reflectDir), 0.0), 32);
     vec3 specular = specularity * specPower *  intensities;
 
 	//SubSurface Scatter
@@ -171,7 +162,6 @@ vec3 OK_DirectionalLight(in vec3 lightDir, in vec3 intensities) {
 }
 
 void main() {
-
 	vec3 lights = OK_DirectionalLight(sun.direction.xyz, sun.intensities.rgb);	
 	for(int i = 0; i < MAX_LIGHTS; i++)
 	{
@@ -184,9 +174,5 @@ void main() {
 					);
 	}
 
-
-    out_color = vec4(lights, opacity);
+    out_color = vec4(lights, 1);
 }
-//  distortion: 0.3
-//  scatterPower: 10
-//  scatterScale: 0.2

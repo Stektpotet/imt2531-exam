@@ -61,7 +61,7 @@ int main()
     struct DirectionalLight {
         glm::vec4 direction;    //16->16
         glm::vec4 intensities;  //16->32
-    } sun = DirectionalLight{ { 10, 9, 8, 7 },{ 1.0f, 0.756862745f, 0.552941176f,0.0f } };
+    } sun = DirectionalLight{ -glm::vec4{ 10, 9, 8, 7 },{ 1.0f, 0.756862745f, 0.552941176f,0.0f } };
 
     struct PointLight {
         glm::vec4 position;		//16 -> 16
@@ -69,7 +69,7 @@ int main()
 		float constant;			//4	 -> 36
 		float linear;			//4  -> 40
 		float quadratic;		//4  -> 44
-        float alignment;
+        float alignment;        //4  -> 48
     } lightData[8] = {
         PointLight{ { -15, 2,  10, 0 }, { 8, 0, 0, 0 }, 1.0f, 0.03125f, 0.0625f, 0 },
 		PointLight{ {  0,  2,  10, 0 }, { 0, 8, 0, 0 }, 1.0f, 0.03125f, 0.0625f, 0 },
