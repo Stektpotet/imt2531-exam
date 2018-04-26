@@ -9,8 +9,8 @@
 #include <overkill/ShaderProgram.hpp>
 #include <overkill/UniformBuffer.hpp>
 #include <overkill/ShaderIntrospector.hpp>
-
 #include <overkill/Watcher.hpp>
+#include <overkill/Util.hpp>
 
 namespace overkill
 {
@@ -49,7 +49,7 @@ private:
 
     static std::vector<UpdateCallback>          m_updateCallbacks;
 
-    static auto ParseProgram(const std::string& file, 
+    static auto parseProgram(const std::string& file, 
                              std::string* vert, 
                              std::string* frag, 
                              std::string* geom) -> C::Err;

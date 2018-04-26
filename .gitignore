@@ -42,3 +42,5 @@ tool/discover.py
 tool/default.blend
 tool/export.py
 tool/test-discover.cpp
+
+config.yml

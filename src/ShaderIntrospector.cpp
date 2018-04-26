@@ -23,7 +23,7 @@ namespace overkill
 
         char* attribName = (char*)alloca(nameMaxLength * sizeof(char));
         GLCall(glGetActiveAttrib(programId, attribIndex, nameMaxLength, &length, &size, &type, attribName));
-        LOG_DEBUG("Attribute #%u Type: %u Name: %s", attribIndex, type, attribName);
+     //   LOG_DEBUG("Attribute #%u Type: %u Name: %s", attribIndex, type, attribName);
         return std::string(attribName);
     }
 

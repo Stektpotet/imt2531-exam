@@ -52,7 +52,7 @@ void EntityCamera::update(float dt, glm::mat4 parentMatrix)
                 dt);*/
 //        Util::printMatrix(parentMatrix, "ParentMatrix:");
   //      Util::printMatrix(m_cameraTransform.viewMatrix, "ViewMatrix:");
-        printf("\n\n");
+      //  printf("\n\n");
 
         if (m_childIDs.size() > 0)                  // If we actually have kids.
         {            

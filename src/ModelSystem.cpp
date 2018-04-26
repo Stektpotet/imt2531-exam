@@ -12,12 +12,12 @@ auto ModelSystem::getIdByTag(const C::Tag& tag) -> C::ID
     return m_mapModelID[tag];
 }
 
-auto ModelSystem::getByTag(const C::Tag& tag) -> const Model&
+auto ModelSystem::getByTag(const C::Tag& tag) -> Model&
 {
     return ModelSystem::m_models[m_mapModelID[tag]];
 }
 
-auto ModelSystem::getById(C::ID modelID) -> const Model&
+auto ModelSystem::getById(C::ID modelID) -> Model&
 {
     return ModelSystem::m_models[modelID];
 }
@@ -208,8 +208,8 @@ void ModelSystem::load()
                 meshID,
                 [](C::ID materialID, C::ID modelID, C::ID meshID) {
 
-                    auto model = ModelSystem::getById(modelID);
-                    auto mesh  = model.m_meshes[meshID];
+                    auto& model = ModelSystem::getById(modelID);
+                    auto& mesh  = model.m_meshes[meshID];
 
                     mesh.m_materialID = materialID;
                     mesh.m_shaderProgram.setMaterial(MaterialSystem::getById(materialID));
@@ -223,8 +223,8 @@ void ModelSystem::load()
                 meshID,
                 [](C::ID shaderID, C::ID modelID, C::ID meshID) {
 
-                    auto model = ModelSystem::getById(modelID);
-                    auto mesh  = model.m_meshes[meshID];
+                    auto& model = ModelSystem::getById(modelID);
+                    auto& mesh  = model.m_meshes[meshID];
 
                     mesh.m_shaderProgram = ShaderSystem::copyById(shaderID);
                     mesh.m_shaderProgram.setMaterial(MaterialSystem::getById(mesh.m_materialID));

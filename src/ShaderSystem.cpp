@@ -34,41 +34,8 @@ auto ShaderSystem::copyById(C::ID shaderProgramID) -> ShaderProgram
     return ShaderSystem::m_shaderPrograms[shaderProgramID];
 }
 
-void ShaderSystem::push(const C::Tag tag, const std::string& filepath) 
-{
-    C::Err err = 0;
-    C::Id  id;
-    ShaderProgram program;
 
-    std::string shaderString;
-    err = Util::fileToString(filepath, &shaderString);
-    if (err) {
-        LOG_WARN("Util::fileToString(%s) failed, using default shaderprogram..", filepath.data());
-        ShaderSystem::m_mapShaderProgramID[tag] = 0;
-        return;
-    }
-
-    std::string vert, frag, geom;
-    err = ShaderSystem::parse(shaderString, &vert, &frag, &geom);
-    if (err){
-        LOG_WARN("ShaderSystem::parse failed, using default shaderprogram..");
-        ShaderSystem::m_mapShaderProgramID[tag] = 0;
-        return;
-    }
-
-    ShaderProgram program;
-    err = ShaderSystem::makeShaderProgram(vert, frag, geom, &program);
-    if (err) {
-        LOG_WARN("ShaderSystem::makeShaderProgram failed, using default shaderprogram..");
-        ShaderSystem::m_mapShaderProgramID[tag] = 0;   
-        return;
-    }
-
-    ShaderSystem::m_mapShaderProgramID[tag] = ShaderSystem::m_shaderPrograms.size();    
-    ShaderSystem::m_shaderPrograms.emplace_back( program );
-}
-
-void ShaderSystem::pushUniformBuffer(const C::Tag&& tag, GLuint size)
+void ShaderSystem::pushUniformBuffer(const C::Tag&& /*tag*/, GLuint /*size*/)
 {
     //ShaderSystem::m_mapUniformBufferDynamic[tag] = ShaderSystem::m_uniformBuffers.size();
     //ShaderSystem::m_uniformBuffers.emplace_back( UniformBuffer(tag.c_str(), nullptr, size, GL_DYNAMIC_DRAW) );
@@ -117,7 +84,7 @@ void ShaderSystem::linkUniformBlocks()
 ///
 ///
 ///
-GLuint ShaderSystem::getBlockUniformLocation(const C::Tag& uBlock, const C::Tag& uniform )
+GLuint ShaderSystem::getBlockUniformLocation(const C::Tag& /*uBlock*/, const C::Tag& /*uniform*/ )
 {
 	/*for (auto& uBuffer : m_uniformBuffers)
 	{
@@ -141,18 +108,61 @@ auto ShaderSystem::getUniformBufferById(C::ID uBufferID) -> const UniformBuffer&
     return ShaderSystem::m_uniformBuffers[uBufferID];
 }
 
+void ShaderSystem::push(const C::Tag tag, const std::string& filepath) 
+{
+    C::Err err;
 
+    std::string shaderString;
+    err = Util::fileToString(filepath, &shaderString);
+    if (err) {
+        LOG_WARN("Util::fileToString(%s) failed, using default shaderprogram..", filepath.data());
+        ShaderSystem::m_mapShaderProgramID[tag] = 0;
+        return;
+    }
+
+    std::string vert, frag, geom;
+    err = ShaderSystem::parseProgram(shaderString, &vert, &frag, &geom);
+    if (err){
+        LOG_WARN("ShaderSystem::parseProgram failed, using default shaderprogram..");
+        ShaderSystem::m_mapShaderProgramID[tag] = 0;
+        return;
+    }
+
+    ShaderProgram program;
+    err = ShaderSystem::makeProgram(vert, frag, geom, &program);
+    if (err) {
+        LOG_WARN("ShaderSystem::makeProgram failed, using default shaderprogram..");
+        ShaderSystem::m_mapShaderProgramID[tag] = 0;   
+        return;
+    }
+
+    ShaderSystem::m_mapShaderProgramID[tag] = ShaderSystem::m_shaderPrograms.size();    
+    ShaderSystem::m_shaderPrograms.emplace_back( program );
+
+    return;
+}
 
 void ShaderSystem::load() 
 {
     std::vector<FileEvent> fevents = Watcher::popEvents("discovered", "shaders");
+    
+    LOG_DEBUG("Shaders from file: assets/shaders/_default.glsl");    
+    ShaderSystem::push("_default", "assets/shaders/_default.glsl");
+
     for (const auto& e : fevents) 
     {
+        // skip _default shader as it has been loaded already
+        if (e.tag == "_default") continue; 
+
         const auto filepath = C::ShadersFolder + ("/" + e.tag) + "." + e.extension;
         LOG_DEBUG("Shaders from file: %s", filepath.data());
         ShaderSystem::push(e.tag, filepath);
     }
     
+    if (ShaderSystem::m_shaderPrograms.size() == 0) {
+        LOG_ERROR("ShaderSystem could not load any shader programs");
+    }
+
     //pushUniformBuffer("OK_Lights", sizeof(LightData) * 8);
 	auto matBufferLayout = BlockLayout();
 	matBufferLayout.push("projection", 64);
@@ -191,7 +201,6 @@ void ShaderSystem::load()
 	//pushUniformBuffer("OK_Lights",   sizeof(glm::vec4) * 2+sizeof(float));
 	//auto buf = getUniformBufferByTag("OK_Matrices");
 
-	GLsizei nameMaxLength;
 	
 	linkUniformBlocksForAll();
 	GLuint bindPoint = 0;
@@ -321,7 +330,7 @@ void ShaderSystem::unbindAll()
 
 
 
-auto ShaderSystem::ParseProgram(const std::string& file, 
+auto ShaderSystem::parseProgram(const std::string& fileString, 
                                 std::string* outVert, 
                                 std::string* outFrag, 
                                 std::string* outGeom) -> C::Err 
@@ -332,13 +341,8 @@ auto ShaderSystem::ParseProgram(const std::string& file,
     ShaderType currentlyReading = NONE;
 
     std::string line;
-    std::ifstream fileStream(file);
-    if (!fileStream.is_open())
-    {
-        printf("\"%s\" could not be read...\n", file.c_str());
-        return 1;
-    }
-
+    std::stringstream fileStream(fileString);
+    
     std::stringstream ss[3];
 
     for (std::size_t lineNr = 1; getline(fileStream, line); lineNr++)
@@ -367,9 +371,9 @@ auto ShaderSystem::ParseProgram(const std::string& file,
         }
     }
     
-    *outVert = ss[(int)VERT].str(),
-    *outFrag = ss[(int)FRAG].str(),
-    *outGeom = ss[(int)GEOM].str()
+    *outVert = ss[(int)VERT].str();
+    *outFrag = ss[(int)FRAG].str();
+    *outGeom = ss[(int)GEOM].str();
     return 0;
 }
 
@@ -436,7 +440,7 @@ auto ShaderSystem::makeProgram(const std::string& vert,
 
         LOG_INFO("Active attributes: %i", count);
 
-        for (GLuint i = 0; i < count; i++)
+        for (GLint i = 0; i < count; i++)
         {
             std::string name = ShaderIntrospector::getAttribName(program.id, i, nameMaxLength);
         }        
@@ -452,13 +456,14 @@ auto ShaderSystem::makeProgram(const std::string& vert,
         
         LOG_INFO("Active uniforms: %i", count);
 
-        for (GLuint i = 0; i < count; i++)
+        for (GLint i = 0; i < count; i++)
         {
             std::string uniformName = ShaderIntrospector::getUniformName(program.id, i, nameMaxLength);
          
             GLint location;
             GLCall(location = glGetUniformLocation(program.id, uniformName.data()));
-            uniforms.insert({ uniformName, location });
+            
+            program.uniforms.insert({ uniformName, location });
         }
     }
 
@@ -467,23 +472,23 @@ auto ShaderSystem::makeProgram(const std::string& vert,
     //
     {
         GLsizei nameMaxLength = ShaderIntrospector::getUniformMaxNameLength(program.id);
-        GLsizei length;
-        GLenum type; // type of the variable (float, vec3 or mat4, etc)
-        GLint size; // size of the variable
-        
         auto uBlockCount = ShaderIntrospector::getActiveBlockCount(program.id);
-        uniformBlocks.reserve(uBlockCount);
+    
+        program.uniformBlocks.reserve(uBlockCount);
+    
         for (GLint i = 0; i < uBlockCount; i++)
         {
             auto name = ShaderIntrospector::getUnifromBlockName(program.id, i);
             GLuint uBlockIndex = ShaderIntrospector::getUniformBlockIndex(program.id, name);
-            LOG_INFO("Uniform Block #%i, indexed as #%u, Name: %s", i, uBlockIndex, name.c_str());
-            uniformBlocks.insert({ name, i });
+       //     LOG_INFO("Uniform Block #%i, indexed as #%u, Name: %s", i, uBlockIndex, name.c_str());
+            
+            program.uniformBlocks.insert({ name, i });
+            
             const auto& indices = ShaderIntrospector::getUniformBlockUniformIndices(program.id, uBlockIndex);
             for (const auto index : indices)
             {
                 std::string uniformName = ShaderIntrospector::getUniformName(program.id, index, nameMaxLength);
-                LOG_DEBUG("#%u has: %s, with index: %u\n", uBlockIndex, uniformName.data(), index);
+            //    LOG_DEBUG("#%u has: %s, with index: %u\n", uBlockIndex, uniformName.data(), index);
             }
         }    
     }

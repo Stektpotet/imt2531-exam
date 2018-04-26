@@ -17,7 +17,7 @@
 namespace overkill::Util 
 {
 
-auto fileToString(const std::string& filepath, C::Err& err) -> std::string;  
+auto fileToString(const std::string& filepath) -> std::string;  
 auto fileToString(const std::string& filepath, std::string* shaderString) -> C::Err;  
 void everyTwoSeconds(float t);
 auto packNormal(float x, float y, float z) -> GLint;

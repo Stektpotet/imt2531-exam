@@ -5,7 +5,7 @@
 #include <PMS/logger.h>
 
 #if _MSC
-    #define ASSERT(glerr) if (glerr) __debugbreak();
+    #define ASSERT(notglerr) if (!notglerr) __debugbreak();
 #else
     #include <exception>
     #define ASSERT(notglerr) if (!notglerr) std::terminate();

@@ -27,17 +27,17 @@ struct ShaderSource
 
 class ShaderProgram
 {
+public:
     struct Uniform
     {
         GLint location;
         GLenum type; // type of the variable (float, vec3 or mat4, etc)
         GLchar name[16]; // variable name in GLSL
     };
-private:
+
     std::unordered_map<std::string, GLint> uniforms;
     std::unordered_map<std::string, GLint> uniformBlocks;
 
-public:
     GLuint id;
 
     explicit operator GLuint() const;
