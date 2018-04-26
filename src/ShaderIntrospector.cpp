@@ -1,7 +1,44 @@
 #include <overkill/ShaderIntrospector.hpp>
 namespace overkill
 {
+    auto ShaderIntrospector::getUniformMaxNameLength(const GLuint programId) -> GLsizei
+    {
+        GLsizei nameMaxLength;
+        GLCall(glGetProgramiv(programId, GL_ACTIVE_UNIFORM_MAX_LENGTH, &nameMaxLength));
+        return nameMaxLength;
+    }
 
+    auto ShaderIntrospector::getAttributeMaxNameLength(const GLuint programId) -> GLsizei
+    {
+        GLsizei nameMaxLength;
+        GLCall(glGetProgramiv(programId, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH, &nameMaxLength));
+        return nameMaxLength;
+    }
+
+    auto ShaderIntrospector::getAttribName(const GLuint programId, const GLuint attribIndex, const GLsizei nameMaxLength) -> std::string
+    {
+        GLenum type; // type of the variable (float, vec3 or mat4, etc)
+        GLsizei length;
+        GLint size; // size of the variable
+
+        char* attribName = (char*)alloca(nameMaxLength * sizeof(char));
+        GLCall(glGetActiveAttrib(programId, attribIndex, nameMaxLength, &length, &size, &type, attribName));
+        LOG_DEBUG("Attribute #%u Type: %u Name: %s", attribIndex, type, attribName);
+        return std::string(attribName);
+    }
+
+    auto ShaderIntrospector::getUniformName(const GLuint programId, const GLuint uniformIndex, const GLsizei nameMaxLength) -> std::string
+    {
+        GLenum type; // type of the variable (float, vec3 or mat4, etc)
+        GLint size; // size of the variable
+        GLsizei length;
+
+        char* uniformName = (char*)alloca(nameMaxLength * sizeof(char));
+        GLCall(glGetActiveUniform(programId, uniformIndex, nameMaxLength, &length, &size, &type, uniformName));
+       // LOG_DEBUG("Uniform #%u, Type: %u, Name: %s", uniformIndex, type, uniformName);
+
+        return std::string(uniformName);
+    };
 // UNIFORMS
 /*
 const std::vector<GLint>& ShaderIntrospector::getUniformLocations(const GLuint program)
@@ -33,18 +70,18 @@ const std::vector<GLint>& ShaderIntrospector::getUniformLocations(const GLuint p
 }*/
 
 
-GLenum ShaderIntrospector::printCompileStatus(const GLuint shaderid )
+auto ShaderIntrospector::checkCompileStatus(const GLuint shaderid) -> C::Err
 {
     GLenum err;
     GLint result;
-    GLCall_ReturnIfError(glGetShaderiv(shaderid, GL_COMPILE_STATUS, &result));
+    GLCall(glGetShaderiv(shaderid, GL_COMPILE_STATUS, &result));
     if (!result)
     {
         int length;
-        GLCall_ReturnIfError(glGetShaderiv(shaderid, GL_INFO_LOG_LENGTH, &length));
+        GLCall(glGetShaderiv(shaderid, GL_INFO_LOG_LENGTH, &length));
         char* message = (char*)alloca(length * sizeof(char));
-        GLCall_ReturnIfError(glGetShaderInfoLog(shaderid, length, &length, message));
-        GLCall_ReturnIfError(glDeleteShader(shaderid));
+        GLCall(glGetShaderInfoLog(shaderid, length, &length, message));
+        GLCall(glDeleteShader(shaderid));
 
         LOG_WARN("GL_COMPILE_STATUS: %s", message);
         return 1;
@@ -52,7 +89,7 @@ GLenum ShaderIntrospector::printCompileStatus(const GLuint shaderid )
     return 0;
 }
 
-GLenum ShaderIntrospector::printLinkStatus(const GLuint programid) 
+auto ShaderIntrospector::checkLinkStatus(const GLuint programid) -> C::Err
 {
     GLenum err;
     GLint result;

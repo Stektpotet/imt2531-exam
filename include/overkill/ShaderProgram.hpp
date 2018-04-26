@@ -24,6 +24,7 @@ struct ShaderSource
     std::string fragment;
     std::string geometry;
 };
+
 class ShaderProgram
 {
     struct Uniform
@@ -36,17 +37,13 @@ private:
     std::unordered_map<std::string, GLint> uniforms;
     std::unordered_map<std::string, GLint> uniformBlocks;
 
-    auto construct(const std::string& vert, const std::string& frag, const std::string& geom) -> GLenum;
-
-    GLuint id;
 public:
+    GLuint id;
 
     explicit operator GLuint() const;
 
-    ShaderProgram()=default;
-    ShaderProgram(const ShaderProgram&)=default;
-    ShaderProgram(const std::string& vert, const std::string& frag, const std::string& geom);
-    ShaderProgram(const std::string& filePath);
+    ShaderProgram() = default;
+    ShaderProgram(const ShaderProgram&) = default;
     
     
     void clean();
@@ -55,10 +52,7 @@ public:
     void bind() const;
     void unbind() const;
 
-
     GLint getUniformLocation(const std::string& name) const;
-
-    static ShaderSource ParseProgram(const std::string& file);
     GLuint getUniformBlockIndex(const std::string& blockName) const;
     
 };

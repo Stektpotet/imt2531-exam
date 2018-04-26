@@ -13,6 +13,7 @@ class C
 public:
     using Tag = std::string;
     using ID  = int;
+    using Err = char;
 
     constexpr static unsigned int StrSize = 80;
     constexpr static float PI             = 3.14159265359f;

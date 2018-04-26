@@ -14,11 +14,13 @@
     glFunc;\
     ASSERT(!GLLogCall(#glFunc, __FILE__, __LINE__))
 
+
 #define GLCall_ReturnIfError(glFunc) GLClearError();\
     glFunc;\
     err = GLLogCall(#glFunc, __FILE__, __LINE__);\
     if (err)\
         return err;
+
 
 
 void GLClearError();

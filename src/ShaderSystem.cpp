@@ -36,8 +36,36 @@ auto ShaderSystem::copyById(C::ID shaderProgramID) -> ShaderProgram
 
 void ShaderSystem::push(const C::Tag tag, const std::string& filepath) 
 {
+    C::Err err = 0;
+    C::Id  id;
+    ShaderProgram program;
+
+    std::string shaderString;
+    err = Util::fileToString(filepath, &shaderString);
+    if (err) {
+        LOG_WARN("Util::fileToString(%s) failed, using default shaderprogram..", filepath.data());
+        ShaderSystem::m_mapShaderProgramID[tag] = 0;
+        return;
+    }
+
+    std::string vert, frag, geom;
+    err = ShaderSystem::parse(shaderString, &vert, &frag, &geom);
+    if (err){
+        LOG_WARN("ShaderSystem::parse failed, using default shaderprogram..");
+        ShaderSystem::m_mapShaderProgramID[tag] = 0;
+        return;
+    }
+
+    ShaderProgram program;
+    err = ShaderSystem::makeShaderProgram(vert, frag, geom, &program);
+    if (err) {
+        LOG_WARN("ShaderSystem::makeShaderProgram failed, using default shaderprogram..");
+        ShaderSystem::m_mapShaderProgramID[tag] = 0;   
+        return;
+    }
+
     ShaderSystem::m_mapShaderProgramID[tag] = ShaderSystem::m_shaderPrograms.size();    
-    ShaderSystem::m_shaderPrograms.emplace_back( ShaderProgram(filepath.data()) );
+    ShaderSystem::m_shaderPrograms.emplace_back( program );
 }
 
 void ShaderSystem::pushUniformBuffer(const C::Tag&& tag, GLuint size)
@@ -48,7 +76,6 @@ void ShaderSystem::pushUniformBuffer(const C::Tag&& tag, GLuint size)
 
 void ShaderSystem::linkUniformBlocks()
 {
-
 
     std::unordered_map<C::Tag, GLint> uniformBlocks;
 
@@ -293,11 +320,178 @@ void ShaderSystem::unbindAll()
 
 
 
-/*
-void ShaderSystem::makeShaderProgram() -> ShaderProgram 
+
+auto ShaderSystem::ParseProgram(const std::string& file, 
+                                std::string* outVert, 
+                                std::string* outFrag, 
+                                std::string* outGeom) -> C::Err 
 {
+
+    enum ShaderType : int { NONE = -1, VERT = 0, FRAG = 1, GEOM = 2 };
+
+    ShaderType currentlyReading = NONE;
+
+    std::string line;
+    std::ifstream fileStream(file);
+    if (!fileStream.is_open())
+    {
+        printf("\"%s\" could not be read...\n", file.c_str());
+        return 1;
+    }
+
+    std::stringstream ss[3];
+
+    for (std::size_t lineNr = 1; getline(fileStream, line); lineNr++)
+    {
+        if (line.find("#shader") != std::string::npos)
+        {
+            if (line.find("vert") != std::string::npos)
+            {
+                currentlyReading = VERT;
+            }
+            else if (line.find("frag") != std::string::npos)
+            {
+                currentlyReading = FRAG;
+            }
+            else if (line.find("geom") != std::string::npos)
+            {
+                currentlyReading = GEOM;
+            }
+            getline(fileStream, line); //instantly get #version tag
+            ss[(int)currentlyReading] << line << '\n';
+            ss[(int)currentlyReading] << "#line " << ++lineNr+1 << '\n'; //inject line number to get the line as is in the shader file
+        }
+        else
+        {
+            ss[(int)currentlyReading] << line << '\n';
+        }
+    }
     
+    *outVert = ss[(int)VERT].str(),
+    *outFrag = ss[(int)FRAG].str(),
+    *outGeom = ss[(int)GEOM].str()
+    return 0;
 }
-*/
+
+auto ShaderSystem::makeProgram(const std::string& vert, 
+                               const std::string& frag, 
+                               const std::string& geom, 
+                               ShaderProgram* outProgram) -> C::Err
+{
+    const auto attachShader = [](const GLuint programId, const std::string& source, GLuint type) -> C::Err
+    {   
+        // Just ignore if the shader source is empty
+        if (!source.empty())
+        {
+            GLenum err = 0;
+            GLuint shaderId;
+            GLCall_ReturnIfError(shaderId = glCreateShader(type));
+
+            const char* src = source.data();
+            GLCall_ReturnIfError(glShaderSource(shaderId, 1, &src, nullptr));
+            GLCall_ReturnIfError(glCompileShader(shaderId));
+
+            err = ShaderIntrospector::checkCompileStatus(shaderId);
+            if (err)
+                return err;
+
+            GLCall_ReturnIfError(glAttachShader(programId, shaderId));
+            GLCall_ReturnIfError(glDeleteShader(shaderId)); //it may be that I'm supposed to call glDetachShader() instead.. not sure for now tho
+        } 
+        return 0;
+    };
+
+    GLenum err = 0;
+    ShaderProgram program;
+
+    GLCall( program.id = glCreateProgram() );
+
+
+    err = attachShader(program.id, vert, GL_VERTEX_SHADER);
+    if (err) 
+        return err;
+
+    err = attachShader(program.id, frag, GL_FRAGMENT_SHADER);
+    if (err) 
+        return err;
+    
+    err = attachShader(program.id, geom, GL_GEOMETRY_SHADER);
+    if (err) 
+        return err;
+
+    GLCall_ReturnIfError(glLinkProgram(program.id));
+    err = ShaderIntrospector::checkLinkStatus(program.id);
+    if (err)
+        return err;
+
+ 
+
+    ///https://stackoverflow.com/questions/440144/in-opengl-is-there-a-way-to-get-a-list-of-all-uniforms-attribs-used-by-a-shade
+    //
+    // LOG active shader attributes
+    //   
+    {
+        GLsizei nameMaxLength = ShaderIntrospector::getAttributeMaxNameLength(program.id);
+        GLint count = ShaderIntrospector::getActiveAttribCount(program.id);
+
+        LOG_INFO("Active attributes: %i", count);
+
+        for (GLuint i = 0; i < count; i++)
+        {
+            std::string name = ShaderIntrospector::getAttribName(program.id, i, nameMaxLength);
+        }        
+    }
+
+
+    //
+    // Cache single uniforms
+    //
+    {
+        GLsizei nameMaxLength = ShaderIntrospector::getUniformMaxNameLength(program.id);
+        GLint count = ShaderIntrospector::getActiveUniformCount(program.id);
+        
+        LOG_INFO("Active uniforms: %i", count);
+
+        for (GLuint i = 0; i < count; i++)
+        {
+            std::string uniformName = ShaderIntrospector::getUniformName(program.id, i, nameMaxLength);
+         
+            GLint location;
+            GLCall(location = glGetUniformLocation(program.id, uniformName.data()));
+            uniforms.insert({ uniformName, location });
+        }
+    }
+
+    //
+    // Cache uniforms for each uniform block
+    //
+    {
+        GLsizei nameMaxLength = ShaderIntrospector::getUniformMaxNameLength(program.id);
+        GLsizei length;
+        GLenum type; // type of the variable (float, vec3 or mat4, etc)
+        GLint size; // size of the variable
+        
+        auto uBlockCount = ShaderIntrospector::getActiveBlockCount(program.id);
+        uniformBlocks.reserve(uBlockCount);
+        for (GLint i = 0; i < uBlockCount; i++)
+        {
+            auto name = ShaderIntrospector::getUnifromBlockName(program.id, i);
+            GLuint uBlockIndex = ShaderIntrospector::getUniformBlockIndex(program.id, name);
+            LOG_INFO("Uniform Block #%i, indexed as #%u, Name: %s", i, uBlockIndex, name.c_str());
+            uniformBlocks.insert({ name, i });
+            const auto& indices = ShaderIntrospector::getUniformBlockUniformIndices(program.id, uBlockIndex);
+            for (const auto index : indices)
+            {
+                std::string uniformName = ShaderIntrospector::getUniformName(program.id, index, nameMaxLength);
+                LOG_DEBUG("#%u has: %s, with index: %u\n", uBlockIndex, uniformName.data(), index);
+            }
+        }    
+    }
+
+    GLCall_ReturnIfError(glValidateProgram(program.id));
+
+    *outProgram = program;
+    return 0;
+}
 
 }

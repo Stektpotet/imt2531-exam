@@ -49,7 +49,15 @@ private:
 
     static std::vector<UpdateCallback>          m_updateCallbacks;
 
-    static auto makeShaderProgram() -> ShaderProgram;
+    static auto ParseProgram(const std::string& file, 
+                             std::string* vert, 
+                             std::string* frag, 
+                             std::string* geom) -> C::Err;
+
+    static auto makeProgram(const std::string& vert, 
+                            const std::string& frag, 
+                            const std::string& geom, 
+                            ShaderProgram* program) -> C::Err;
 
     static void push(const C::Tag tag, const std::string& filepath);
     static void pushUniformBuffer(const C::Tag&& tag, GLuint size);

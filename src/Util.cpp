@@ -27,6 +27,19 @@ auto Util::fileToString(const std::string& filepath) -> std::string
     return ss.str();
 }
 
+auto Util::fileToString(const std::string& filepath, std::string* shaderString) -> C::Err;  
+{
+    std::ifstream infile(filepath);
+
+    if (!infile) {
+        return 1;    
+    }
+    std::stringstream ss;
+    ss << infile.rdbuf();
+    *shaderString = ss.str();
+    return 0;
+}
+
 
 void Util::everyTwoSeconds(float t)
 {
