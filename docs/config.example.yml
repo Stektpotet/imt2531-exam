@@ -9,8 +9,8 @@ ClearColor: 0.05   0.06   0.075   1.0
 FOV: 88.0
 MaxFOV: 88.2
 MinFOV: 87.97
-ZoomSensitivity: 0.0033
-LookSensitivity: 0.013
+ZoomSensitivity: 0.0
+LookSensitivity: 0.54
 PanSensitivity: 4
 NearClip: 0.1
 FarClip: 100.0

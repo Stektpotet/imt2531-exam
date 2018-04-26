@@ -162,15 +162,15 @@ target_link_libraries(
 )
 endif()
 
-# Test discover.py and test-discover.cpp
-add_executable(test_discover "${SRCDIR}/tool/test-discover.cpp")
-set_target_properties(
-    test_discover
-    PROPERTIES
-    CXX_STANDARD 17
-    CXX_STANDARD_REQUIRED ON
-    RUNTIME_OUTPUT_DIRECTORY "${BINDIR}"
-)
+# # Test discover.py and test-discover.cpp
+# add_executable(test_discover "${SRCDIR}/tool/test-discover.cpp")
+# set_target_properties(
+#     test_discover
+#     PROPERTIES
+#     CXX_STANDARD 17
+#     CXX_STANDARD_REQUIRED ON
+#     RUNTIME_OUTPUT_DIRECTORY "${BINDIR}"
+# )
 
 
 

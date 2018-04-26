@@ -18,6 +18,12 @@ struct CameraTransform      // Not to be confused with the cameras actual transf
     glm::vec4 position;
 };
 
+enum CameraMode
+{
+    FREELOOK,
+    ORBITAL
+};
+
 class EntityCamera : public Entity
 {
 private:
@@ -25,9 +31,10 @@ private:
     float m_aspectRatio;
     float m_nearClip;
     float m_farClip;
+    enum CameraMode m_cameraMode;
 
     glm::mat4 getViewMatrix(glm::mat4 parentMatrix = glm::mat4(1));
-    glm::mat4 getModelMatrix(glm::mat4 parentMatrix = glm::mat4(1));
+    glm::mat4 getModelToWorldMatrix(glm::mat4 parentMatrix = glm::mat4(1));
 
 public:
     CameraTransform m_cameraTransform;
@@ -35,6 +42,7 @@ public:
     EntityCamera(C::Tag entityTag, int entityID, 
                 glm::vec3 pos = glm::vec3(0,0,0), glm::vec3 rot = glm::vec3(0,0,0), 
                 glm::vec3 vel = glm::vec3(0,0,0), glm::vec3 angVel = glm::vec3(0,0,0),
+                enum CameraMode camMode = FREELOOK,
                 float FOV = C::FOV, float aspectRatio = C::AspectRatio, 
                 float nearClip = C::NearClip, float farClip = C::FarClip);
 
