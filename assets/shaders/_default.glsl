@@ -6,26 +6,21 @@ layout(location = 1) in vec3 normal;
 layout(location = 2) in vec2 uv;
 layout(location = 3) in vec4 vertex_color;
 
-uniform mat4 m2w;
+out vec3 frag_Pos;
 
+uniform mat4 m2w;
 layout(std140) uniform OK_Matrices{
     mat4 projection;
     mat4 view;
     vec4 view_position;
 };
-
-out vec3 frag_Pos;
-
 vec4 MVP(in vec4 position) {
     return projection * view * m2w * position;
 }
 
-
 void main() {
-
     vec4 out_position = MVP(position);
     gl_Position = out_position;
-
     frag_Pos = vec3(m2w * position);
 }
 
