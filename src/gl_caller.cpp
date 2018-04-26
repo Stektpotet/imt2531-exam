@@ -9,8 +9,7 @@ bool GLLogCall(const char* function, const char* file, int line)
 {
     while (GLenum error = glGetError())
     {
-        std::cout << "[OpenGL Error] (" << error << ");\n" << function <<
-            " in " << file << "\nat line: " << line << std::endl;
+        LOG_WARN("\n[OpenGL Error] (%x);\n%s in %s\nat line %s", error, function, file, line);
         //std::cin.get();
         return true;
     }
@@ -21,7 +20,7 @@ auto GLLogFirstError() -> overkill::C::Err
 {
     if (GLenum error = glGetError())
     {
-        LOG_WARN("[OpenGL Error] (%d);", error);
+        LOG_WARN("\n[OpenGL Error] (%x);", error);
         std::cin.get();
         GLClearError();
         return 1;

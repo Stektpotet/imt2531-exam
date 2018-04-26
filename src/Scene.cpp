@@ -45,7 +45,7 @@ namespace overkill
                                 glm::vec3(1, 3.4f, 1.67f));
         auto modelCubeChildObject = new EntityModel("cube", "childCube", count++, glm::vec3(2.0f, 0, 0));
             
-        auto modelSuzanneObject = new EntityModel("Suzanne", "Suzanne", count++, glm::vec3(4,10,1),
+        auto modelSuzanneObject = new EntityModel("test", "Suzanne", count++, glm::vec3(4,10,1),
                                 glm::vec3(45, 45, 45),glm::vec3(5, 5, 5),
                                 glm::vec3(0), glm::vec3(1, 3.4f, 1.67f));
 

@@ -38,6 +38,8 @@ public:
     std::unordered_map<std::string, GLint> uniforms;
     std::unordered_map<std::string, GLint> uniformBlocks;
 
+    C::Tag m_tag;
+
     GLuint id;
 
     explicit operator GLuint() const;

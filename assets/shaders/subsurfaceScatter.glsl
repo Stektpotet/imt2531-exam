@@ -49,7 +49,7 @@ void main() {
     //fragNormal = vec3(rotatedNormal);
     vertex_color_out = rotatedNormal;
     texCoord = uv;
-    fragNormal = mat3(transpose(inverse(m2w))) * normal;
+    fragNormal = normalize(mat3(transpose(inverse(m2w))) * normal);
 
     vec4 out_position = MVP(position);
     gl_Position = out_position;
@@ -82,67 +82,110 @@ uniform float bumpiness = 1;
 uniform float distortion = 1;
 uniform float scatterPower = 1;
 uniform float scatterScale = 1;
+uniform float scatterThickness = 1;
+uniform float shininess;
 
 uniform mat4 m2w;
 
 layout(std140) uniform OK_Matrices{
-    mat4 projection;
-    mat4 view;
-    vec4 view_position;
-};
+    mat4 projection;			//64b
+    mat4 view;					//64b
+    vec4 view_position;			//16b
+};								//144b
 
-struct OK_Light {
-    vec4 position;
-    vec4 intensities;
-	float constant;
-	float linear;
-	float quadratic;
-	float alignment;
-};
+struct OK_Light_Directional {
+	vec4 direction;				//16b
+	vec4 intensities;			//16b
+};								//32b
+
+struct OK_Light_Point {			
+    vec4 position;				//16b
+    vec4 intensities;			//16b
+	float constant;				//4b
+	float linear;				//4b
+	float quadratic;			//4b
+	float alignment;			//4b
+};								//48b
 
 layout(std140) uniform OK_Lights{
-    OK_Light light[MAX_LIGHTS];
+    OK_Light_Point light[MAX_LIGHTS];	//MAX_LIGHTS * 48b
+	OK_Light_Directional sun;
 };
 
 vec3 OK_PointLight(in vec3 position, in vec3 intensities, in float constant, in float linear, in float quadratic) {
     //Ambience
-    float ambientStrength = 0.2;
+    float ambientStrength = 0.1;
     vec3 ambient = ambientStrength * intensities;
 
+    vec3 bump = texture(bumpTex, texCoord).rgb*intensity;
     // Diffussion
-    vec3 norm = normalize(fragNormal);
+    vec3 norm = normalize(fragNormal*bump);
     vec3 lightDir = normalize(position - fragVert);
     float diffusion = max(dot(norm, lightDir), 0.0);
     vec3 diffuse = diffusion * intensities;
+	
+    vec3 spec = texture(specTex, texCoord).rgb;
 
     // Specularity
-    float specularStrength = 0.5;
     vec3 viewDir = normalize(view_position.xyz - fragVert);
     vec3 reflectDir = reflect(-lightDir, norm);
     float specPower = pow(max(dot(viewDir, reflectDir), 0.0), 32);
-    vec3 specular = specularStrength * specPower *  intensities;
-
-	vec3 pointLight = (ambient + diffuse + specular*specularity);
-
-
-	//SubSurface Scatter
-	vec3 H = normalize(lightDir + norm * distortion);
-	float I_back = pow(clamp(dot(viewDir, -H),0.0,1.0), scatterPower) * scatterScale;
+    vec3 specular = specularity * specPower *  intensities * spec;
 
     // Attenuation
     float distance = length(position - fragVert);
-    float attenuation = 1.0 / (constant + linear * distance + quadratic * (distance * distance));
+    float attenuation = 1.0 / (constant + linear * distance + quadratic * distance * distance);
+	
+	//Fast subsurface scattering
+	vec3 halfwayDir = normalize(lightDir + norm * distortion);
+	float backLight = pow(clamp(dot(viewDir, -halfwayDir),0.0,1.0), scatterPower) * scatterScale;
+	vec3 subSurfaceScatter = backLight * intensities * scatterThickness;
 
-    return pointLight*attenuation + I_back * intensities;// thickness; // @bug commented out thickness because it is undefined
+    return (ambient + diffuse + specular + subSurfaceScatter) * attenuation;
+}
+
+
+vec3 OK_DirectionalLight(in vec3 lightDir, in vec3 intensities) {
+	//Ambience
+	float ambientStrength = 0.2;
+	vec3 ambient = ambientStrength * intensities;
+
+	//Diffuse
+    vec3 norm = normalize(fragNormal);
+    lightDir = normalize(lightDir);
+    float diffusion = max(dot(norm, lightDir), 0.0);
+    vec3 diffuse = diffusion * intensities;
+
+	//Specularity
+    vec3 viewDir = normalize(view_position.xyz - fragVert);
+    vec3 reflectDir = reflect(-lightDir, norm);
+    float specPower = pow(max(dot(viewDir, reflectDir), 0.0), shininess);
+    vec3 specular = specularity * specPower *  intensities;
+
+	//SubSurface Scatter
+	vec3 halfwayDir = normalize(lightDir + norm * distortion);
+	float backLight = pow(clamp(dot(viewDir, -halfwayDir),0.0,1.0), scatterPower) * scatterScale;
+	vec3 subSurfaceScatter = backLight * intensities * scatterThickness;
+
+	return (ambient + diffuse + specular + subSurfaceScatter);
 }
 
 void main() {
 
-    vec3 light0 = OK_PointLight(light[0].position.xyz, light[0].intensities.rgb ,light[0].constant, light[0].linear, light[0].quadratic);
-	vec3 light1 = OK_PointLight(light[1].position.xyz, light[1].intensities.rgb ,light[1].constant, light[1].linear, light[1].quadratic);
-    vec3 light2 = OK_PointLight(light[2].position.xyz, light[2].intensities.rgb ,light[2].constant, light[2].linear, light[2].quadratic);
+	vec3 lights = OK_DirectionalLight(sun.direction.xyz, sun.intensities.rgb);	
+	for(int i = 0; i < MAX_LIGHTS; i++)
+	{
+		lights += OK_PointLight(
+						light[i].position.xyz, 
+						light[i].intensities.rgb,
+						light[i].constant,
+						light[i].linear,
+						light[i].quadratic
+					);
+	}
 
-    out_color = vec4((light0 + light1 + light2), opacity);
+
+    out_color = vec4(lights, opacity);
 }
 //  distortion: 0.3
 //  scatterPower: 10
