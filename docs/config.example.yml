@@ -1,0 +1,26 @@
+GLVersionMajor: 4
+GLVersionMinor: 1
+
+WinWidth: 1000
+WinHeight: 800
+WinName: Assignment 2 - Cube
+ClearColor: 0.05   0.06   0.075   1.0
+
+FOV: 88.0
+MaxFOV: 88.2
+MinFOV: 87.97
+ZoomSensitivity: 0.0033
+LookSensitivity: 0.013
+PanSensitivity: 4
+NearClip: 0.1
+FarClip: 100.0
+CameraOffset: -70
+
+    
+TexturesFolder: assets/textures
+ShadersFolder: assets/shaders
+MaterialsFolder: assets/materials
+ModelsFolder: assets/models
+ScenesFolder: assets/scenes
+
+MAX_LIGHTS: 8
