@@ -47,7 +47,7 @@ void MaterialSystem::push(const C::Tag tag, const std::string& filepath)
     std::string materialString;
     err = Util::fileToString(filepath, &materialString);
     if (err) {
-        LOG_WARN("Util::fileToString: Could not load material from file, using default material...");
+        LOG_WARN("Util::fileToString: Could not load material from file %s", filepath.data());
         MaterialSystem::m_mapMaterialID[tag] = 0;
         return;
     }

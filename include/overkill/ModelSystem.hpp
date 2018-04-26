@@ -31,6 +31,10 @@ public:
     static auto getIdByTag(const C::Tag& modeltag) -> C::ID;
     static auto getByTag(const C::Tag& tag) -> Model&;
     static auto getById(const C::ID modelID) -> Model&;
+
+    static auto makeModel(const std::string& modelString, Model* outModel) -> C::Err;
+    static void push(const std::string& tag, const std::string& filepath);
+
 };
 
 }
