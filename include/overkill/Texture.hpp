@@ -8,14 +8,11 @@ namespace overkill
 
 class Texture
 {
-    private:
-        GLuint      id;
-        std::string filepath;
-        GLubyte*    localBuffer;
-        GLsizei     width, height, channels;
     public:
-        Texture(const std::string& filepath);
-		
+        GLuint      id;
+        GLsizei     width, height, channels;
+
+        Texture() = default;
 		
 		void clean();
 

@@ -27,7 +27,7 @@ mat4 rotate(float x, float y, float z) {
         (cos(x + y + z) - cos(x - y + z) + cos(x + y - z) - cos(x - y - z) + 2 * sin(x + z) - 2 * sin(x - z)) / 4, (2 * cos(x + z) + 2 * cos(x - z) - sin(x + y + z) + sin(x - y + z) + sin(x + y - z) - sin(x - y - z)) / 4, (-sin(x + y) - sin(x - y)) / 2, 0,
         (-2 * cos(x + z) + 2 * cos(x - z) + sin(x + y + z) - sin(x - y + z) + sin(x + y - z) - sin(x - y - z)) / 4, (cos(x + y + z) - cos(x - y + z) - cos(x + y - z) + cos(x - y - z) + 2 * sin(x + z) + 2 * sin(x - z)) / 4, (cos(x + y) + cos(x - y)) / 2, 0,
         0, 0, 0, 1
-    );
+    );sss
 }
 
 out vec3 fragVert;

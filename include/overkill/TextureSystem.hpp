@@ -29,6 +29,7 @@ public:
     static auto getByTag(const C::Tag& textureTag) -> const Texture&;
     static auto getById(const C::ID textureID) -> const Texture&;
     static auto copyByTag(const C::Tag& tag) -> Texture;
+    static auto makeTexture(const std::string& filepath, Texture* outTexture) -> C::Err;    
 };
 
 }

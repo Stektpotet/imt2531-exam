@@ -72,7 +72,6 @@ const std::vector<GLint>& ShaderIntrospector::getUniformLocations(const GLuint p
 
 auto ShaderIntrospector::checkCompileStatus(const GLuint shaderid) -> C::Err
 {
-    GLenum err;
     GLint result;
     GLCall(glGetShaderiv(shaderid, GL_COMPILE_STATUS, &result));
     if (!result)
@@ -91,7 +90,6 @@ auto ShaderIntrospector::checkCompileStatus(const GLuint shaderid) -> C::Err
 
 auto ShaderIntrospector::checkLinkStatus(const GLuint programid) -> C::Err
 {
-    GLenum err;
     GLint result;
     GLCall(glGetProgramiv(programid, GL_LINK_STATUS, &result));
 
