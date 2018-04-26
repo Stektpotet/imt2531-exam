@@ -48,6 +48,7 @@ void TextureSystem::load()
     std::vector<FileEvent> fevents = Watcher::popEvents("discovered", "textures");
     
     TextureSystem::push("_default", "assets/textures/_default.jpg");
+    LOG_DEBUG("Texture from file: assets/textures/_default.jpg");
 
     for (const auto e : fevents) {
 
