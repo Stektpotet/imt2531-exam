@@ -38,22 +38,40 @@ namespace overkill
 
         }
 
+// float newPosX = offset *  sinf( yawRadian ) * cosf( pitchRadian );
+// float newPosY = offset * -sinf( pitchRadian );
+// float newPosZ = offset *  cosf( yawRadian ) * cosf( pitchRadian );
+
         Entity* camera = Scene::getEntityByTag("camera");
+        glm::vec3 rot = glm::radians(camera-> getRotation());
         if (char(keyCode) == 'W')
         {
-            camera -> setPosition(camera -> getPosition() + glm::vec3(0, 0, C::PanSensitivity));
+            camera -> setPosition(camera -> getPosition() + glm::vec3(
+                                                C::PanSensitivity * -glm::sin(rot.y) * glm::cos(rot.x),
+                                                C::PanSensitivity * glm::sin(rot.x), 
+                                                C::PanSensitivity * glm::cos(rot.y) * glm::cos(rot.x)));
         }
         if (char(keyCode) == 'S')
         {
-            camera -> setPosition(camera -> getPosition() + glm::vec3(0, 0, -C::PanSensitivity));
+            camera -> setPosition(camera -> getPosition() + glm::vec3(
+                                                C::PanSensitivity * glm::sin(rot.y) * glm::cos(rot.x),
+                                                C::PanSensitivity * -glm::sin(rot.x), 
+                                                C::PanSensitivity * -glm::cos(rot.y) * glm::cos(rot.x)));
         }
         if (char(keyCode) == 'D')
         {
-            camera -> setPosition(camera -> getPosition() + glm::vec3(C::PanSensitivity, 0, 0));
-        }
+            camera -> setPosition(camera -> getPosition() + glm::vec3(
+                                                C::PanSensitivity * glm::cos(rot.y) * glm::cos(rot.x),
+                                                0, 
+                                                C::PanSensitivity * glm::sin(rot.y) * glm::cos(rot.x)));        
+                                                }
         if (char(keyCode) == 'A')
         {
-            camera -> setPosition(camera -> getPosition() + glm::vec3(-C::PanSensitivity, 0, 0));
+            camera -> setPosition(camera -> getPosition() + glm::vec3(
+                                                -C::PanSensitivity * glm::cos(rot.y) * glm::cos(rot.x),
+                                                0, 
+                                                -C::PanSensitivity * glm::sin(rot.y) * glm::cos(rot.x)));
+
         }
         if (char(keyCode) == 'Q')
         {
@@ -101,10 +119,7 @@ namespace overkill
         {
             EntityCamera* camera = (EntityCamera*) Scene::getEntityByTag("camera");
             glm::vec3 rot = camera-> getRotation();
-            camera-> setRotation(rot + glm::vec3((  -deltaY),
-                                                    -deltaX, 
-                                                    0) 
-                                                * C::LookSensitivity);
+            camera-> setRotation(rot + glm::vec3((-deltaY), -deltaX, 0) * C::LookSensitivity);
         }
 
         //Camera paning:
@@ -123,11 +138,6 @@ namespace overkill
 
     void Input::OnScrollChange(GLFWwindow* /*window*/, double x, double y)
     {
-        // fovy += (y / 512) + 32;
-        m_fovy -= y * C::ZoomSensitivity;
-        if (m_fovy < C::MinFOV) m_fovy = C::MinFOV;
-        if (m_fovy > C::MaxFOV) m_fovy = C::MaxFOV;
-
        printf("Scroll: x: %f,\ty:%f\t\tfovy:%f\n", x, y, m_fovy);
     }
 

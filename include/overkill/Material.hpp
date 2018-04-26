@@ -26,6 +26,7 @@ struct UniformFloat
 class Material
 {
 public:
+    C::Tag                      m_tag;
 	std::vector<UniformTexture>	m_unimaps;
 	std::vector<UniformFloat>	m_univalues;
     Material()=default;

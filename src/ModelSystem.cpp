@@ -81,7 +81,7 @@ void ModelSystem::reload()
 }
 
 
-auto ModelSystem::makeModel(const std::string& modelString, Model* outModel) -> C::Err
+auto ModelSystem::makeModel(const C::Tag& tag, const std::string& modelString, Model* outModel) -> C::Err
 {
     auto p = Parser(modelString);
     //
@@ -120,6 +120,7 @@ auto ModelSystem::makeModel(const std::string& modelString, Model* outModel) -> 
 
     // Buffer vertex data to GPU VAO and VBO
     Model newModel;
+    newModel.m_tag = tag;
     newModel.m_vbo = VertexBuffer(vertices.data(), vertices.size() * vbufLayout.getStride()); //@NOTE: if there are exploding mesh issues this probably has to do with alignment issues, your GPU preffers data packed 4 by 4 bytes
     newModel.m_vao.addBuffer(newModel.m_vbo, vbufLayout);
     //
@@ -185,35 +186,6 @@ auto ModelSystem::makeModel(const std::string& modelString, Model* outModel) -> 
         );
         newMesh.m_shaderProgram.setMaterial(MaterialSystem::getByTag(materialtag));
 
-        // Bind to MaterialSystem update event
-        MaterialSystem::bindOnUpdate(
-            materialtag,
-            m_mapModelID[newModel.m_tag],
-            meshID,
-            [](C::ID materialID, C::ID modelID, C::ID meshID) {
-
-                auto& model = ModelSystem::getById(modelID);
-                auto& mesh  = model.m_meshes[meshID];
-
-                mesh.m_materialID = materialID;
-                mesh.m_shaderProgram.setMaterial(MaterialSystem::getById(materialID));
-            }
-        );
-
-        // Bind to ShaderSystem update event
-        ShaderSystem::bindOnUpdate(
-            shadertag,
-            m_mapModelID[newModel.m_tag],
-            meshID,
-            [](C::ID shaderID, C::ID modelID, C::ID meshID) {
-
-                auto& model = ModelSystem::getById(modelID);
-                auto& mesh  = model.m_meshes[meshID];
-
-                mesh.m_shaderProgram = ShaderSystem::copyById(shaderID);
-                mesh.m_shaderProgram.setMaterial(MaterialSystem::getById(mesh.m_materialID));
-            }
-        );
     }
 
 
@@ -222,7 +194,7 @@ auto ModelSystem::makeModel(const std::string& modelString, Model* outModel) -> 
 }
 
 
-void ModelSystem::push(const std::string& tag, const std::string& filepath)  
+void ModelSystem::push(const C::Tag& tag, const std::string& filepath)  
 {
     C::Err err;
 
@@ -235,7 +207,7 @@ void ModelSystem::push(const std::string& tag, const std::string& filepath)
     }
 
     Model model;
-    err = ModelSystem::makeModel(modelString, &model);
+    err = ModelSystem::makeModel(tag, modelString, &model);
     if(err) {
         LOG_WARN("ModelSystem::makeModel: Failed to parse model string");
         ModelSystem::m_mapModelID[tag] = 0;
@@ -244,6 +216,35 @@ void ModelSystem::push(const std::string& tag, const std::string& filepath)
 
     ModelSystem::m_mapModelID[tag] = ModelSystem::m_models.size();
     ModelSystem::m_models.push_back(model);
+
+    for (std::size_t i = 0; i < model.m_meshes.size(); i++)
+    {
+        // Bind to MaterialSystem update event
+        MaterialSystem::bindOnUpdate(
+            MaterialSystem::getById(model.m_meshes[i].m_materialID).m_tag,
+            m_mapModelID[model.m_tag],
+            i,
+            [](C::ID materialID, C::ID modelID, C::ID meshID) {
+                auto& model = ModelSystem::getById(modelID);
+                auto& mesh = model.m_meshes[meshID];
+                mesh.m_materialID = materialID;
+                mesh.m_shaderProgram.setMaterial(MaterialSystem::getById(materialID));
+            }
+        );
+
+        // Bind to ShaderSystem update event
+        ShaderSystem::bindOnUpdate(
+            model.m_meshes[i].m_shaderProgram.m_tag,
+            m_mapModelID[model.m_tag],
+            i,
+            [](C::ID shaderID, C::ID modelID, C::ID meshID) {
+                auto& model = ModelSystem::getById(modelID);
+                auto& mesh = model.m_meshes[meshID];
+                mesh.m_shaderProgram = ShaderSystem::copyById(shaderID);
+                mesh.m_shaderProgram.setMaterial(MaterialSystem::getById(mesh.m_materialID));
+            }
+        );
+    }
 }
 
 

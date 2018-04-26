@@ -56,7 +56,16 @@ public:
         //return m_vars.at(name);
     }
 
-    void pushBlock(const BlockLayout& block, const GLuint count = 1) //allows direct access to the inner-element indices
+    void pushBlock(const BlockLayout& block)
+    {
+        for (const auto& var : block.m_vars)
+        {
+            m_vars.emplace(std::make_pair(block.m_name + "." + var.first, m_blockSize + var.second));
+        }
+        m_blockSize += block.m_blockSize;
+    }
+
+    void pushBlockArray(const BlockLayout& block, GLuint count) //allows direct access to the inner-element indices
     {
 
         /* TESTING THE LOGIC BEHIND THIS:

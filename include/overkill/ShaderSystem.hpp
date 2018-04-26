@@ -62,11 +62,12 @@ private:
     static void push(const C::Tag tag, const std::string& filepath);
     static void pushUniformBuffer(const C::Tag&& tag, GLuint size);
     static void linkUniformBlocks();
-    static void linkUniformBlocksForAll();
+    static void enlistUniformBlockTargets();
 
 public:
     // <summary> Load all shader data onto GPU memory. 
     //           Keep shader metadata on CPU </summary>
+    static void createUniformBuffers();
     static void load();
     static void reload();
     static auto getIdByTag(const C::Tag& shaderTag) -> C::ID;

@@ -61,6 +61,7 @@ void MaterialSystem::push(const C::Tag tag, const std::string& filepath)
     }
 
     MaterialSystem::m_mapMaterialID[tag] = MaterialSystem::m_materials.size();
+    material.m_tag = tag;
     MaterialSystem::m_materials.emplace_back(material);
 }
 

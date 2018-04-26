@@ -137,9 +137,51 @@ void ShaderSystem::push(const C::Tag tag, const std::string& filepath)
     }
 
     ShaderSystem::m_mapShaderProgramID[tag] = ShaderSystem::m_shaderPrograms.size();    
+    program.m_tag = tag;
     ShaderSystem::m_shaderPrograms.emplace_back( program );
 
+
     return;
+}
+
+void ShaderSystem::createUniformBuffers()
+{
+
+    auto matBufferLayout = BlockLayout();
+    matBufferLayout.push("projection", 64);
+    matBufferLayout.push("view", 64);
+    matBufferLayout.push("view_position", 16);
+
+    ShaderSystem::m_mapUniformBuffersID["OK_Matrices"] = ShaderSystem::m_uniformBuffers.size(); //assign ID/index
+    ShaderSystem::m_uniformBuffers.emplace_back(UniformBuffer("OK_Matrices", matBufferLayout, GL_DYNAMIC_DRAW));
+
+    auto pointLightStructLayout = BlockLayout("light");
+    pointLightStructLayout.push("position", 16);
+    pointLightStructLayout.push("intensities", 16);
+    pointLightStructLayout.push("constant", 4);
+    pointLightStructLayout.push("linear", 4);
+    pointLightStructLayout.push("quadratic", 4);
+    pointLightStructLayout.push("alignment", 4);
+
+    auto sunLightStructLayout = BlockLayout("sun");
+    sunLightStructLayout.push("direction", 16);
+    sunLightStructLayout.push("intensities", 16);
+
+    //@REF: http://sunandblackcat.com/tipFullView.php?l=eng&topicid=21&topic=OpenGL-Uniform-Buffer-Objects
+    /*@NOTE:
+    If you are using std140 format, then you can manually calculate offset for each uniform variable.
+    Locations of uniform variables must be aligned in memory relative to the start of the buffer.
+    If alignment for type of uniform variable is 16 bytes,
+    then uniform variable can be placed only on bytes equal to multiple of 16 - 0, 16, 32, 48, etc.
+    std140 layout rules for different types of data in GLSL:
+    */
+
+    auto lightBufferLayout = BlockLayout();
+    lightBufferLayout.pushBlockArray(pointLightStructLayout, 8); //order of pushing these blocks matter!!!!!
+    lightBufferLayout.pushBlock(sunLightStructLayout);
+
+    ShaderSystem::m_mapUniformBuffersID["OK_Lights"] = ShaderSystem::m_uniformBuffers.size(); //assign ID/index
+    ShaderSystem::m_uniformBuffers.emplace_back(UniformBuffer("OK_Lights", lightBufferLayout, GL_DYNAMIC_DRAW));
 }
 
 void ShaderSystem::load() 
@@ -163,93 +205,29 @@ void ShaderSystem::load()
         LOG_ERROR("ShaderSystem could not load any shader programs");
     }
 
-    //pushUniformBuffer("OK_Lights", sizeof(LightData) * 8);
-	auto matBufferLayout = BlockLayout();
-	matBufferLayout.push("projection", 64);
-	matBufferLayout.push("view", 64);
-	matBufferLayout.push("view_position", 16);	
-	
-	//pushUniformBuffer("OK_Matrices",    sizeof(glm::mat4) * 2);
-	ShaderSystem::m_mapUniformBuffersID["OK_Matrices"] = ShaderSystem::m_uniformBuffers.size(); //assign ID/index
-	auto buf = ShaderSystem::m_uniformBuffers.emplace_back(UniformBuffer("OK_Matrices", matBufferLayout, GL_DYNAMIC_DRAW));
+	enlistUniformBlockTargets();
 
-	auto lightBufferLayout = BlockLayout();
-    //lightBufferLayout.push<16>("light.position")
-    auto lightStructLayout = BlockLayout("light");
-    lightStructLayout.push("position", 16);
-    lightStructLayout.push("intensities", 16);
-    lightStructLayout.push("constant", 4);
-    lightStructLayout.push("linear", 4);
-    lightStructLayout.push("quadratic", 4);
-    lightStructLayout.push("alignment", 4);
-
-    //@REF: http://sunandblackcat.com/tipFullView.php?l=eng&topicid=21&topic=OpenGL-Uniform-Buffer-Objects
-    /*@NOTE:
-    If you are using std140 format, then you can manually calculate offset for each uniform variable. 
-    Locations of uniform variables must be aligned in memory relative to the start of the buffer. 
-    If alignment for type of uniform variable is 16 bytes, 
-    then uniform variable can be placed only on bytes equal to multiple of 16 - 0, 16, 32, 48, etc. 
-    std140 layout rules for different types of data in GLSL:
-    */
-
-
-    lightBufferLayout.pushBlock(lightStructLayout, 8);
-
-	ShaderSystem::m_mapUniformBuffersID["OK_Lights"] = ShaderSystem::m_uniformBuffers.size(); //assign ID/index
-	ShaderSystem::m_uniformBuffers.emplace_back(UniformBuffer("OK_Lights", lightBufferLayout, GL_DYNAMIC_DRAW));
-
-	//pushUniformBuffer("OK_Lights",   sizeof(glm::vec4) * 2+sizeof(float));
-	//auto buf = getUniformBufferByTag("OK_Matrices");
-
-	
-	linkUniformBlocksForAll();
-	GLuint bindPoint = 0;
-	for (auto& buffer : m_uniformBuffers)
-	{
-        buffer.bind();
-		for (const auto& shader : m_shaderPrograms)
-		{
-			/*if (buffer.blockCount() == 1)
-			{*/
-				auto uBlockIndex = ShaderIntrospector::getUniformBlockIndex(GLuint(shader), C::Tag(buffer));
-				if (uBlockIndex != GL_INVALID_INDEX) //this block did exist in the shader
-				{
-					GLCall(glUniformBlockBinding(GLuint(shader), uBlockIndex, bindPoint));
-					GLCall(glBindBufferBase(GL_UNIFORM_BUFFER, bindPoint, GLuint(buffer)));
-				}
-			//}
-			//else
-			//{
-			//	//for (int blockInstance = 0; blockInstance < buffer.blockCount(); blockInstance++)
-			//	//{
-			//	//	const auto& blockName = C::Tag(buffer) + '[' + std::to_string(blockInstance) + ']';
-			//	//	auto uBlockIndex = ShaderIntrospector::getUniformBlockIndex(GLuint(shader), blockName);
-			//	//	if (uBlockIndex != GL_INVALID_INDEX) //this block did exist in the shader
-			//	//	{
-			//	//		GLCall(glUniformBlockBinding(GLuint(shader), uBlockIndex, bindPoint));
-
-
-   // //                    GLint offsetAlignment;
-   // //                    GLCall(glGetIntegerv(GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT, &offsetAlignment));
-   // //                    GLint bufferBindings;
-   // //                    GLCall(glGetIntegerv(GL_MAX_UNIFORM_BUFFER_BINDINGS, &bufferBindings));
-   // //                    LOG_INFO("bindingMAX: %i", bufferBindings);
-   // //                    
-
-   // //                    GLint bufSize;
-   // //                    glGetBufferParameteriv(GL_UNIFORM_BUFFER, GL_BUFFER_SIZE, &bufSize);
-   // //                    LOG_INFO("Block: #%i,\toffset: %u,\tsize: %u,\tBufferSize: %i,\toffset alignment: %i", blockInstance, a, buffer.blockSize(), bufSize, offsetAlignment);
-   // //                    //GLCall(glBindBufferRange(GL_UNIFORM_BUFFER, bindPoint, GLuint(buffer), a, buffer.blockSize()));
-			//	//		//GLCall(glBindBufferBase(GL_UNIFORM_BUFFER, bindPoint, GLuint(buffer)));
-   // //                    
-			//	//	}
-			//	//}
-   //             GLCall(glBindBufferBase(GL_UNIFORM_BUFFER, bindPoint, GLuint(buffer)));
-			//}
-		}
-        buffer.unbind();
-		bindPoint++;
-	}
+    //
+    // Link all shaders with their needed uniform buffers i.e. set up binding points and data range
+    //
+    {
+	    GLuint bindPoint = 0;
+	    for (auto& buffer : m_uniformBuffers)
+	    {
+            buffer.bind();
+	    	for (const auto& shader : m_shaderPrograms)
+	    	{
+	    		auto uBlockIndex = ShaderIntrospector::getUniformBlockIndex(GLuint(shader), C::Tag(buffer));
+	    		if (uBlockIndex != GL_INVALID_INDEX) //this block did exist in the shader
+	    		{
+	    			GLCall(glUniformBlockBinding(GLuint(shader), uBlockIndex, bindPoint));  //link blocks of the same type to the same binding point
+	    			GLCall(glBindBufferBase(GL_UNIFORM_BUFFER, bindPoint, GLuint(buffer))); //reserve data range on the uniform buffer
+	    		}
+	    	}
+            buffer.unbind();
+	    	bindPoint++;
+	    }
+    }
 }
 
 void ShaderSystem::reload() 
@@ -263,13 +241,13 @@ void ShaderSystem::reload()
 	// Remove all shaders
 	ShaderSystem::m_shaderPrograms.clear();
 
-	// Delete from GPU
-	for (auto uBuffer : ShaderSystem::m_uniformBuffers)
-	{
-		uBuffer.clean();
-	}
-	// Remove all uniformBuffers
-	ShaderSystem::m_uniformBuffers.clear();
+	//// Delete from GPU
+	//for (auto uBuffer : ShaderSystem::m_uniformBuffers)
+	//{
+	//	uBuffer.clean();
+	//}
+	//// Remove all uniformBuffers
+	//ShaderSystem::m_uniformBuffers.clear();
 
 
     // Load from file again
@@ -282,9 +260,8 @@ void ShaderSystem::reload()
     }
 }
 
-void ShaderSystem::linkUniformBlocksForAll()
+void ShaderSystem::enlistUniformBlockTargets()
 {   
-    GLuint bindPoint = 0;
     for (const auto& shader : m_shaderPrograms)
     {
         auto uBlockCount = ShaderIntrospector::getActiveBlockCount(GLuint(shader));
@@ -302,12 +279,7 @@ void ShaderSystem::linkUniformBlocksForAll()
                 m_mapUniformBufferTargets.insert({ name, {GLuint(shader)} });
             }
         }
-
-
-        //GLCall(glUniformBlockBinding(GLuint(shader), shader.getUniformBlockIndex(C::Tag(uBuffer)), bindPoint));
-        //GLCall(glBindBufferBase(GL_UNIFORM_BUFFER, bindPoint, GLuint(uBuffer)));
     }
-    bindPoint++;
 }
 
 void ShaderSystem::bindOnUpdate(const C::Tag& shaderTag, C::ID modelID, C::ID meshID, OnUpdate onUpdate)
