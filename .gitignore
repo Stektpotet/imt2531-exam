@@ -28,7 +28,7 @@ assets/materials/*
 
 assets/models/*
 !assets/models/.gitkeep
-!assets/models/cube.yml
+!assets/models/_default.yml
 !assets/models/Icosphere.yml
 !assets/models/Suzanne.yml
 
