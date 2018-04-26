@@ -59,7 +59,7 @@ namespace overkill
         m_rotation += m_angularVelocity * dt;
 
         m_transformMatrix = getModelMatrix(parentMatrix);
-
+/*
         LOG_DEBUG("Update()\n\nentityID %d, entiryTag %s, \nm_position %f, %f, %f\nm_rotation %f, %f, %f\nm_angVel %f, %f, %f\ndeltatime %f\n", 
                 m_entityID,  m_entityTag.data(),
                 m_position.x, m_position.y, m_position.z, 
@@ -69,7 +69,7 @@ namespace overkill
         Util::printMatrix(parentMatrix, "ParentMatrix:");
         Util::printMatrix(m_transformMatrix, "TransormMatrix:");
         printf("\n\n");
-
+*/
 
         if (m_childIDs.size() > 0)                  // If we actually have kids.
         {            

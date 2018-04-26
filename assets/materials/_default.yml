@@ -1,0 +1,11 @@
+maps: 1
+  mainTex: _default
+
+values: 7
+  opacity: 10000
+  intensity: 10000
+  bumpiness: 10000
+  specularity: 10000
+  distortion: .1
+  scatterPower: 1
+  scatterScale: 10000

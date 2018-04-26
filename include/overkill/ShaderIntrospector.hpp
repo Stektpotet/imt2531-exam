@@ -1,28 +1,31 @@
 #pragma once
 
+#include <overkill/Config.hpp>
 #include <overkill/gl_caller.hpp>
+#include <PMS/logger.h>
 #include <string>
 #include <vector>
 
-namespace overkill
+namespace overkill::ShaderIntrospector
 {
-class ShaderIntrospector
-{
-public:
 
     //UNIFORM BLOCKS
-    static GLint  getActiveBlockCount(const GLuint program);
-    static const  std::vector<GLint> getUniformBlockUniformIndices(const GLuint program, const GLuint uBlockIndex);
-    static const  std::string getUnifromBlockName(const GLuint program, const GLint uBlockIndex);
-    static GLuint getUniformBlockIndex(const GLuint program, const std::string& name);
+    auto getActiveBlockCount(const GLuint program)->GLint;
+    auto getUniformBlockUniformIndices(const GLuint program, const GLuint uBlockIndex) -> const std::vector<GLint>;
+    auto getUnifromBlockName(const GLuint program, const GLint uBlockIndex) -> const std::string;
+    auto getUniformBlockIndex(const GLuint program, const std::string& name) -> GLuint;
 
     //UNIFROMS
-    static GLint  getActiveUniformCount(const GLuint program);
-
+    auto getActiveUniformCount(const GLuint program) -> GLint;
+    auto getUniformMaxNameLength(const GLuint programId) -> GLsizei; 
+    auto getUniformName(const GLuint programId, const GLuint uniformIndex, const GLsizei nameMaxLength) ->std::string;
 
     //ATTRIBUTES
-    static GLint  getActiveAttribCount(const GLuint program);
+    auto getActiveAttribCount(const GLuint program) -> GLint;
+    auto getAttributeMaxNameLength(const GLuint programId) -> GLsizei;
+    auto getAttribName(const GLuint programId, const GLuint attribIndex, const GLsizei nameMaxLength)->std::string;
 
-};
+    auto checkCompileStatus(const GLuint shaderid) -> C::Err;
+    auto checkLinkStatus(const GLuint programid) -> C::Err;
 
 }

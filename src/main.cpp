@@ -31,7 +31,6 @@
 #include <overkill/EntityCamera.hpp>
 #include <overkill/Watcher.hpp>
 
-#define DEBUG 1
 
 using namespace overkill;
 

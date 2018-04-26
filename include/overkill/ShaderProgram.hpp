@@ -24,29 +24,26 @@ struct ShaderSource
     std::string fragment;
     std::string geometry;
 };
+
 class ShaderProgram
 {
+public:
     struct Uniform
     {
         GLint location;
         GLenum type; // type of the variable (float, vec3 or mat4, etc)
         GLchar name[16]; // variable name in GLSL
     };
-private:
+
     std::unordered_map<std::string, GLint> uniforms;
     std::unordered_map<std::string, GLint> uniformBlocks;
 
-    void construct(const std::string& vert, const std::string& frag, const std::string& geom);
-
     GLuint id;
-public:
 
     explicit operator GLuint() const;
 
-    ShaderProgram()=default;
-    ShaderProgram(const ShaderProgram&)=default;
-    ShaderProgram(const std::string& vert, const std::string& frag, const std::string& geom);
-    ShaderProgram(const std::string& filePath);
+    ShaderProgram() = default;
+    ShaderProgram(const ShaderProgram&) = default;
     
     
     void clean();
@@ -55,11 +52,7 @@ public:
     void bind() const;
     void unbind() const;
 
-
     GLint getUniformLocation(const std::string& name) const;
-
-    static ShaderSource ParseProgram(const std::string& file);
-    static GLuint CompileShader(GLuint type, const std::string& source);
     GLuint getUniformBlockIndex(const std::string& blockName) const;
     
 };

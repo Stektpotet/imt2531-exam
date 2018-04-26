@@ -11,8 +11,20 @@ bool GLLogCall(const char* function, const char* file, int line)
     {
         std::cout << "[OpenGL Error] (" << error << ");\n" << function <<
             " in " << file << "\nat line: " << line << std::endl;
-        std::cin.get();
-        return false;
+        //std::cin.get();
+        return true;
     }
-    return true;
+    return false;
+}
+
+auto GLLogFirstError() -> overkill::C::Err
+{
+    if (GLenum error = glGetError())
+    {
+        LOG_WARN("[OpenGL Error] (%d);", error);
+        std::cin.get();
+        GLClearError();
+        return 1;
+    }
+    return 0;
 }
