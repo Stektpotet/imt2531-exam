@@ -9,6 +9,7 @@
 #include <overkill/Material.hpp>
 #include <overkill/TextureSystem.hpp>
 #include <overkill/Model.hpp>
+#include <overkill/Parser.hpp>
 
 namespace overkill
 {
@@ -32,6 +33,8 @@ private:
     static std::vector<UpdateCallback> m_updateCallbacks;
     
     static void push(const C::Tag tag, const std::string& filepath);
+    static auto makeMaterial(const std::string& materialString, Material* outMaterial) -> C::Err;
+
 
 public:
 

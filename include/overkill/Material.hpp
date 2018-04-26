@@ -13,14 +13,14 @@ namespace overkill
     
 struct UniformTexture
 {
-	std::string tag;
-	Texture		texture;
+	C::Tag tag;
+	Texture texture;
 };
 
 struct UniformFloat
 {
-	std::string tag;
-	float		value;
+	C::Tag tag;
+	float  value;
 };
 
 class Material
@@ -29,8 +29,6 @@ public:
 	std::vector<UniformTexture>	m_unimaps;
 	std::vector<UniformFloat>	m_univalues;
     Material()=default;
-    Material(const std::string& filepath);
-
 };
 
 }

@@ -55,7 +55,7 @@ void ShaderSystem::linkUniformBlocks()
         {
             auto name = ShaderIntrospector::getUnifromBlockName(id, i);
             GLuint uBlockIndex = ShaderIntrospector::getUniformBlockIndex(id, name);
-            LOG_INFO("Uniform Block #%i, indexed as #%u, Name: %s", i, uBlockIndex, name.c_str());
+         //   LOG_INFO("Uniform Block #%i, indexed as #%u, Name: %s", i, uBlockIndex, name.c_str());
 			auto search = m_mapUniformBufferTargets.find(name);
 			if (search != m_mapUniformBufferTargets.end())
 			{
@@ -291,7 +291,7 @@ void ShaderSystem::linkUniformBlocksForAll()
         for (GLint i = 0; i < uBlockCount; i++)
         {
             auto name = ShaderIntrospector::getUnifromBlockName(GLuint(shader), i);
-            LOG_INFO("Uniform Block #%i, Name: %s", i, name.c_str());
+           // LOG_INFO("Uniform Block #%i, Name: %s", i, name.c_str());
             auto search = m_mapUniformBufferTargets.find(name);
             if (search != m_mapUniformBufferTargets.end())
             {
