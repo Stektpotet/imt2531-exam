@@ -134,6 +134,6 @@ void main() {
     vec3 light2 = OK_PointLight(light[2].position.xyz, light[2].intensities.rgb ,light[2].constant, light[2].linear, light[2].quadratic);
 
     //out_color = vec4(fragNormal, 1)*0.2 + 0.8*vec4(texture(mainTex, texCoord).rgb , vertex_color_out.a);
-    out_color = vec4((light0+ light1+ light2), 1);
+    out_color = vec4(1,0,0, 1);
 }
 //out_color = vec4(texture(mainTexture, texCoord).rgb * vertex_color_out.rgb, vertex_color_out.a);
