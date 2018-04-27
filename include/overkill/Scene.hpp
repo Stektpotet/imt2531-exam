@@ -6,6 +6,9 @@
 #include <overkill/Config.hpp>
 #include <overkill/EntityModel.hpp>
 #include <overkill/EntityCamera.hpp>
+#include <overkill/Parser.hpp>
+#include <overkill/Util.hpp>
+
 
 namespace overkill 
 {
