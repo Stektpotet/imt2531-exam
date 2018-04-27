@@ -143,7 +143,7 @@ void EntityCamera::update(float dt, glm::mat4 parentMatrix)
         checkInput();
 
         m_cameraTransform.viewMatrix = getViewMatrix(parentMatrix);
-        m_cameraTransform.position = glm::vec4(glm::vec3(m_position.x, m_position.y, -m_position.z), 1);
+        m_cameraTransform.position = glm::vec4(m_position.x, m_position.y, -m_position.z, 1.0f);
         m_transformMatrix = getModelToWorldMatrix(parentMatrix);
 
         LOG_DEBUG("Update()\n\nentityID %d, entityTag %s,\nFOV %f, aspectRatio %f\nnearClip %f, farClip %f \nm_position %f, %f, %f\nm_rotation %f, %f, %f\nm_angVel %f, %f, %f\ndeltatime %f\n", 

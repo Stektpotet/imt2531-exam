@@ -151,7 +151,7 @@ vec3 OK_DirectionalLight(in vec3 lightDir, in vec3 intensities) {
 
 	//Diffuse
     vec3 norm = normalize(fragNormal);
-    lightDir = normalize(lightDir);
+    lightDir = -normalize(lightDir);
     float diffusion = max(dot(norm, lightDir), 0.0);
     vec3 diffuse = diffusion * intensities;
 
@@ -171,7 +171,7 @@ vec3 OK_DirectionalLight(in vec3 lightDir, in vec3 intensities) {
 
 void main() {
 
-	vec3 lights = OK_DirectionalLight(sun.direction.xyz, sun.intensities.rgb);	
+	vec3 lights = 0.2*OK_DirectionalLight(sun.direction.xyz, sun.intensities.rgb);	
 	for(int i = 0; i < MAX_LIGHTS; i++)
 	{
 		lights += OK_PointLight(
@@ -184,7 +184,6 @@ void main() {
 	}
 
     vec3 diff = texture(mainTex, texCoord).rgb;
-    vec3 bump = texture(bumpTex, texCoord).rgb;
 
     out_color = vec4(lights * diff, 1);
 }

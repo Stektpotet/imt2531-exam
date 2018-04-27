@@ -61,7 +61,7 @@ int main()
     struct DirectionalLight {
         glm::vec4 direction;    //16->16
         glm::vec4 intensities;  //16->32
-    } sun = DirectionalLight{ { 10, 9, 8, 7 },{ 1.0f, 0.756862745f, 0.552941176f,0.0f } };
+    } sun = DirectionalLight{ -glm::vec4{ 10, 9, 8, 7 },{ 1.0f, 0.756862745f, 0.552941176f,0.0f } };
 
     struct PointLight {
         glm::vec4 position;		//16 -> 16
@@ -69,7 +69,7 @@ int main()
 		float constant;			//4	 -> 36
 		float linear;			//4  -> 40
 		float quadratic;		//4  -> 44
-        float alignment;
+        float alignment;        //4  -> 48
     } lightData[8] = {
         PointLight{ { -15, 2,  10, 0 }, { 8, 0, 0, 0 }, 1.0f, 0.03125f, 0.0625f, 0 },
 		PointLight{ {  0,  2,  10, 0 }, { 0, 8, 0, 0 }, 1.0f, 0.03125f, 0.0625f, 0 },
@@ -135,15 +135,19 @@ int main()
             lightBuf.update(light1PosIndex, 16, &(lightData[1]));
             lightBuf.update(light2PosIndex, 16, &(lightData[2]));
         }
+        CameraTransform cameraTransform = ((EntityCamera*)Scene::getEntity(cameraID))->m_cameraTransform;
 
         // UPDATE CAMERA MATRICES
         {
-            CameraTransform cameraTransform = ((EntityCamera*)Scene::getEntity(cameraID))-> m_cameraTransform;
+            //CameraTransform cameraTransform = ((EntityCamera*)Scene::getEntity(cameraID))-> m_cameraTransform;
             matrixBuf.update(projectionIndex, sizeof(CameraTransform), &cameraTransform);
         }
 
         // Draws all the models in the scene.
         Scene::draw(t);     
+
+        glm::mat4 camPosDebugM2W = glm::translate(glm::mat4(1), glm::vec3(cameraTransform.position));
+        Renderer::draw(ModelSystem::getById(0), camPosDebugM2W, t);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
