@@ -37,13 +37,20 @@ namespace overkill
         }
         else if(keyCode == GLFW_KEY_4) {
             EntityCamera* cam = (EntityCamera*) Scene::getActiveCamera();
-            cam-> cycleMode();
-            LOG_DEBUG("Cycled camera mode.");
+            if (cam != nullptr)
+            {
+                cam-> cycleMode();
+                LOG_INFO("Cycled camera mode.");
+            }
+            else 
+            {
+                LOG_WARN("Main camera not set. The scene most likely loaded incorrectly.")
+            }
 
         }
         else if(keyCode == GLFW_KEY_5) {
             Scene::cycleCameras();
-            LOG_DEBUG("Cycled cameras.");
+            LOG_INFO("Cycled cameras.");
         }
         switch (keyCode)
         {
@@ -70,12 +77,12 @@ namespace overkill
 
     void Input::OnInputKeyHold(GLFWwindow* /*window*/, int keyCode, int /*scanCode*/, int /*mods*/)
     {
-        printf("Holding %i, as char: %c\n", keyCode, char(keyCode));
+        LOG_DEBUG("Holding %i, as char: %c\n", keyCode, char(keyCode));
     }
 
     void Input::OnInputKeyUnpress(GLFWwindow* /*window*/, int keyCode, int /*scanCode*/, int /*mods*/)
     {
-        printf("Unpressed %i, as char: %c\n", keyCode, char(keyCode));
+        LOG_DEBUG("Unpressed %i, as char: %c\n", keyCode, char(keyCode));
 
         switch (keyCode)
         {
@@ -125,8 +132,15 @@ namespace overkill
         if (m_leftButtonDown) //Click and drag to rotate.
         {
             EntityCamera* camera = (EntityCamera*) Scene::getActiveCamera();
-            glm::vec3 rot = camera-> getRotation();
-            camera-> setRotation(rot + glm::vec3((-deltaY), -deltaX, 0) * C::LookSensitivity);
+            if (camera != nullptr)
+            {
+                glm::vec3 rot = camera-> getRotation();
+                camera-> setRotation(rot + glm::vec3((-deltaY), -deltaX, 0) * C::LookSensitivity);
+            }
+            else 
+            {
+                LOG_WARN("Main camera not set. The scene most likely loaded incorrectly.")
+            }
         }
 
         //Camera paning:

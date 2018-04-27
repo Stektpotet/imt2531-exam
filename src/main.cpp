@@ -135,11 +135,17 @@ int main()
         }
 
         // UPDATE CAMERA MATRICES
+        if (auto camera = Scene::getActiveCamera(); camera != nullptr)
         {
-            CameraTransform cameraTransform = Scene::getActiveCamera()-> m_cameraTransform;
+            CameraTransform cameraTransform = camera -> m_cameraTransform;
             //CameraTransform cameraTransform = ((EntityCamera*)Scene::getEntity(cameraID))-> m_cameraTransform;
             matrixBuf.update(projectionIndex, sizeof(CameraTransform), &cameraTransform);
         }
+        else 
+        {
+            LOG_WARN("Main camera not set. The scene most likely loaded incorrectly.")
+        }
+        
 
         // Draws all the models in the scene.
         Scene::draw(t);     
