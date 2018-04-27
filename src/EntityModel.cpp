@@ -8,7 +8,15 @@ namespace overkill
                             glm::vec3 scale, glm::vec3 vel, 
                             glm::vec3 angVel) : Entity(entityTag, entityID, pos, rot, vel, angVel)
     {
-        m_modelID =  ModelSystem::getIdByTag(modelTag);
+        if (modelTag == "")
+        {
+            LOG_WARN("ModelTag is empty. The model will not be drawn.");
+            m_modelID = -1;
+        }
+        else 
+        {
+            m_modelID =  ModelSystem::getIdByTag(modelTag);
+        }
         m_scale = scale;
         glm::mat4 m_transformMatrix = getModelMatrix();
         update(0);
@@ -55,6 +63,10 @@ namespace overkill
 
     void EntityModel::update(float dt, glm::mat4 parentMatrix)
     {
+        if (m_modelID == -1)
+        {
+            LOG_WARN("Model ID is not set due to bad construct params. Model will not be drawn.");
+        }
         m_position += m_velocity * dt;
         m_rotation += m_angularVelocity * dt;
 
