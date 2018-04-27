@@ -107,8 +107,6 @@ int main()
     lightBuf.update(restOfTheLights, sizeof(PointLight)*5, &(lightData[3]));
     lightBuf.update(sunIndex, sizeof(DirectionalLight), &(sun));
 
-    auto cameraID = Scene::getEntityByTag("camera")->getEntityID();
-
     for(;;)
     {
         t = (float)glfwGetTime();
@@ -138,7 +136,7 @@ int main()
 
         // UPDATE CAMERA MATRICES
         {
-        CameraTransform cameraTransform = ((EntityCamera*)Scene::getEntity(cameraID))->m_cameraTransform;
+            CameraTransform cameraTransform = Scene::getActiveCamera()-> m_cameraTransform;
             //CameraTransform cameraTransform = ((EntityCamera*)Scene::getEntity(cameraID))-> m_cameraTransform;
             matrixBuf.update(projectionIndex, sizeof(CameraTransform), &cameraTransform);
         }

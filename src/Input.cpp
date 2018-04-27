@@ -36,8 +36,14 @@ namespace overkill
             ModelSystem::reload();
         }
         else if(keyCode == GLFW_KEY_4) {
-            EntityCamera* cam = (EntityCamera*)Scene::getEntityByTag("camera");
+            EntityCamera* cam = (EntityCamera*) Scene::getActiveCamera();
             cam-> cycleMode();
+            LOG_DEBUG("Cycled camera mode.");
+
+        }
+        else if(keyCode == GLFW_KEY_5) {
+            Scene::cycleCameras();
+            LOG_DEBUG("Cycled cameras.");
         }
         switch (keyCode)
         {
@@ -118,7 +124,7 @@ namespace overkill
         //Camera rotation:
         if (m_leftButtonDown) //Click and drag to rotate.
         {
-            EntityCamera* camera = (EntityCamera*) Scene::getEntityByTag("camera");
+            EntityCamera* camera = (EntityCamera*) Scene::getActiveCamera();
             glm::vec3 rot = camera-> getRotation();
             camera-> setRotation(rot + glm::vec3((-deltaY), -deltaX, 0) * C::LookSensitivity);
         }

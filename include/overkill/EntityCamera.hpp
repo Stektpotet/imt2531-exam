@@ -37,7 +37,6 @@ private:
 
     glm::mat4 getViewMatrix(glm::mat4 parentMatrix = glm::mat4(1));
     glm::mat4 getModelToWorldMatrix(glm::mat4 parentMatrix = glm::mat4(1));
-    void checkInput();
 
 public:
     CameraTransform m_cameraTransform;
@@ -49,6 +48,7 @@ public:
                 float FOV = C::FOV, float aspectRatio = C::AspectRatio, 
                 float nearClip = C::NearClip, float farClip = C::FarClip);
 
+    void checkInput();
     void cycleMode();       // Cycles between the different camera modes. Currently FREELOOK and ORBITAL.
 
     void update(float dt, glm::mat4 parentMatrix = glm::mat4(1));
