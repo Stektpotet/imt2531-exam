@@ -33,8 +33,8 @@ namespace overkill
                                     glm::vec3(0, 0, 0),         // Rot.
                                     glm::vec3(0, 0, 0),         // Vel.
                                     glm::vec3(0, 0, 0),         // AngVel.
-                                    ORBITAL,                    // CameraMode FREELOOK, ORBITAL
-                                    60,                         // FOV.
+                                    FREELOOK,                   // CameraMode FREELOOK, ORBITAL
+                                    90,                         // FOV.
                                     1.25,                       // aspectRatio.
                                     0.1f,                       // NearClip.
                                     -100);                      // FarClip.
