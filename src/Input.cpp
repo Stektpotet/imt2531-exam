@@ -36,7 +36,8 @@ namespace overkill
             ModelSystem::reload();
         }
         else if(keyCode == GLFW_KEY_4) {
-
+            EntityCamera* cam = (EntityCamera*)Scene::getEntityByTag("camera");
+            cam-> cycleMode();
         }
         switch (keyCode)
         {
@@ -57,7 +58,7 @@ namespace overkill
                 break;
             case GLFW_KEY_E:        
                 m_navKeyPressed[E] = true;
-                break;
+                break;      
         }
     }
 

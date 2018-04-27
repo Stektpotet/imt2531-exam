@@ -49,6 +49,8 @@ public:
                 float FOV = C::FOV, float aspectRatio = C::AspectRatio, 
                 float nearClip = C::NearClip, float farClip = C::FarClip);
 
+    void cycleMode();       // Cycles between the different camera modes. Currently FREELOOK and ORBITAL.
+
     void update(float dt, glm::mat4 parentMatrix = glm::mat4(1));
     void draw(float t);
 };

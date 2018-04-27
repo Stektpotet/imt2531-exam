@@ -89,7 +89,7 @@ void EntityCamera::checkInput()
                 m_position += glm::vec3(0, C::PanSensitivity, 0);
             }
             break;
-        
+
         case ORBITAL:
             if (Input::m_navKeyPressed[W])
             {
@@ -120,6 +120,19 @@ void EntityCamera::checkInput()
 }
 
 
+void EntityCamera::cycleMode()
+{
+    switch (m_cameraMode)
+    {
+        case FREELOOK: 
+            m_cameraMode = ORBITAL; 
+            break;
+
+        case ORBITAL:
+            m_cameraMode = FREELOOK;
+            break;
+    }
+}
 
 void EntityCamera::update(float dt, glm::mat4 parentMatrix)
 {
@@ -140,9 +153,10 @@ void EntityCamera::update(float dt, glm::mat4 parentMatrix)
                 glm::degrees(m_rotation.x), glm::degrees(m_rotation.y), glm::degrees(m_rotation.z), 
                 glm::degrees(m_angularVelocity.x), glm::degrees(m_angularVelocity.y), glm::degrees(m_angularVelocity.z), 
                 dt);
-       Util::printMatrix(parentMatrix, "ParentMatrix:");
-       Util::printMatrix(m_cameraTransform.viewMatrix, "ViewMatrix:");
-       printf("\n\n");
+        Util::printMatrix(parentMatrix, "ParentMatrix:");
+        Util::printMatrix(m_cameraTransform.viewMatrix, "ViewMatrix:");
+        printf("\n\n");
+
 
         if (m_childIDs.size() > 0)                  // If we actually have kids.
         {            
