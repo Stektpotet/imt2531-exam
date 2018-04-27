@@ -135,10 +135,10 @@ int main()
             lightBuf.update(light1PosIndex, 16, &(lightData[1]));
             lightBuf.update(light2PosIndex, 16, &(lightData[2]));
         }
-        CameraTransform cameraTransform = ((EntityCamera*)Scene::getEntity(cameraID))->m_cameraTransform;
 
         // UPDATE CAMERA MATRICES
         {
+        CameraTransform cameraTransform = ((EntityCamera*)Scene::getEntity(cameraID))->m_cameraTransform;
             //CameraTransform cameraTransform = ((EntityCamera*)Scene::getEntity(cameraID))-> m_cameraTransform;
             matrixBuf.update(projectionIndex, sizeof(CameraTransform), &cameraTransform);
         }
@@ -146,8 +146,9 @@ int main()
         // Draws all the models in the scene.
         Scene::draw(t);     
 
-        glm::mat4 camPosDebugM2W = glm::translate(glm::mat4(1), glm::vec3(cameraTransform.position));
-        Renderer::draw(ModelSystem::getById(0), camPosDebugM2W, t);
+        //This can be done to debug positions
+        //glm::mat4 camPosDebugM2W = glm::translate(glm::mat4(1), glm::vec3(cameraTransform.position));
+        //Renderer::draw(ModelSystem::getById(0), camPosDebugM2W, t);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
