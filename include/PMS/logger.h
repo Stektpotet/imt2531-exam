@@ -112,12 +112,26 @@ log_internal(FILE* file,
 ///     This error is supposed to be used for
 ///     unrecoverable errors.
 ///////////////////////////////////////////////////////////
+
+#if _MSC
 #define LOG_ERROR(fmt, ...)                                                                             \
 {                                                                                                       \
     log_internal(stderr, "ERROR", LOG_COLOR_FG_RED, __FILE__, __func__, __LINE__, fmt, ##__VA_ARGS__);  \
     LOG_TERMINAL_PAUSE;                                                                                 \
+                                                                                                        \
+    debugbreak();                                                                                       \
     std::exit(EXIT_FAILURE);                                                                            \
 }
+#else
+#include <exception>
+
+#define LOG_ERROR(fmt, ...)                                                                             \
+{                                                                                                       \
+    log_internal(stderr, "ERROR", LOG_COLOR_FG_RED, __FILE__, __func__, __LINE__, fmt, ##__VA_ARGS__);  \
+    LOG_TERMINAL_PAUSE;                                                                                 \
+    std::terminate();                                                                                   \
+}                                      
+#endif
 
 ///////////////////////////////////////////////////////////
 /// \brief

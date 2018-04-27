@@ -21,8 +21,16 @@ struct KeyString    { std::string key; std::string str;     int parseerror; };
 struct KeyVertex    { std::string key; Vertex vertex;       int parseerror; };
 struct KeyTriangle  { std::string key; Triangle triangle;   int parseerror; };
 struct KeyVec3      { std::string key; glm::vec3 vector;    int parseerror; };
-constexpr int PARSE_SUCCESS = 0;
-constexpr int PARSE_ERROR = 1;
+
+
+constexpr int PARSE_SUCCESS          = 0;
+constexpr int PARSE_ERROR            = 1;
+
+constexpr int ParserSuccess          = 0;
+constexpr int ParserErr              = 1;
+constexpr int ParserErr_WrongKey     = 2;
+constexpr int ParserErr_Stringstream = 3;
+
 
 /// <summary> Translates files into internal datastructure </summary>
 class Parser
@@ -45,6 +53,12 @@ public:
     auto nextKeyTriangle()  -> KeyTriangle;
     auto nextKeyColor()     -> KeyColor;
     auto nextKeyVec3()      -> KeyVec3;
+
+
+    auto keyInteger(const std::string& wantedKey) -> KeyInteger;
+    auto keyString(const std::string& wantedKey) -> KeyString;
+    auto keyVec3(const std::string& wantedKey) -> KeyVec3;
+    auto keyFloat(const std::string& wantedKey) -> KeyFloat;
 };
 
 

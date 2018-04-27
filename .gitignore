@@ -34,13 +34,13 @@ assets/models/*
 
 assets/scenes/*
 !assets/scenes/.gitkeep
-
+!assets/scenes/_default.yml
 
 
 tool/*
-tool/discover.py
-tool/default.blend
-tool/export.py
-tool/test-discover.cpp
+!tool/discover.py
+!tool/default.blend
+!tool/export.py
+!tool/test-discover.cpp
 
 config.yml
