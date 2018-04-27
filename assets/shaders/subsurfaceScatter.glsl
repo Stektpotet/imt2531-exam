@@ -49,7 +49,7 @@ void main() {
     //fragNormal = vec3(rotatedNormal);
     vertex_color_out = rotatedNormal;
     texCoord = uv;
-    fragNormal = mat3(transpose(inverse(m2w))) * normal;
+    fragNormal = mat3(transpose(inverse(m2w))) * normal; //http://www.lighthouse3d.com/tutorials/glsl-12-tutorial/the-normal-matrix/
 
     vec4 out_position = MVP(position);
     gl_Position = out_position;
