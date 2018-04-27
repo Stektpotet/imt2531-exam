@@ -42,10 +42,10 @@ entity: Suzanne
 
 relations: 3
 
-childCube: 0 
+childCube: 0
 
 parentCube: 1
-  childCube 
+  childCube
   
 Suzanne: 1
   parentCube

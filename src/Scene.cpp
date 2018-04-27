@@ -24,7 +24,10 @@ namespace overkill
         m_rootEntities.erase(rootToRemove);
 
         getEntity(parentID)-> addChild(childID);
-        LOG_DEBUG("Set %s as a child of %s", getEntity(childID)-> getTag().c_str(), getEntity(parentID)-> getTag().c_str());
+    
+        LOG_DEBUG("parent: %s --> child: %s",
+            getEntity(parentID)-> getTag().data(),
+            getEntity(childID)-> getTag().data());
     }
 
 
@@ -296,7 +299,7 @@ namespace overkill
                 LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
             } 
             else 
-            {
+             {
                 vel = velocity;
                 LOG_INFO("%s: (%f, %f, %f)",key.data(), vel.x, vel.y, vel.z);                    
             }
@@ -327,16 +330,42 @@ namespace overkill
 
         // }
 */
-  
-/*
+        int relationsCount = 0;
 
-        for ()      // Set child-parent realtionships.
+        if (auto[key, _relationsCount, err] = p.keyInteger("relations"); err )
         {
-            for () 
-            {
+            LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
+        }
+        else 
+        {
+            LOG_DEBUG("relations: %d", _relationsCount);
+            relationsCount = _relationsCount;
+        }
 
+        for (int i = 0; i < relationsCount; ++i)      // Set child-parent realtionships.
+        {
+            int childCount = 0;
+            std::string parentTag;
+            if (auto[key, _childCount, err] = p.nextKeyInteger(); err)
+            {
+                LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
+            }
+            else 
+            {
+                childCount = _childCount;
+                parentTag = key;
+            }
+
+            for (int j = 0; j < childCount; ++j)
+            {
+                auto childTag = p.nextLine();
+                Scene::setChild(
+                    Scene::getEntityByTag(parentTag)->getEntityID(),
+                    Scene::getEntityByTag(childTag)->getEntityID());
             }
         }
+
+/*
             setChild(modelCubeObject -> getEntityID(), cameraTwo -> getEntityID());
             setChild(modelCubeChildObject -> getEntityID(), cameraThree -> getEntityID());
             setChild(modelCubeGrandChildObject -> getEntityID(), cameraFour -> getEntityID());
