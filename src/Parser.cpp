@@ -285,4 +285,33 @@ auto Parser::nextKeyColor() -> KeyColor
 
 }
 
+
+auto Parser::nextKeyVec3() -> KeyVec3 
+{
+    auto[key, valueString, err] = nextKeyString();
+    
+    if (err == PARSE_ERROR)
+        return KeyVec3{key, {}, PARSE_ERROR};
+
+    std::stringstream ss;
+    ss << valueString;
+
+    glm::vec3 vec3{};
+
+    ss >> vec3.x;
+    if(ss.fail()){
+        return KeyVec3{key, {}, PARSE_ERROR};
+    }
+    ss >> vec3.y;
+    if(ss.fail()){
+        return KeyVec3{key, {}, PARSE_ERROR};
+    }
+    ss >> vec3.z;
+    if(ss.fail()){
+        return KeyVec3{key, {}, PARSE_ERROR};
+    }
+    return KeyVec3{key, vec3, PARSE_SUCCESS };
+
+}
+
 }
