@@ -13,6 +13,7 @@ namespace overkill
     float Input::m_camRotY = 0;
     float Input::m_camPanX = 0;
     float Input::m_camPanY = 0;
+    bool Input::m_navKeyPressed[] = {false, false, false, false, false, false}; // Which navigation keys are pressed. WASD-QE keys.
 
     void Input::OnInputKeyPress(GLFWwindow* window, int keyCode, int /*scanCode*/, int /*mods*/)
     {
@@ -37,49 +38,26 @@ namespace overkill
         else if(keyCode == GLFW_KEY_4) {
 
         }
-
-// float newPosX = offset *  sinf( yawRadian ) * cosf( pitchRadian );
-// float newPosY = offset * -sinf( pitchRadian );
-// float newPosZ = offset *  cosf( yawRadian ) * cosf( pitchRadian );
-
-        Entity* camera = Scene::getEntityByTag("camera");
-        glm::vec3 rot = glm::radians(camera-> getRotation());
-        if (char(keyCode) == 'W')
+        switch (keyCode)
         {
-            camera -> setPosition(camera -> getPosition() + glm::vec3(
-                                                C::PanSensitivity * -glm::sin(rot.y) * glm::cos(rot.x),
-                                                C::PanSensitivity * glm::sin(rot.x), 
-                                                C::PanSensitivity * glm::cos(rot.y) * glm::cos(rot.x)));
-        }
-        if (char(keyCode) == 'S')
-        {
-            camera -> setPosition(camera -> getPosition() + glm::vec3(
-                                                C::PanSensitivity * glm::sin(rot.y) * glm::cos(rot.x),
-                                                C::PanSensitivity * -glm::sin(rot.x), 
-                                                C::PanSensitivity * -glm::cos(rot.y) * glm::cos(rot.x)));
-        }
-        if (char(keyCode) == 'D')
-        {
-            camera -> setPosition(camera -> getPosition() + glm::vec3(
-                                                C::PanSensitivity * glm::cos(rot.y) * glm::cos(rot.x),
-                                                0, 
-                                                C::PanSensitivity * glm::sin(rot.y) * glm::cos(rot.x)));        
-                                                }
-        if (char(keyCode) == 'A')
-        {
-            camera -> setPosition(camera -> getPosition() + glm::vec3(
-                                                -C::PanSensitivity * glm::cos(rot.y) * glm::cos(rot.x),
-                                                0, 
-                                                -C::PanSensitivity * glm::sin(rot.y) * glm::cos(rot.x)));
-
-        }
-        if (char(keyCode) == 'Q')
-        {
-            camera -> setPosition(camera -> getPosition() + glm::vec3(0, C::PanSensitivity, 0));
-        }
-        if (char(keyCode) == 'E')
-        {
-            camera -> setPosition(camera -> getPosition() + glm::vec3(0, -C::PanSensitivity, 0));
+            case GLFW_KEY_W:        
+                m_navKeyPressed[W] = true;
+                break;
+            case GLFW_KEY_S:        
+                m_navKeyPressed[S] = true;
+                break;
+            case GLFW_KEY_D:        
+                m_navKeyPressed[D] = true;    
+                break;
+            case GLFW_KEY_A:        
+                m_navKeyPressed[A] = true;
+                break;
+            case GLFW_KEY_Q:        
+                m_navKeyPressed[Q] = true;
+                break;
+            case GLFW_KEY_E:        
+                m_navKeyPressed[E] = true;
+                break;
         }
     }
 
@@ -91,6 +69,28 @@ namespace overkill
     void Input::OnInputKeyUnpress(GLFWwindow* /*window*/, int keyCode, int /*scanCode*/, int /*mods*/)
     {
         printf("Unpressed %i, as char: %c\n", keyCode, char(keyCode));
+
+        switch (keyCode)
+        {
+            case GLFW_KEY_W:
+                m_navKeyPressed[W] = false;
+                break;
+            case GLFW_KEY_S:
+                m_navKeyPressed[S] = false;
+                break;
+            case GLFW_KEY_D:
+                m_navKeyPressed[D] = false;    
+                break;
+            case GLFW_KEY_A:
+                m_navKeyPressed[A] = false;
+                break;
+            case GLFW_KEY_Q:
+                m_navKeyPressed[Q] = false;
+                break;
+            case GLFW_KEY_E:
+                m_navKeyPressed[E] = false;
+                break;
+        }
     }
 
     void Input::OnInputKey(GLFWwindow* window, int keyCode, int scanCode, int action, int mods)

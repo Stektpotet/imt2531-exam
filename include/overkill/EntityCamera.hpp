@@ -3,6 +3,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include <overkill/Input.hpp>
+#include <overkill/Scene.hpp>
 #include <overkill/Config.hpp>
 #include <overkill/Entity.hpp>
 #include <overkill/Scene.hpp>
@@ -10,7 +12,7 @@
 
 namespace overkill
 {
-    
+
 struct CameraTransform      // Not to be confused with the cameras actual transform defined in Entity.
 {                           // This struct is used to convey info to main and shader.
     glm::mat4 projectionMatrix;
@@ -35,6 +37,7 @@ private:
 
     glm::mat4 getViewMatrix(glm::mat4 parentMatrix = glm::mat4(1));
     glm::mat4 getModelToWorldMatrix(glm::mat4 parentMatrix = glm::mat4(1));
+    void checkInput();
 
 public:
     CameraTransform m_cameraTransform;

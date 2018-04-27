@@ -51,14 +51,86 @@ glm::mat4 EntityCamera::getViewMatrix(glm::mat4 parentModelMatrix)
     return glm::inverse(getModelToWorldMatrix(parentModelMatrix));
 }
 
+void EntityCamera::checkInput()
+{
+    switch (m_cameraMode)
+    {
+        case FREELOOK:
+            if (Input::m_navKeyPressed[W])
+            {
+                m_position += glm::vec3(C::PanSensitivity * -glm::sin(m_rotation.y) * glm::cos(m_rotation.x),
+                                        C::PanSensitivity * glm::sin(m_rotation.x), 
+                                        C::PanSensitivity * glm::cos(m_rotation.y) * glm::cos(m_rotation.x));
+            }
+            if (Input::m_navKeyPressed[S])
+            {
+                m_position += glm::vec3(C::PanSensitivity * glm::sin(m_rotation.y) * glm::cos(m_rotation.x),
+                                        C::PanSensitivity * -glm::sin(m_rotation.x), 
+                                        C::PanSensitivity * -glm::cos(m_rotation.y) * glm::cos(m_rotation.x));
+            }
+            if (Input::m_navKeyPressed[D])
+            {
+                m_position += glm::vec3(C::PanSensitivity * glm::cos(m_rotation.y) * glm::cos(m_rotation.x),
+                                        0, 
+                                        C::PanSensitivity * glm::sin(m_rotation.y) * glm::cos(m_rotation.x));        
+            }
+            if (Input::m_navKeyPressed[A])
+            {
+                m_position += glm::vec3(-C::PanSensitivity * glm::cos(m_rotation.y) * glm::cos(m_rotation.x),
+                                        0, 
+                                        -C::PanSensitivity * glm::sin(m_rotation.y) * glm::cos(m_rotation.x));
+            }
+            if (Input::m_navKeyPressed[Q])
+            {
+                m_position += glm::vec3(0, -C::PanSensitivity, 0);
+            }
+            if (Input::m_navKeyPressed[E])
+            {
+                m_position += glm::vec3(0, C::PanSensitivity, 0);
+            }
+            break;
+        
+        case ORBITAL:
+            if (Input::m_navKeyPressed[W])
+            {
+                m_position += glm::vec3(0, 0, C::PanSensitivity);
+            }
+            if (Input::m_navKeyPressed[S])
+            {
+                m_position += glm::vec3(0, 0, -C::PanSensitivity);
+            }
+            if (Input::m_navKeyPressed[D])
+            {
+                m_position += glm::vec3(C::PanSensitivity, 0, 0);
+            }
+            if (Input::m_navKeyPressed[A])
+            {
+                m_position += glm::vec3(-C::PanSensitivity, 0, 0);
+            }
+            if (Input::m_navKeyPressed[Q])
+            {
+                m_position += glm::vec3(0, -C::PanSensitivity, 0);
+            }
+            if (Input::m_navKeyPressed[E])
+            {
+                m_position += glm::vec3(0, C::PanSensitivity, 0);
+            }
+        break;
+    }
+}
+
+
+
 void EntityCamera::update(float dt, glm::mat4 parentMatrix)
 {
     
         m_position += m_velocity * dt;
         m_rotation += m_angularVelocity * dt;
         
+        checkInput();
+
         m_cameraTransform.viewMatrix = getViewMatrix(parentMatrix);
-        m_cameraTransform.position = glm::vec4(m_position, 1);
+        m_cameraTransform.position = glm::vec4(glm::vec3(m_position.x, m_position.y, -m_position.z), 1);
         m_transformMatrix = getModelToWorldMatrix(parentMatrix);
 
         LOG_DEBUG("Update()\n\nentityID %d, entityTag %s,\nFOV %f, aspectRatio %f\nnearClip %f, farClip %f \nm_position %f, %f, %f\nm_rotation %f, %f, %f\nm_angVel %f, %f, %f\ndeltatime %f\n", 
@@ -68,9 +140,9 @@ void EntityCamera::update(float dt, glm::mat4 parentMatrix)
                 glm::degrees(m_rotation.x), glm::degrees(m_rotation.y), glm::degrees(m_rotation.z), 
                 glm::degrees(m_angularVelocity.x), glm::degrees(m_angularVelocity.y), glm::degrees(m_angularVelocity.z), 
                 dt);
-//        Util::printMatrix(parentMatrix, "ParentMatrix:");
-  //      Util::printMatrix(m_cameraTransform.viewMatrix, "ViewMatrix:");
-      //  printf("\n\n");
+       Util::printMatrix(parentMatrix, "ParentMatrix:");
+       Util::printMatrix(m_cameraTransform.viewMatrix, "ViewMatrix:");
+       printf("\n\n");
 
         if (m_childIDs.size() > 0)                  // If we actually have kids.
         {            
