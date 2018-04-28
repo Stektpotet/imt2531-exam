@@ -21,7 +21,7 @@ vec4 MVP(in vec4 position) {
 out vec2 texCoords;
 void main() {
 	texCoords = uv;
-    gl_Position = MVP(position);
+    gl_Position = MVP(position) + view_position;
 }
 
 #shader fragment
