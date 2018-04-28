@@ -154,101 +154,36 @@ auto Parser::nextKeyVertex() -> KeyVertex {
     if (err == PARSE_ERROR)
         return KeyVertex{"", {}, PARSE_ERROR};
 
-
-    std::stringstream ss;
-    ss << valueString;
-
     Vertex vert{};
-
-    // Parsing position
-    ss >> vert.x;
-    if(ss.fail()){
-        return KeyVertex{"", {}, PARSE_ERROR};
-    }
-    ss >> vert.y;
-    if(ss.fail()){
-        return KeyVertex{"", {}, PARSE_ERROR};
-    }
-    ss >> vert.z;
-    if(ss.fail()){
-        return KeyVertex{"", {}, PARSE_ERROR};
-    }
-
-
-
-    // Parsing normal
-    float nx, ny, nz;
-    ss >> nx >> ny >> nz;
-    if(ss.fail()){
-        return KeyVertex{"", {}, PARSE_ERROR};
-    }
-    vert.n = Util::packNormal(nx, ny, nz);
-
-
-
-
-    // Parsing UV
     float u, v;
-    ss >> u >> v;
-    if(ss.fail()){
-        return KeyVertex{"", {}, PARSE_ERROR};
+    float nx, ny, nz;
+                                           //   1.351676 0.301667  0.100000    0.000  0.000  1.000    0.000  0.000   255 255 255 255
+   auto changecount = sscanf(valueString.data(), "%f  %f  %f    %f  %f  %f    %f  %f   %c %c %c %c", 
+                 &vert.x, &vert.y, &vert.z, &nx, &ny, &nz, &u, &v, &vert.r, &vert.g, &vert.b, &vert.a);
+
+    if (changecount != 12) {
+        return KeyVertex{ "",{}, PARSE_ERROR };
     }
+
+    vert.n = Util::packNormal(nx, ny, nz);
     vert.uv = Util::packUV(u, v);
 
-
-
-    // Parsing RGBA
-    unsigned int color;
-
-    ss >> color;  
-    vert.r = color;
-    if(ss.fail()){
-        return KeyVertex{"", {}, PARSE_ERROR};
-    }
-    ss >> color; 
-    vert.g = color;
-    if(ss.fail()){
-        return KeyVertex{"", {}, PARSE_ERROR};
-    }
-    ss >> color;
-    vert.b = color;
-    if(ss.fail()){
-        return KeyVertex{"", {}, PARSE_ERROR};
-    }
-    ss >> color; 
-    vert.a = color;
-    if(ss.fail()){
-        return KeyVertex{"", {}, PARSE_ERROR};
-    }
-
-    return KeyVertex{key, vert, PARSE_SUCCESS };
+    return KeyVertex{ key, vert, PARSE_SUCCESS };
 }
 
 auto Parser::nextKeyTriangle() -> KeyTriangle
 { 
     auto[key, valueString, err] = nextKeyString();
     if (err == PARSE_ERROR)
-        return KeyTriangle{"", {}, PARSE_ERROR};
-
-    std::stringstream ss;
-    ss << valueString;
+        return KeyTriangle{ key, {}, PARSE_ERROR};
 
     Triangle tri{};
-    ss >> tri.a;
-    if(ss.fail()){
-        return KeyTriangle{"", {}, PARSE_ERROR};
+    
+    auto changecount = sscanf(valueString.data(), "%u %u %u", &tri.a, &tri.b, &tri.c);
+    if (changecount != 3) {
+        return KeyTriangle{ key,{}, PARSE_ERROR };
     }
-    ss >> tri.b;
-    if(ss.fail()){
-        return KeyTriangle{"", {}, PARSE_ERROR};
-    }
-    ss >> tri.c;
-    if(ss.fail()){
-        return KeyTriangle{"", {}, PARSE_ERROR};
-    }
-
     return KeyTriangle{key, tri, PARSE_SUCCESS };
-
 }
 
 

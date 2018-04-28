@@ -60,7 +60,7 @@ int main()
 
 
     Scene::load();
-
+    //exit(0); // for performance analysis
     float oldT = 0, t = 0, dt = 0;
 
 
