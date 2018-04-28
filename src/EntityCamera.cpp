@@ -125,7 +125,7 @@ void EntityCamera::cycleMode()
     switch (m_cameraMode)
     {
         case FREELOOK: 
-            m_position.z = glm::min(-40.0f, m_position.z);  // Returns whichever value is smallest.
+            m_position.z = (glm::min)(-40.0f, m_position.z);  // Returns whichever value is smallest.
             m_cameraMode = ORBITAL; 
             break;
 

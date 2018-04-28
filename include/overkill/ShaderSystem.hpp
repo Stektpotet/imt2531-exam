@@ -4,6 +4,9 @@
 #include <vector>
 #include <string>
 #include <unordered_map>
+#include <algorithm>
+#include <array>
+#include <iostream>
 
 #include <overkill/Config.hpp>
 #include <overkill/ShaderProgram.hpp>
@@ -14,17 +17,6 @@
 
 namespace overkill
 {
-    struct MVP {
-        glm::mat4 view;
-        glm::mat4 projection;
-    };
-
-    struct LightData {
-        glm::vec4 position;
-        glm::vec4 intensities;
-        float spread;
-    };
-
 
 class ShaderSystem 
 {
@@ -52,11 +44,13 @@ private:
     static auto parseProgram(const std::string& file, 
                              std::string* vert, 
                              std::string* frag, 
-                             std::string* geom) -> C::Err;
+                             std::string* geom,
+                             std::array<std::vector<GLenum>, 3>* drawProperties) -> C::Err;
 
     static auto makeProgram(const std::string& vert, 
                             const std::string& frag, 
-                            const std::string& geom, 
+                            const std::string& geom,
+                            const std::array<std::vector<GLenum>, 3>& drawProperties,
                             ShaderProgram* program) -> C::Err;
 
     static void push(const C::Tag tag, const std::string& filepath);

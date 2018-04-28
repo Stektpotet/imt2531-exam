@@ -1,3 +1,5 @@
+#prop ZTest off
+#prop Cull On Front
 #shader vertex
 #version 410
 
