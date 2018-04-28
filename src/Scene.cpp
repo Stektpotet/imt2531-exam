@@ -4,7 +4,9 @@
 namespace overkill
 {
 
+
 // EntityCamera* Scene::m_camera;
+std::string Scene::m_sceneLoaded;
 std::vector<Entity*> Scene::m_entities;
 std::vector<int>     Scene::m_rootEntities;
 EntityCamera*        Scene::m_activeCamera;
@@ -24,44 +26,17 @@ int Scene::m_lightsOffset;
 int Scene::m_lightsCount;
 
 
-    void Scene::setChild(int parentID, int childID)
-    {
-        auto rootToRemove = std::find(m_rootEntities.begin(), m_rootEntities.end(), childID);
-        if (rootToRemove == m_rootEntities.end())
-        {
-            LOG_ERROR("Attempt to remove a root entity that does not exist(entiryID %d).", childID);
-        }
-        m_rootEntities.erase(rootToRemove);
-
-        getEntity(parentID)-> addChild(childID);
-    
-        LOG_DEBUG("parent: %s --> child: %s",
-            getEntity(parentID)-> getTag().data(),
-            getEntity(childID)-> getTag().data());
-    }
-
-
-    void Scene::reload() 
-    {
-        Init::loadConfig();
-        Init::OpenGL(C::ClearColor);
-        glfwSetWindowSize(C::window, C::WinWidth, C::WinHeight);
-        Scene::clean();
-        Scene::m_entities.clear();
-        Scene::m_rootEntities.clear();
-        Scene::m_cameraCount = 0;
-        Scene::m_activeCamera = nullptr;
-        Scene::load();        
-    }
-
-
-    void Scene::load()
+    void Scene::load(std::string sceneFile)
     {          
         // Reset values:
         int count = 0;
         int modelCount = 0;
+        int relationsCount = 0;
+        m_activeCamera = nullptr;
+        m_cameraCount = 0;
+        m_sceneLoaded = sceneFile;
 
-        auto filestring = Util::fileToString("assets/scenes/_default.yml");
+        auto filestring = Util::fileToString(sceneFile);
         Parser p(filestring);
 
         LOG_INFO("Loading \n%s", filestring.c_str());
@@ -80,7 +55,7 @@ int Scene::m_lightsCount;
             LOG_INFO("%s: %d",key.data(), m_cameraCount);        
         }
 
-         // Load EntityCameras.
+        // Load EntityCameras.
         for (; count < m_cameraCount; count++)     
         {   
             C::Tag tag;
@@ -176,7 +151,7 @@ int Scene::m_lightsCount;
             {
                 LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
             }
-            else 
+            else
             {
                 camFov = fov;
                 LOG_INFO("%s: %f",key.data(), camFov);                    
@@ -231,7 +206,7 @@ int Scene::m_lightsCount;
 
         if (m_cameraCount == 0)
         {
-            LOG_ERROR("m_cameraCount == 0: A scene has to have a camera");
+            LOG_ERROR("m_cameraCount == 0: A scene has to have at least one camera");
         } 
 
         Scene::m_activeCamera = (EntityCamera*) Scene::m_entities[0];     // First camera in file is default camera.
@@ -337,15 +312,32 @@ int Scene::m_lightsCount;
                 angVel = angleVelocity;
                 LOG_INFO("%s: (%f, %f, %f)",key.data(), angVel.x, angVel.y, angVel.z);                    
             }
-            auto modelEntity = new EntityModel(modelTag, 
-                                               entityTag, 
-                                               count, 
-                                               pos, 
-                                               rot,
-                                               scl,
-                                               vel, 
-                                               angVel);
-            addEntity((Entity*) modelEntity); 
+
+
+            if (modelTag == "NULL" || modelTag == "null" || modelTag == "none" || modelTag == "_")
+            {
+                auto nodeEntity =  new EntityNode(entityTag, 
+                                    count, 
+                                    pos, 
+                                    rot,
+                                    scl,
+                                    vel, 
+                                    angVel);
+                addEntity((Entity*) nodeEntity); 
+            }
+            else 
+            {
+                auto modelEntity = new EntityModel(modelTag, 
+                                    entityTag, 
+                                    count, 
+                                    pos, 
+                                    rot,
+                                    scl,
+                                    vel, 
+                                    angVel);
+                addEntity((Entity*) modelEntity); 
+            }
+
         }
 
 
@@ -370,7 +362,6 @@ int Scene::m_lightsCount;
                 { 1.0f, 0.756862745f, 0.552941176f,0.0f } 
         };
 
-        int relationsCount = 0;
 
         if (auto[key, _relationsCount, err] = p.keyInteger("relations"); err )
         {
@@ -424,11 +415,72 @@ int Scene::m_lightsCount;
     }
 
 
+
+    void Scene::reload() 
+    {
+        Init::loadConfig();
+        Init::OpenGL(C::ClearColor);
+        glfwSetWindowSize(C::window, C::WinWidth, C::WinHeight);
+        Scene::clean();
+        Scene::m_entities.clear();
+        Scene::m_rootEntities.clear();
+        Scene::m_cameraCount = 0;
+        Scene::m_activeCamera = nullptr;
+        Scene::load(m_sceneLoaded);        
+    }
+
+
+    void Scene::setChild(int parentID, int childID)
+    {
+        auto rootToRemove = std::find(m_rootEntities.begin(), m_rootEntities.end(), childID);
+        if (rootToRemove == m_rootEntities.end())
+        {
+            LOG_ERROR("Attempt to remove a root entity that does not exist(entiryID %d).", childID);
+        }
+        m_rootEntities.erase(rootToRemove);
+
+        getEntity(parentID)-> addChild(childID);
+    
+        LOG_DEBUG("parent: %s --> child: %s",
+            getEntity(parentID)-> getTag().data(),
+            getEntity(childID)-> getTag().data());
+    }
+
+
+    bool Scene::entityExist(const C::Tag tag)
+    {   
+        bool exist = true;
+
+        auto comp = [tag](Entity* entity)       // Lambda to compare two entities by tag.
+        {
+            return (entity-> getTag() == tag);
+        };
+
+        auto entityToGet = std::find_if(m_entities.begin(), m_entities.end(), comp);
+        if (entityToGet == m_entities.end())
+        {
+            exist = false;
+        }
+        return exist;
+    }
+
+
     int Scene::addEntity(Entity* entity)
     {
-        int ID = m_entities.size();
-        m_rootEntities.push_back(ID);
-        m_entities.push_back(entity);
+        int ID = -1;
+        
+        if (!entityExist(entity-> getTag()))  // If entity with this tag does not exist yet.                           
+        {
+            ID = m_entities.size();
+            m_rootEntities.push_back(ID);
+            m_entities.push_back(entity);
+        }
+        else                                                            // Entity with tag already exist.
+        {
+            LOG_ERROR("Attempt to create duplicate entity with tag: %s"
+                    "\n\t\t\t\t  Check that your scene file does not contain two entities with the tag(%s).", 
+                    entity-> getTag().c_str(), entity-> getTag().c_str());
+        }
 
         return ID;
     }
@@ -452,7 +504,6 @@ int Scene::m_lightsCount;
         }
         return *entityToGet;
     }
-
 
     EntityCamera* Scene::getActiveCamera()
     {

@@ -36,6 +36,7 @@ public:
              id, 
              position,  
              glm::vec3(0), 
+             glm::vec3(0),
              velocity, 
              glm::vec3(0))
     ,m_intensities(intensities)
