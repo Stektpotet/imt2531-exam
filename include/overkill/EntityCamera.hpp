@@ -3,11 +3,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include <overkill/Input.hpp>
 #include <overkill/Scene.hpp>
-#include <overkill/Config.hpp>
 #include <overkill/Entity.hpp>
-#include <overkill/Scene.hpp>
+#include <overkill/Input.hpp>
 
 
 namespace overkill
@@ -51,8 +49,8 @@ public:
     void checkInput();
     void cycleMode();       // Cycles between the different camera modes. Currently FREELOOK and ORBITAL.
 
-    void update(float dt, glm::mat4 parentMatrix = glm::mat4(1));
-    void draw(float t);
+    void update(float dt, glm::mat4 parentMatrix = glm::mat4(1)) override final;
+    void draw(float t) override final;
 };
 
 }

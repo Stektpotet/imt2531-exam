@@ -6,6 +6,7 @@
 #include <overkill/Config.hpp>
 #include <overkill/EntityModel.hpp>
 #include <overkill/EntityCamera.hpp>
+#include <overkill/EntityNode.hpp>
 #include <overkill/Parser.hpp>
 #include <overkill/Util.hpp>
 #include <overkill/Init.hpp>
@@ -13,6 +14,7 @@
 namespace overkill 
 {
 
+class EntityNode;
 class EntityModel;
 class EntityCamera;
 
@@ -24,15 +26,16 @@ private:
     static std::vector<int> m_rootEntities;     // All the entityIDs that are root noes in world.
     static EntityCamera* m_activeCamera;          // Pointer to the camera that is currently active.
     static int m_cameraCount;                   // The amount of cameras in the scene.s
-
+    static std::string m_sceneLoaded;
     //static std::vector<PointLight> m_pointLights;
     //static DirectionalLight        m_sun;
 
     static void setChild(int parentID, int childID);
+    static bool entityExist(const C::Tag tag);
 
 public:
     Scene();                                    //load from file in future.
-    static void load();                         // Dummy loader.
+    static void load(std::string sceneFile);                         // Dummy loader.
     static void reload(); 
  
     static int addEntity(Entity* model);

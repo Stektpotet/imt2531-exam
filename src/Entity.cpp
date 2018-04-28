@@ -2,13 +2,14 @@
 
 namespace overkill
 {
-    Entity::Entity(C::Tag entityTag, int entityID = -1, glm::vec3 pos = glm::vec3(0,0,0), glm::vec3 rot = glm::vec3(0,0,0), 
-                            glm::vec3 vel = glm::vec3(0,0,0), glm::vec3 angVel = glm::vec3(0,0,0))
+    Entity::Entity(C::Tag entityTag, int entityID = -1, glm::vec3 pos = glm::vec3(0), glm::vec3 rot = glm::vec3(0), 
+                            glm::vec3 scale = glm::vec3(1), glm::vec3 vel = glm::vec3(0), glm::vec3 angVel = glm::vec3(0))
     {
         m_entityID = entityID;
         m_entityTag = entityTag;
         m_position = pos;
         m_rotation = glm::radians(rot);
+        m_scale = scale;
         m_velocity = vel;
         m_angularVelocity = glm::radians(angVel);
     }
@@ -62,7 +63,10 @@ namespace overkill
     {   
         m_rotation = glm::radians(rot);   
     }
-
+    void Entity::setScale(glm::vec3 scale)
+    {   
+        m_scale = scale;   
+    }
     void Entity::setVelocity(glm::vec3 vel)
     {   
         m_velocity = vel;   
@@ -79,17 +83,18 @@ namespace overkill
         m_rotation += m_angularVelocity * dt;
         
 
-        LOG_DEBUG("Update()\n\nentityID %d, entiryTag %s, \nm_position %f, %f, %f\nm_rotation %f, %f, %f\nm_angVel %f, %f, %f\ndeltatime %f\n", 
-                m_entityID,  m_entityTag.data(),
-                m_position.x, m_position.y, m_position.z, 
-                glm::degrees(m_rotation.x), glm::degrees(m_rotation.y), glm::degrees(m_rotation.z), 
-                glm::degrees(m_angularVelocity.x), glm::degrees(m_angularVelocity.y), glm::degrees(m_angularVelocity.z), 
-                dt);    
-        printf("\n\n");
+        // LOG_DEBUG("Update()\n\nentityID %d, entiryTag %s, \nm_position %f, %f, %f\nm_rotation %f, %f, %f\nm_angVel %f, %f, %f\ndeltatime %f\n", 
+        //         m_entityID,  m_entityTag.data(),
+        //         m_position.x, m_position.y, m_position.z, 
+        //         glm::degrees(m_rotation.x), glm::degrees(m_rotation.y), glm::degrees(m_rotation.z), 
+        //         glm::degrees(m_angularVelocity.x), glm::degrees(m_angularVelocity.y), glm::degrees(m_angularVelocity.z), 
+        //         dt);    
+        // printf("\n\n");
+
     }
 
 
-    void Entity::draw(float t)
+    void Entity::draw(float /*t*/)
     {
 
     }

@@ -1,0 +1,64 @@
+cameras: 1
+
+camera: maincam
+  position: 0 0 -20
+  rotation: 0 0 0
+  velocity: 0 0 0
+  angleVelocity: 0 0 0
+  mode: freelook
+  fov: 90
+  aspectRatio: 1.25
+  nearClip: 0.1
+  farClip: -100
+
+entities: 2
+
+
+entity: skybox
+  model: skybox
+  position: 0 0 0
+  rotation: 0 0 0
+  scale: 100 100 100
+  velocity: 0 0 0
+  angleVelocity: 0 0 0
+
+
+entity: Suzanne
+  model: Suzanne
+  position: 4 10 1
+  rotation: 45 45 45
+  scale: 10 10 10
+  velocity: 0 0 0
+  angleVelocity: 1 3.4 1.67
+
+
+relations: 0
+
+childCube: 0
+parentCube: 1
+  childCube
+  
+Suzanne: 1
+  parentCube
+
+
+
+# Relations er det siste som blir lest i scene.yml
+# Det som er under her blir ikke lest enda.
+# Jeg lare det bare værer her for future reference - JSolsvik 28.04.18
+pointlights: 3
+pointlight: red
+  position: -15 2 10
+  intensities: 1 0 0 
+  falloff: 1.0 0.03125 0.0625
+
+pointlight: green
+  position: 0 2 10
+  intensities: 0 1 0 
+  falloff: 1.0 0.03125 0.0625
+
+pointlight: blue
+  position: 15 2 10
+  intensities: 0 0 1 
+  falloff: 1.0 0.03125 0.0625
+

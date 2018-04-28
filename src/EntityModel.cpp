@@ -6,18 +6,17 @@ namespace overkill
     EntityModel::EntityModel(C::Tag modelTag, C::Tag entityTag, int entityID,
                             glm::vec3 pos, glm::vec3 rot, 
                             glm::vec3 scale, glm::vec3 vel, 
-                            glm::vec3 angVel) : Entity(entityTag, entityID, pos, rot, vel, angVel)
+                            glm::vec3 angVel) : Entity(entityTag, entityID, pos, rot, scale, vel, angVel)
     {
         if (modelTag == "")
         {
             LOG_WARN("ModelTag is empty. The model will not be drawn.");
             m_modelID = -1;
         }
-        else 
+        else  
         {
             m_modelID =  ModelSystem::getIdByTag(modelTag);
         }
-        m_scale = scale;
         glm::mat4 m_transformMatrix = getModelMatrix();
         update(0);
     }
@@ -54,11 +53,6 @@ namespace overkill
      void EntityModel::setModelByTag(C::Tag tag)
     {   
         m_modelID =  ModelSystem::getIdByTag(tag);  
-    }
-
-    void EntityModel::setScale(glm::vec3 scale)
-    {   
-        m_scale = scale;   
     }
 
     void EntityModel::update(float dt, glm::mat4 parentMatrix)

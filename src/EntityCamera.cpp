@@ -8,7 +8,7 @@ EntityCamera::EntityCamera(C::Tag entityTag, int entityID,
                             glm::vec3 vel, glm::vec3 angVel, 
                             CameraMode camMode,
                             float FOV, float aspectRatio, float nearClip, float farclip)
-                            : Entity(entityTag, entityID, pos, rot, vel, angVel)
+                            : Entity(entityTag, entityID, pos, rot, glm::vec3(1), vel, angVel)  // default scale is 1.
 {
     m_cameraMode = camMode;
     m_FOV = glm::radians<float>(FOV);
