@@ -136,9 +136,9 @@ namespace overkill
         float deltaX = x - m_cursorX;
         float deltaY= y - m_cursorY;
 
-        //Camera rotation:
-        if (m_leftButtonDown) //Click and drag to rotate.
-        {
+        ////Camera rotation:
+        //if (m_leftButtonDown) //Click and drag to rotate.
+        //{
             EntityCamera* camera = (EntityCamera*) Scene::getActiveCamera();
             if (camera != nullptr)
             {
@@ -149,7 +149,7 @@ namespace overkill
             {
                 LOG_WARN("Main camera not set. The scene most likely loaded incorrectly.")
             }
-        }
+        //}
 
         m_cursorX = x;  // Save current cursor pos.
         m_cursorY = y;  // important to do this last since the logic to rotate and pan
