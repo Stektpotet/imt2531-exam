@@ -29,6 +29,7 @@ private:
     //static DirectionalLight        m_sun;
 
     static void setChild(int parentID, int childID);
+    static bool entityExist(const C::Tag tag);
 
 public:
     Scene();                                    //load from file in future.
