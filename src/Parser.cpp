@@ -166,7 +166,10 @@ auto Parser::nextKeyVertex() -> KeyVertex {
     }
 
     vert.n = Util::packNormal(nx, ny, nz);
-    vert.uv = Util::packUV(u, v);
+
+
+    vert.u = 65535U * u;//vert.uv = Util::packUV(u, v);
+    vert.v = 65535U * v;
 
     return KeyVertex{ key, vert, PARSE_SUCCESS };
 }
