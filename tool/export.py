@@ -68,15 +68,15 @@ if __name__ == "__main__":
     print("TriangleCount: ", len(polygons))      
     print("Outputfile:", active_object.name+".yml")
 
-    outfile = open(active_object.name+".yml", "w")
+    outfile = open("assets/models/"+active_object.name+".yml", "w")
     
     writeVertices(outfile, vertices)
     outfile.write("\n")
 
     outfile.write("meshes: 1\n");
     outfile.write("mesh: blendermesh\n")
-    outfile.write("material: default\n")
-    outfile.write("shader: default\n")
+    outfile.write("material: _default\n")
+    outfile.write("shader: _default\n")
     writeTriangles(outfile, polygons)
         
     outfile.close()
