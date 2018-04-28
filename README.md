@@ -1,4 +1,4 @@
-# Curiosity task
+## Curiosity task - 3D object viewer
 
 We are not doing Pacman. Instead we are doing a Curiousity Task.
 We are focusing heavily on Architecture/Framework development for an OpenGL
@@ -26,7 +26,8 @@ for exporting high-poly models to our custom format.
 
 We want to model an entire scene graph.
 
-# Roadmap
+
+## Roadmap
 
 ### Minimum Requirements assignment 2
 
@@ -34,14 +35,14 @@ We want to model an entire scene graph.
 - [ ] Menu for pause, resume and exit. (pull from assignment 1?)
 - [x] Move objects/camera using keyboard or mouse.
 - [x] Load at least 1 model from a model file. (custom format)
-- [ ] Basic lighting model
+- [x] Basic lighting model
 
 ### Optional requirement assignment 2
 
-- [ ] Advanced lighting/reflection materials
+- [x] Advanced lighting/reflection materials
 - [x] Change perspective 
-- [ ] Use of multiple advanced models.
-- [ ] Write own object loader
+- [x] Use of multiple advanced mesh.
+- [x] Write own object loader
 - [x] Make Camera movable
 - [ ] Multiple scenes
  
@@ -57,16 +58,15 @@ We want to model an entire scene graph.
 - [x] Add floor. <br>
 - [x] Texturize the floor. <br>
 - [x] Toggle camera spin around the cube. <br>
-- [ ] Toggle ambient light. Scale ambient light up down. <br>
-- [ ] Add a directional light. <br>
-- [ ] Implement Phong lighting model using cube vertex normals. <br>
-- [ ] Render cube with specular map. <br>
+- [x] Toggle ambient light. Scale ambient light up down. <br>
+- [x] Add a directional light. <br>
+- [x] Implement Phong lighting model using cube vertex normals. <br>
+- [x] Render cube with specular map. <br>
 - [ ] Add one of the simple shadow models. <br>
 - [x] Swap between 2 different shaders at run-time. <br>
 - [x] Swap between 2 different cube materials at run-time. <br>
-- [ ] Render 2 cubes side by side with different materials. <br>
-- [ ] Repeat the above with model of the teapot. <br>
-- [ ] Do something cool with the geometry/tesselation' shader <br>
+- [x] Render 2 cubes side by side with different materials. <br>
+- [x] Repeat the above with model of the teapot. <br>
 
 ### Extra File loader
 - [x] Load a Shader. (vertex & geometry & fragment) <br>
@@ -74,7 +74,87 @@ We want to model an entire scene graph.
 - [x] Load a Vertexbuffer <br>
 - [x] Load a Mesh with indicies to that vertexbuffer. <br>
 - [x] Load a Material.  <br>
-- [ ] Load a Transform.  <br>
-- [ ] Load an Entity { Mesh, Material, Transform }  <br>
-- [ ] Render that loaded Entity.  <br>
-- [ ] Update render of loaded Entity on file change <br>
+- [x] Load a Transform.  <br>
+- [x] Load an Entity { Mesh, Material, Transform }  <br>
+- [x] Render that loaded Entity.  <br>
+- [x] Update render of loaded Entity on file change <br>
+
+
+
+
+## Reflection 
+
+### Things we would have done differently
+
+#### Decouple vertex-mesh from material and shader
+
+Currently in our model-files we are specifying which shader and material are to be used in the rendering of our models.
+This has created a strong coupling of a mesh to the shader and material. Stronger than we would like.
+
+I will mention two big problems with this:
+
+1. It is not convenient to go inside the model file, in between all the vertices and triangle to edit the materials and shaders attached to that model.
+2. For every new model with the same vertices, but with different materials, we have to duplicate all the vertices and indicies. This does not make sense for a big model.
+
+```yml
+vertices: 1560
+v:  1.138500  0.598000 -0.100000    0.707 -0.707  0.000    0.000  0.000   255 255 255 255
+v:  1.138500  0.598000  0.100000    0.707 -0.707  0.000    0.000  0.000   255 255 255 255
+v:  1.138500  0.384000 -0.100000    0.707  0.707  0.000    0.000  0.000   255 255 255 255
+v:  1.138500  0.384000  0.100000    0.707  0.707  0.000    0.000  0.000   255 255 255 255
+.... 1000's more vertices
+
+meshes: 1
+mesh: blendermesh
+material: _default   # < -- Awkward to have to go here to edit material here in between 1000's of lines of data.
+shader: _default
+triangles: 1166
+t: 64 92 65
+t: 92 66 65
+t: 92 0 66
+t: 92 1 0
+t: 92 2 1
+t: 92 3 2
+t: 92 4 3
+t: 92 5 4
+.... 1000's more triangles
+```
+
+The entity specifies that it wants to use a model. This implicitly also select which materials and shaders are to be used.
+An intermediate format like a `prefab model` would have been nice.
+
+A prefab would then stich everything together. An entity would be an instance of a prefab with a transform in a scene.
+
+```yml
+
+prefabs: 2
+
+prefab: cube
+meshes: 4
+
+    mesh: rightarm
+    shader: basic-color
+    material: red
+
+    mesh: leftarm
+    shader: basic-color
+    material: blue
+
+    mesh: head
+    shader: mat-texture
+    material: _default
+
+    mesh: foot
+    shader: mat-texture
+    material: brick
+
+
+prefab: Suzanne
+meshes: 1
+
+    mesh: suzanne-head
+    shader: subsurface-scatter
+    material: glass
+
+```
+
