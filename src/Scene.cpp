@@ -82,8 +82,8 @@ namespace overkill
             CameraMode camMode = FREELOOK;
             float camFov = 0;
             float aspect = 0;
-            float near = 0;
-            float far = 0;
+            float nearClip = 0;
+            float farClip = 0;
 
             // char  entityTag.    
             if (auto[key, camera, err] = p.keyString("camera"); err) 
@@ -185,25 +185,25 @@ namespace overkill
             }
 
             // float nearClip.
-            if (auto[key, nearClip, err] = p.keyFloat("nearClip"); err) 
+            if (auto[key, _nearClip, err] = p.keyFloat("nearClip"); err) 
             {
                 LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
             } 
             else 
             {
-                near = nearClip;
-                LOG_INFO("%s: %f",key.data(), near);                    
+                nearClip = _nearClip;
+                LOG_INFO("%s: %f",key.data(), nearClip);
             }
 
             // float farClip.
-            if (auto[key, farClip, err] = p.keyFloat("farClip"); err) 
+            if (auto[key, _farClip, err] = p.keyFloat("farClip"); err) 
             {
                 LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
             } 
             else 
             {
-                far = farClip;
-                LOG_INFO("%s: %f",key.data(), far);                    
+                farClip = _farClip;
+                LOG_INFO("%s: %f",key.data(), farClip);
             }
 
             auto camEntity = new EntityCamera(tag, 
@@ -215,8 +215,8 @@ namespace overkill
                                               camMode, 
                                               camFov, 
                                               aspect, 
-                                              near, 
-                                              far);
+                                              nearClip,
+                                              farClip);
             Scene::addEntity(camEntity);   
         }
 
@@ -357,7 +357,7 @@ namespace overkill
         else 
         {
             LOG_DEBUG("relations: %d", _relationsCount);
-            relationsCount = _relationsCount;
+            relationsCount = _relationsCount;
         }
 
         for (int i = 0; i < relationsCount; ++i)      // Set child-parent realtionships.
@@ -370,7 +370,7 @@ namespace overkill
             }
             else 
             {
-                childCount = _childCount;
+                childCount = _childCount;
                 parentTag = key;
             }
 
