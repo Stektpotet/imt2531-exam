@@ -4,7 +4,7 @@ build/
 enc_temp_folder/
 CMakeSettings.json
 *.DS_Store
-
+.DS_Store
 
 # 
 # ASSETS WHITELIST
