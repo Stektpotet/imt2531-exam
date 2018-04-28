@@ -8,7 +8,7 @@
 #include <overkill/EntityCamera.hpp>
 #include <overkill/Parser.hpp>
 #include <overkill/Util.hpp>
-
+#include <overkill/Init.hpp>
 
 namespace overkill 
 {
@@ -25,11 +25,16 @@ private:
     static EntityCamera* m_activeCamera;          // Pointer to the camera that is currently active.
     static int m_cameraCount;                   // The amount of cameras in the scene.s
 
+    //static std::vector<PointLight> m_pointLights;
+    //static DirectionalLight        m_sun;
+
     static void setChild(int parentID, int childID);
 
 public:
     Scene();                                    //load from file in future.
-    static void loadScene();                    // Dummy loader.
+    static void load();                         // Dummy loader.
+    static void reload(); 
+ 
     static int addEntity(Entity* model);
     // static add light(light).
     static Entity* getEntity(int ID);

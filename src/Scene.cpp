@@ -14,6 +14,7 @@ namespace overkill
 
     }
 
+
     void Scene::setChild(int parentID, int childID)
     {
         auto rootToRemove = std::find(m_rootEntities.begin(), m_rootEntities.end(), childID);
@@ -31,13 +32,25 @@ namespace overkill
     }
 
 
-    void Scene::loadScene()
+    void Scene::reload() 
+    {
+        Init::loadConfig();
+        Init::OpenGL(C::ClearColor);
+        glfwSetWindowSize(C::window, C::WinWidth, C::WinHeight);
+        Scene::clean();
+        Scene::m_entities.clear();
+        Scene::m_rootEntities.clear();
+        Scene::m_cameraCount = 0;
+        Scene::m_activeCamera = nullptr;
+        Scene::load();        
+    }
+
+
+    void Scene::load()
     {          
         // Reset values:
-        m_activeCamera = nullptr;
         int count = 0;
         int modelCount = 0;
-        m_cameraCount = 0;
 
         auto filestring = Util::fileToString("assets/scenes/_default.yml");
         Parser p(filestring);
@@ -324,6 +337,11 @@ namespace overkill
                                                angVel);
             addEntity((Entity*) modelEntity); 
         }
+
+
+       // Scene::m_directionalLights.resize(C::MAX_LIGHTS);
+       // Scene::m_pointsLights.resize(C::MAX_LIGHTS);
+
 /*
         // for ()      // Load EntityLights. NOT IMPLEMENTED.
         // {

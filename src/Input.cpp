@@ -23,11 +23,11 @@ namespace overkill
             glfwSetWindowShouldClose(window, 1);
         }
 
-        // PRESS 2 TO RELOAD ShaderSystem
+        // PRESS 1 TO RELOAD ShaderSystem
         else if(keyCode == GLFW_KEY_1) {
             ShaderSystem::reload();
         }
-        // PRESS 1 TO RELOAD MaterialSystem
+        // PRESS 2 TO RELOAD MaterialSystem
         else if(keyCode == GLFW_KEY_2) {
             MaterialSystem::reload();
         }
@@ -35,7 +35,12 @@ namespace overkill
         else if(keyCode == GLFW_KEY_3) {
             ModelSystem::reload();
         }
+        // PRESS 4 TO RELOAD Scene
         else if(keyCode == GLFW_KEY_4) {
+            Scene::reload();
+        }
+        // PRESS SPACE to toggle camera mode
+        else if(keyCode == GLFW_KEY_SPACE) {
             EntityCamera* cam = (EntityCamera*) Scene::getActiveCamera();
             if (cam != nullptr)
             {
@@ -48,10 +53,13 @@ namespace overkill
             }
 
         }
-        else if(keyCode == GLFW_KEY_5) {
+        // PRESS TAB to cycle through camera
+        else if(keyCode == GLFW_KEY_TAB) {
             Scene::cycleCameras();
             LOG_INFO("Cycled cameras.");
         }
+
+
         switch (keyCode)
         {
             case GLFW_KEY_W:        

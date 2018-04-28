@@ -177,7 +177,7 @@ void ShaderSystem::createUniformBuffers()
     */
 
     auto lightBufferLayout = BlockLayout();
-    lightBufferLayout.pushBlockArray(pointLightStructLayout, 8); //order of pushing these blocks matter!!!!!
+    lightBufferLayout.pushBlockArray(pointLightStructLayout, C::MAX_LIGHTS); //order of pushing these blocks matter!!!!!
     lightBufferLayout.pushBlock(sunLightStructLayout);
 
     ShaderSystem::m_mapUniformBuffersID["OK_Lights"] = ShaderSystem::m_uniformBuffers.size(); //assign ID/index
