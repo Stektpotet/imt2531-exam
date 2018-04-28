@@ -43,16 +43,22 @@ Suzanne: 1
 
 
 
-pointlights: 0
+# Relations er det siste som blir lest i scene.yml
+# Det som er under her blir ikke lest enda.
+# Jeg lare det bare værer her for future reference - JSolsvik 28.04.18
+pointlights: 3
 pointlight: red
-  position: 0 0 0
-  falloff: 1.0 0.3 0.06
-  intensities: 1 1 1 
+  position: -15 2 10
+  intensities: 1 0 0 
+  falloff: 1.0 0.03125 0.0625
 
+pointlight: green
+  position: 0 2 10
+  intensities: 0 1 0 
+  falloff: 1.0 0.03125 0.0625
 
-directionalLights: 1
-directionalLight: sun
-  rotation: 0 0 0
-  intensities: 1 1 1
-
+pointlight: blue
+  position: 15 2 10
+  intensities: 0 0 1 
+  falloff: 1.0 0.03125 0.0625
 

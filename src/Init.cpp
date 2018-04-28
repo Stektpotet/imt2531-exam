@@ -250,7 +250,8 @@ auto Init::GLFW(
         glfwTerminate();
         exit(-1); // LOG_ERROR(Init::logtag, "Failed to open GLFW window");
     }
-    glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
     glfwSwapInterval(1);
     //q  glfwSetKeyCallback(window, key_callback);
 

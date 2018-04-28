@@ -13,33 +13,21 @@ CMakeSettings.json
 
 assets/textures/*
 !assets/textures/.gitkeep
-!assets/textures/brickwall-nrm.jpg
-!assets/textures/brickwall.jpg
-!assets/textures/_default.jpg
 
 assets/shaders/*
 !assets/shaders/.gitkeep
-!assets/shaders/base.glsl
-!assets/shaders/_default.glsl
 
 assets/materials/*
 !assets/materials/.gitkeep
-!assets/materials/_default.yml
 
 assets/models/*
 !assets/models/.gitkeep
-!assets/models/_default.yml
-!assets/models/Icosphere.yml
-!assets/models/Suzanne.yml
 
 assets/scenes/*
 !assets/scenes/.gitkeep
-!assets/scenes/_default.yml
-
 
 tool/*
 !tool/discover.py
-tool/default.blend
 !tool/export.py
 !tool/test-discover.cpp
 

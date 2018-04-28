@@ -113,9 +113,8 @@ auto ModelSystem::makeModel(const C::Tag& tag, const std::string& modelString, M
 
     vbufLayout.push<GL_FLOAT>(3);                       //position -> 0  -> 12 -> 12
     vbufLayout.pushPacked<GL_INT_2_10_10_10_REV>(4);    //normal   -> 12 -> 16 -> 16
+    vbufLayout.push<GL_UNSIGNED_SHORT>(2, GL_TRUE);              //uv       -> 16 -> 20 -> 24 ?
     vbufLayout.push<GL_UNSIGNED_BYTE>(4, GL_TRUE);      //color    -> 18 -> 22 -> 20
-    vbufLayout.pushPacked<GL_UNSIGNED_BYTE>(1, 2, GL_TRUE);//uv    -> 16 -> 18 -> 22
-    vbufLayout.push<GL_BYTE>(2);                        //alignment-> 22 -> 24 == sizeof(Vertex)
 
 
     // Buffer vertex data to GPU VAO and VBO
