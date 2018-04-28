@@ -14,14 +14,20 @@ layout(std140) uniform OK_Matrices{
     vec4 view_position;
 };
 
-vec4 MVP(in vec4 position) {
-    return projection * view * m2w * position;
+vec4 MVP_ish(in vec4 position) {
+	mat4 viewRotation = view;
+
+	//cut away the view translation
+	viewRotation[3][0] = 0;
+	viewRotation[3][1] = 0;
+	viewRotation[3][2] = 0;
+    return projection * viewRotation * m2w * position;
 }
 
 out vec2 texCoords;
 void main() {
 	texCoords = uv;
-    gl_Position = MVP(position) + view_position;
+    gl_Position = MVP_ish(position);
 }
 
 #shader fragment
