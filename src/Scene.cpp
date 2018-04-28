@@ -8,6 +8,7 @@ namespace overkill
     std::vector<int> Scene::m_rootEntities;
     EntityCamera* Scene::m_activeCamera;
     int Scene::m_cameraCount;
+    std::string Scene::m_sceneLoaded;
 
     Scene::Scene()
     {
@@ -15,7 +16,7 @@ namespace overkill
     }
 
 
-    void Scene::load()
+    void Scene::load(std::string sceneFile)
     {          
         // Reset values:
         int count = 0;
@@ -23,8 +24,9 @@ namespace overkill
         int relationsCount = 0;
         m_activeCamera = nullptr;
         m_cameraCount = 0;
+        m_sceneLoaded = sceneFile;
 
-        auto filestring = Util::fileToString("assets/scenes/_default.yml");
+        auto filestring = Util::fileToString(sceneFile);
         Parser p(filestring);
 
         LOG_INFO("Loading \n%s", filestring.c_str());
@@ -43,7 +45,7 @@ namespace overkill
             LOG_INFO("%s: %d",key.data(), m_cameraCount);        
         }
 
-         // Load EntityCameras.
+        // Load EntityCameras.
         for (; count < m_cameraCount; count++)     
         {   
             C::Tag tag;
@@ -299,15 +301,32 @@ namespace overkill
                 angVel = angleVelocity;
                 LOG_INFO("%s: (%f, %f, %f)",key.data(), angVel.x, angVel.y, angVel.z);                    
             }
-            auto modelEntity = new EntityModel(modelTag, 
-                                               entityTag, 
-                                               count, 
-                                               pos, 
-                                               rot,
-                                               scl,
-                                               vel, 
-                                               angVel);
-            addEntity((Entity*) modelEntity); 
+
+
+            if (modelTag == "NULL" || modelTag == "null" || modelTag == "none" || modelTag == "_")
+            {
+                auto nodeEntity =  new EntityNode(entityTag, 
+                                    count, 
+                                    pos, 
+                                    rot,
+                                    scl,
+                                    vel, 
+                                    angVel);
+                addEntity((Entity*) nodeEntity); 
+            }
+            else 
+            {
+                auto modelEntity = new EntityModel(modelTag, 
+                                    entityTag, 
+                                    count, 
+                                    pos, 
+                                    rot,
+                                    scl,
+                                    vel, 
+                                    angVel);
+                addEntity((Entity*) modelEntity); 
+            }
+
         }
 
 
@@ -383,9 +402,8 @@ namespace overkill
         Scene::m_rootEntities.clear();
         Scene::m_cameraCount = 0;
         Scene::m_activeCamera = nullptr;
-        Scene::load();        
+        Scene::load(m_sceneLoaded);        
     }
-
 
 
     void Scene::setChild(int parentID, int childID)

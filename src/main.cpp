@@ -35,8 +35,13 @@
 using namespace overkill;
 
 
-int main()
+int main(int argc, char** args)
 {
+    if (argc > 2)
+    {
+        LOG_ERROR("No more than 0 or 1 parameters. Parameter is path to scene file to load. Example: ./cube assets/scenes/_default.yml");
+    }
+
     Init::loadConfig();
 
     // Init libraries + Watcher callbacks
@@ -58,8 +63,19 @@ int main()
     MaterialSystem::load();
     ModelSystem::load();
 
+    
+    LOG_DEBUG("Argc %d, args[1] %s", argc, args[1]);
 
-    Scene::load();
+    if (argc == 1)
+    {
+        Scene::load("assets/scenes/_default.yml");
+    }
+    else if (argc == 2)
+    {
+        Scene::load(std::string(args[1]));
+    }
+
+
     //exit(0); // for performance analysis
     float oldT = 0, t = 0, dt = 0;
 
