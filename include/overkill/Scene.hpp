@@ -6,15 +6,24 @@
 #include <overkill/Config.hpp>
 #include <overkill/EntityModel.hpp>
 #include <overkill/EntityCamera.hpp>
+#include <overkill/EntityPointLight.hpp>
 #include <overkill/Parser.hpp>
 #include <overkill/Util.hpp>
 #include <overkill/Init.hpp>
+
 
 namespace overkill 
 {
 
 class EntityModel;
 class EntityCamera;
+
+
+struct DirectionalLight 
+{
+    glm::vec4 direction;    //16->16
+    glm::vec4 intensities;  //16->32
+};
 
 class Scene
 {
@@ -25,13 +34,27 @@ private:
     static EntityCamera* m_activeCamera;          // Pointer to the camera that is currently active.
     static int m_cameraCount;                   // The amount of cameras in the scene.s
 
+    
+    static DirectionalLight m_sun;
+    static UniformBuffer m_matrixBuffer;
+    static UniformBuffer m_lightBuffer;
+    static GLuint m_projectionGLindex;
+    static GLuint m_pointLightGLindex;
+    static GLuint m_sunGLindex;
+
+    // OFFSETS
+    constexpr static int m_cameraOffset = 0;
+    static           int m_entitiesOffset;
+    static           int m_lightsOffset;
+    static           int m_lightsCount;
+
     //static std::vector<PointLight> m_pointLights;
     //static DirectionalLight        m_sun;
 
     static void setChild(int parentID, int childID);
+    static void bufferPointLights();
 
 public:
-    Scene();                                    //load from file in future.
     static void load();                         // Dummy loader.
     static void reload(); 
  

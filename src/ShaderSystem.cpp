@@ -108,6 +108,11 @@ auto ShaderSystem::getUniformBufferById(C::ID uBufferID) -> const UniformBuffer&
     return ShaderSystem::m_uniformBuffers[uBufferID];
 }
 
+auto ShaderSystem::getUniformBuffer(const C::Tag& tag) -> UniformBuffer 
+{
+    return ShaderSystem::m_uniformBuffers[m_mapUniformBuffersID[tag]];
+}
+
 void ShaderSystem::push(const C::Tag tag, const std::string& filepath)
 {
     C::Err err;

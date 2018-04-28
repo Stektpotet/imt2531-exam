@@ -4,7 +4,7 @@ namespace overkill
 {
 
 
-auto EntityPointLight::createPointLightBufferObject() -> PointLightBO
+auto EntityPointLight::pack() -> PointLightBO
 {
     return PointLightBO
     {

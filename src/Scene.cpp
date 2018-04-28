@@ -3,16 +3,25 @@
 
 namespace overkill
 {
-    // EntityCamera* Scene::m_camera;
-    std::vector<Entity*> Scene::m_entities;
-    std::vector<int> Scene::m_rootEntities;
-    EntityCamera* Scene::m_activeCamera;
-    int Scene::m_cameraCount;
 
-    Scene::Scene()
-    {
+// EntityCamera* Scene::m_camera;
+std::vector<Entity*> Scene::m_entities;
+std::vector<int>     Scene::m_rootEntities;
+EntityCamera*        Scene::m_activeCamera;
+int                  Scene::m_cameraCount;
 
-    }
+
+DirectionalLight Scene::m_sun;
+
+UniformBuffer Scene::m_matrixBuffer;
+UniformBuffer Scene::m_lightBuffer;
+GLuint Scene::m_projectionGLindex;
+GLuint Scene::m_pointLightGLindex;
+GLuint Scene::m_sunGLindex;
+
+int Scene::m_entitiesOffset;
+int Scene::m_lightsOffset;
+int Scene::m_lightsCount;
 
 
     void Scene::setChild(int parentID, int childID)
@@ -240,6 +249,7 @@ namespace overkill
             LOG_INFO("%s: %d",key.data(), modelCount);        
         }
 
+        m_entitiesOffset = count;
 
         for (; count < m_cameraCount +  modelCount; count++)     
         {   
@@ -339,15 +349,27 @@ namespace overkill
         }
 
 
-       // Scene::m_directionalLights.resize(C::MAX_LIGHTS);
-       // Scene::m_pointsLights.resize(C::MAX_LIGHTS);
+        // LOAD LIGHTS
+        int lightsCount = 3;
+        m_lightsOffset = count;
+        m_lightsCount  = lightsCount;    
+                                              // posiiotn     velocity  intensitis constant liiear  quadratic
+        addEntity((Entity*)new EntityPointLight{"light1", ++count, { -15, 2,  10, }, {0,0,0}, { 8, 0, 0 }, 1.0f, 0.03125f, 0.0625f });
+        addEntity((Entity*)new EntityPointLight{"light2", ++count, {  0,  2,  10, }, {0,0,0}, { 0, 8, 0 }, 1.0f, 0.03125f, 0.0625f });
+        addEntity((Entity*)new EntityPointLight{"light3", ++count, {  15, 2,  10, }, {0,0,0}, { 0, 0, 8 }, 1.0f, 0.03125f, 0.0625f });
 
-/*
-        // for ()      // Load EntityLights. NOT IMPLEMENTED.
-        // {
 
-        // }
-*/
+        m_matrixBuffer      = ShaderSystem::getUniformBuffer("OK_Matrices");
+        m_lightBuffer       = ShaderSystem::getUniformBuffer("OK_Lights");
+        m_projectionGLindex = m_matrixBuffer.getUniformIndex("projection");
+        m_pointLightGLindex = m_lightBuffer.getUniformIndex("light[0].position"); 
+        m_sunGLindex        = m_lightBuffer.getUniformIndex("sun.direction");
+
+        m_sun = DirectionalLight { 
+                -glm::vec4{ 10, 9, 8, 7 },
+                { 1.0f, 0.756862745f, 0.552941176f,0.0f } 
+        };
+
         int relationsCount = 0;
 
         if (auto[key, _relationsCount, err] = p.keyInteger("relations"); err )
@@ -398,7 +420,9 @@ namespace overkill
 */
                  // All cameras in the beginning of scene file, first one active by default.
         //
+ 
     }
+
 
     int Scene::addEntity(Entity* entity)
     {
@@ -443,7 +467,11 @@ namespace overkill
 
     void Scene::update(float dt)
     {
-        m_activeCamera -> checkInput();     // Only update the active camera on input.
+
+        // Update active camera
+        m_activeCamera -> checkInput();     // Only update the active camera on input.    
+    
+        // Update entities
         for (auto ID : m_rootEntities)      // all the cameras update() is still being run in here.
         {
             getEntity(ID)-> update(dt);
@@ -452,11 +480,39 @@ namespace overkill
 
     void Scene::draw(float t)
     {
+        // Buffer camera data
+        Scene::m_matrixBuffer.update(m_projectionGLindex, 
+                              sizeof(CameraTransform), 
+                              &(m_activeCamera -> m_cameraTransform));
+
+        // Buffer light data
+        Scene::bufferPointLights();
+        m_lightBuffer.update(m_sunGLindex, sizeof(DirectionalLight), &(m_sun));
+
+
         for (Entity* entity : m_entities)
         {
             entity-> draw(t);
         }
     }
+
+    void Scene::bufferPointLights()
+    {
+        std::vector<PointLightBO> pbos;
+        pbos.resize(C::MAX_LIGHTS);
+
+        int count = 0;
+        for(int off = m_lightsOffset; off < m_lightsOffset + m_lightsCount; ++off) 
+        {
+            pbos[count++] = (((EntityPointLight*)m_entities[off])->pack());
+        }
+
+        m_lightBuffer.update(m_pointLightGLindex, sizeof(PointLightBO) * C::MAX_LIGHTS, pbos.data());
+    }
+
+
+
+
 
     void Scene::clean()
     {

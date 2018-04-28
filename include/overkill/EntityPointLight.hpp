@@ -44,7 +44,7 @@ public:
     ,m_quadraticFalloff(quadraticFalloff)
     {}
 
-    auto createPointLightBufferObject() -> PointLightBO;
+    auto pack() -> PointLightBO;
 };
 
 
