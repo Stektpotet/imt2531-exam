@@ -193,7 +193,8 @@ auto Parser::nextKeyVertex() -> KeyVertex {
     if(ss.fail()){
         return KeyVertex{"", {}, PARSE_ERROR};
     }
-    vert.uv = Util::packUV(u, v);
+    vert.u = 65535U * u;//vert.uv = Util::packUV(u, v);
+    vert.v = 65535U * v;
 
 
 

@@ -14,13 +14,13 @@ camera: maincam
 entities: 2
 
 
-entity: parentCube
-  model: cube
-  position: 20 0 0
+entity: skybox
+  model: skybox
+  position: 0 0 0
   rotation: 0 0 0
-  scale: 4 4 4
+  scale: 100 100 100
   velocity: 0 0 0
-  angleVelocity: 0 90 0
+  angleVelocity: 0 0 0
 
 
 entity: Suzanne
@@ -43,7 +43,7 @@ Suzanne: 1
 
 
 
-pointlights: 1
+pointlights: 0
 pointlight: red
   position: 0 0 0
   falloff: 1.0 0.3 0.06

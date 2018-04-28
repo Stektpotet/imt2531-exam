@@ -1,3 +1,4 @@
+#prop Cull on back
 #shader vertex
 #version 410
 

@@ -72,14 +72,15 @@ auto Util::packNormal(float x, float y, float z) -> GLint
     return r;
 }
 
+//Too lossy for our liking, we don't use this any more...
 auto Util::packUV(float u, float v) -> GLushort
 {
     const auto MAX = 255; // 1111 1111
     const auto DISCARDMASK = 511; //1111 1111 1111 1111
 
-    GLushort su = (GLushort(u * MAX) & DISCARDMASK) << 8;
-    GLushort sv = (GLushort(v * MAX) & DISCARDMASK);
-    GLushort r = (GLushort(u * MAX) & DISCARDMASK) << 8 | (GLushort(v * MAX) & DISCARDMASK);
+    GLushort su = (GLushort(u * MAX)) << 8;
+    GLushort sv = (GLushort(v * MAX));
+    GLushort r = (GLubyte(v * MAX)) << 8 | (GLubyte(u * MAX));
     return r;
 }
 
