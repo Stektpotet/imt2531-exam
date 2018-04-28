@@ -19,7 +19,8 @@ ShaderProgram::operator GLuint() const
 void ShaderProgram::setMaterial(const Material& mat) const
 {
  //   LOG_DEBUG("Setting material on shader: %u", id);
-    bind();
+
+    GLCall(glUseProgram(id));
     std::size_t i = 0;
     for (const auto unimap : mat.m_unimaps)
     {
@@ -43,12 +44,23 @@ void ShaderProgram::setMaterial(const Material& mat) const
 
 void ShaderProgram::bind() const
 {
-
     GLCall(glUseProgram(id));
+    for (const auto prop : drawProperties[Enable])
+    {
+        GLCall(glEnable(prop));
+    }
+    GLCall(glBlendFunc(drawProperties[BlendFunc][0], drawProperties[BlendFunc][1]));
+    GLCall(glCullFace(drawProperties[CullFace][0]));
+
+
 }
 
 void ShaderProgram::unbind() const
 {
+    for (const auto prop : drawProperties[Enable])
+    {
+        GLCall(glDisable(prop));
+    }
     GLCall(glUseProgram(0));
 }
 GLint ShaderProgram::getUniformLocation(const std::string& name) const
@@ -59,17 +71,6 @@ GLint ShaderProgram::getUniformLocation(const std::string& name) const
 		return -1;
 	}
     return (*locationIter).second;
-}
-
-GLuint ShaderProgram::getUniformBlockIndex(const std::string & blockName) const
-{
-    GLuint index;
-    GLCall(index = glGetUniformBlockIndex(id, blockName.c_str()));
-    if (index == GL_INVALID_INDEX)
-    {
-        LOG_WARN("\nTrying to access \"%s\",\n No uniform block with that name exists!", blockName.c_str());
-    }
-    return index;
 }
 
 }

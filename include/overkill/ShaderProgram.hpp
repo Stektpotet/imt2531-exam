@@ -3,8 +3,8 @@
 #include <fstream>
 #include <sstream>
 #include <unordered_map>
-#include <tuple>
-
+#include <vector>
+#include <array>
 #include <GL/glew.h>
 
 #include <overkill/gl_caller.hpp>
@@ -34,6 +34,14 @@ public:
         GLenum type; // type of the variable (float, vec3 or mat4, etc)
         GLchar name[16]; // variable name in GLSL
     };
+    
+    enum PropertyType
+    {
+        Enable      = 0,  //glEnable/Disable
+        BlendFunc   = 1,  //glBlendFunc
+        CullFace    = 2   //glCullFace
+    };
+    std::array<std::vector<GLenum>, 3> drawProperties;
 
     std::unordered_map<std::string, GLint> uniforms;
     std::unordered_map<std::string, GLint> uniformBlocks;
@@ -55,7 +63,6 @@ public:
     void unbind() const;
 
     GLint getUniformLocation(const std::string& name) const;
-    GLuint getUniformBlockIndex(const std::string& blockName) const;
     
 };
 

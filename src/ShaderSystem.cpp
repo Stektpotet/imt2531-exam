@@ -108,7 +108,7 @@ auto ShaderSystem::getUniformBufferById(C::ID uBufferID) -> const UniformBuffer&
     return ShaderSystem::m_uniformBuffers[uBufferID];
 }
 
-void ShaderSystem::push(const C::Tag tag, const std::string& filepath) 
+void ShaderSystem::push(const C::Tag tag, const std::string& filepath)
 {
     C::Err err;
 
@@ -121,7 +121,8 @@ void ShaderSystem::push(const C::Tag tag, const std::string& filepath)
     }
 
     std::string vert, frag, geom;
-    err = ShaderSystem::parseProgram(shaderString, &vert, &frag, &geom);
+    std::array<std::vector<GLenum>, 3> drawProperties;
+    err = ShaderSystem::parseProgram(shaderString, &vert, &frag, &geom, &drawProperties);
     if (err){
         LOG_WARN("ShaderSystem::parseProgram failed, using default shaderprogram..");
         ShaderSystem::m_mapShaderProgramID[tag] = 0;
@@ -129,7 +130,7 @@ void ShaderSystem::push(const C::Tag tag, const std::string& filepath)
     }
 
     ShaderProgram program;
-    err = ShaderSystem::makeProgram(vert, frag, geom, &program);
+    err = ShaderSystem::makeProgram(vert, frag, geom, drawProperties, &program);
     if (err) {
         LOG_WARN("ShaderSystem::makeProgram failed, using default shaderprogram..");
         ShaderSystem::m_mapShaderProgramID[tag] = 0;   
@@ -305,7 +306,9 @@ void ShaderSystem::unbindAll()
 auto ShaderSystem::parseProgram(const std::string& fileString, 
                                 std::string* outVert, 
                                 std::string* outFrag, 
-                                std::string* outGeom) -> C::Err 
+                                std::string* outGeom,
+                                std::array<std::vector<GLenum>, 3>* drawProperties
+                                ) -> C::Err
 {
 
     enum ShaderType : int { NONE = -1, VERT = 0, FRAG = 1, GEOM = 2 };
@@ -314,12 +317,253 @@ auto ShaderSystem::parseProgram(const std::string& fileString,
 
     std::string line;
     std::stringstream fileStream(fileString);
-    
+    //defualt properties
+    std::array<std::vector<GLenum>, 3> drawProps;
+
+    drawProps[ShaderProgram::Enable] =    { GL_BLEND, GL_DEPTH_TEST, GL_CULL_FACE };
+    drawProps[ShaderProgram::BlendFunc] = { GL_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA };
+    drawProps[ShaderProgram::CullFace] =  { GL_BACK };
+
+
+
+
+
     std::stringstream ss[3];
 
     for (std::size_t lineNr = 1; getline(fileStream, line); lineNr++)
     {
-        if (line.find("#shader") != std::string::npos)
+        if (line.find("#prop ") != std::string::npos)
+        {
+            if (line.find("ZTest ") != std::string::npos)
+            {
+                std::array<std::string, 4> offCases = { "OFF", "FALSE", "0", "DISABLED" };
+                for (const auto& str : offCases)
+                {
+                    const auto& it = std::search(line.begin() + 12, line.end(),
+                        str.begin(), str.end(),
+                        [](char ch1, char ch2) { return ::toupper(ch1) == ::toupper(ch2); }
+                    );
+                    if (it != line.end())
+                    {
+                        LOG_INFO("\nShaderProgram: %s Will not use Depth Test, to turn it on, add \"#prop ZTest On | true | 1 | Enabled\" to your program", fileString.c_str());
+                        drawProps[ShaderProgram::Enable].erase(
+                            std::remove(
+                                drawProps[ShaderProgram::Enable].begin(),
+                                drawProps[ShaderProgram::Enable].end(),
+                                GL_DEPTH_TEST
+                            ),
+                            drawProps[ShaderProgram::Enable].end()
+                        );
+                        break;
+                    }
+                }
+            }
+            else if (line.find("Blend ") != std::string::npos)
+            {
+                std::array<std::string, 4> offCases = { "OFF", "FALSE", "0", "DISABLED" };
+                for (const auto& str : offCases)
+                {
+                    const auto& it = std::search(line.begin() + 12, line.end(),
+                        str.begin(), str.end(),
+                        [](char ch1, char ch2) { return ::toupper(ch1) == ::toupper(ch2); }
+                    );
+                    if (it != line.end())
+                    {
+                        LOG_INFO("\nShaderProgram: %s Will not use Blending, to turn it on, add \"#prop Blend On | true | 1 | Enabled\" to your program", fileString.c_str());
+                        drawProps[ShaderProgram::Enable].erase(
+                            std::remove(
+                                drawProps[ShaderProgram::Enable].begin(),
+                                drawProps[ShaderProgram::Enable].end(),
+                                GL_BLEND
+                            ),
+                            drawProps[ShaderProgram::Enable].end()
+                        );
+                    }
+                }
+                std::array<std::string, 15> blendParam = { 
+                    "ONEMINUSCONSTANTALPHA", 
+                    "ONEMINUSCONSTANTCOLOR", 
+                    "ONEMINUSDSTALPHA", 
+                    "ONEMINUSSRCCOLOR", 
+                    "ONEMINUSDSTCOLOR", 
+                    "ONEMINUSSRCALPHA", 
+                    "SRCALPHASATURATE" 
+                    "CONSTANTCOLOR", 
+                    "CONSTANTALPHA",
+                    "ZERO", 
+                    "ONE", 
+                    "SRCCOLOR", 
+                    "DSTCOLOR", 
+                    "SRCALPHA", 
+                    "DSTALPHA", 
+                };
+                int i = 0;
+                int start = 11;
+                for (const auto& str : blendParam)
+                {
+                    const auto& it = std::search(line.begin() + start, line.end(),
+                        str.begin(), str.end(),
+                        [](char ch1, char ch2) { return ::toupper(ch1) == ::toupper(ch2); }
+                    );
+                    if (it != line.end())
+                    {
+                        start = it - line.begin();
+                        switch (i)
+                        {
+                        case 0:
+                            drawProps[ShaderProgram::BlendFunc][0] = GL_ZERO; break;
+                        case 1:
+                            drawProps[ShaderProgram::BlendFunc][0] = GL_ONE; break;
+                        case 2:
+                            drawProps[ShaderProgram::BlendFunc][0] = GL_SRC_COLOR; break;
+                        case 3:
+                            drawProps[ShaderProgram::BlendFunc][0] = GL_ONE_MINUS_SRC_COLOR; break;
+                        case 4:
+                            drawProps[ShaderProgram::BlendFunc][0] = GL_DST_COLOR ; break;
+                        case 5:
+                            drawProps[ShaderProgram::BlendFunc][0] = GL_ONE_MINUS_DST_COLOR; break;
+                        case 6:
+                            drawProps[ShaderProgram::BlendFunc][0] = GL_SRC_ALPHA; break;
+                        case 7:
+                            drawProps[ShaderProgram::BlendFunc][0] = GL_ONE_MINUS_SRC_ALPHA; break;
+                        case 8:
+                            drawProps[ShaderProgram::BlendFunc][0] = GL_DST_ALPHA; break;
+                        case 9:
+                            drawProps[ShaderProgram::BlendFunc][0] = GL_ONE_MINUS_DST_ALPHA ; break;
+                        case 10:
+                            drawProps[ShaderProgram::BlendFunc][0] = GL_CONSTANT_COLOR; break;
+                        case 11:
+                            drawProps[ShaderProgram::BlendFunc][0] = GL_ONE_MINUS_CONSTANT_COLOR; break;
+                        case 12:
+                            drawProps[ShaderProgram::BlendFunc][0] = GL_CONSTANT_ALPHA; break;
+                        case 13:
+                            drawProps[ShaderProgram::BlendFunc][0] = GL_ONE_MINUS_CONSTANT_ALPHA ; break;
+                        case 14:
+                            drawProps[ShaderProgram::BlendFunc][0] = GL_SRC_ALPHA_SATURATE; break;
+                        }
+                        break;
+                    }
+                    i++;
+                }
+                i = 0;
+                for (const auto& str : blendParam)
+                {
+                    const auto& it = std::search(line.begin() + start, line.end(),
+                        str.begin(), str.end(),
+                        [](char ch1, char ch2) { return ::toupper(ch1) == ::toupper(ch2); }
+                    );
+                    if (it != line.end())
+                    {
+                        switch (i)
+                        {
+                        case 0:
+                            drawProps[ShaderProgram::BlendFunc][1] = GL_ZERO; break;
+                        case 1:
+                            drawProps[ShaderProgram::BlendFunc][1] = GL_ONE; break;
+                        case 2:
+                            drawProps[ShaderProgram::BlendFunc][1] = GL_SRC_COLOR; break;
+                        case 3:
+                            drawProps[ShaderProgram::BlendFunc][1] = GL_ONE_MINUS_SRC_COLOR; break;
+                        case 4:
+                            drawProps[ShaderProgram::BlendFunc][1] = GL_DST_COLOR; break;
+                        case 5:
+                            drawProps[ShaderProgram::BlendFunc][1] = GL_ONE_MINUS_DST_COLOR; break;
+                        case 6:
+                            drawProps[ShaderProgram::BlendFunc][1] = GL_SRC_ALPHA; break;
+                        case 7:
+                            drawProps[ShaderProgram::BlendFunc][1] = GL_ONE_MINUS_SRC_ALPHA; break;
+                        case 8:
+                            drawProps[ShaderProgram::BlendFunc][1] = GL_DST_ALPHA; break;
+                        case 9:
+                            drawProps[ShaderProgram::BlendFunc][1] = GL_ONE_MINUS_DST_ALPHA; break;
+                        case 10:
+                            drawProps[ShaderProgram::BlendFunc][1] = GL_CONSTANT_COLOR; break;
+                        case 11:
+                            drawProps[ShaderProgram::BlendFunc][1] = GL_ONE_MINUS_CONSTANT_COLOR; break;
+                        case 12:
+                            drawProps[ShaderProgram::BlendFunc][1] = GL_CONSTANT_ALPHA; break;
+                        case 13:
+                            drawProps[ShaderProgram::BlendFunc][1] = GL_ONE_MINUS_CONSTANT_ALPHA; break;
+                        case 14:
+                            drawProps[ShaderProgram::BlendFunc][1] = GL_SRC_ALPHA_SATURATE; break;
+                        }
+                        break;
+                    }
+                    i++;
+                }
+            }
+            if (line.find("Cull ") != std::string::npos)
+            {
+                std::array<std::string, 4> offCases = { "OFF", "FALSE", "0", "DISABLED" };
+                for (const auto& str : offCases)
+                {
+                    const auto& it = std::search(line.begin() + 12, line.end(),
+                        str.begin(), str.end(),
+                        [](char ch1, char ch2) { return ::toupper(ch1) == ::toupper(ch2); }
+                    );
+                    if (it != line.end())
+                    {
+                        LOG_INFO("\nShaderProgram: %s Will not use Blending, to turn it on, add \"#prop Blend On | true | 1 | Enabled\" to your program", fileString.c_str());
+                        drawProps[ShaderProgram::Enable].erase(
+                            std::remove(
+                                drawProps[ShaderProgram::Enable].begin(),
+                                drawProps[ShaderProgram::Enable].end(),
+                                GL_CULL_FACE
+                            ),
+                            drawProps[ShaderProgram::Enable].end()
+                        );
+                        break;
+                    }
+                    std::array<std::string, 3> cullFaces = { "FRONT", "BACK", "BOTH" };
+                int i = 0;
+                for (const auto& str : cullFaces)
+                {
+                    const auto& it = std::search(line.begin() + 11, line.end(),
+                        str.begin(), str.end(),
+                        [](char ch1, char ch2) { return ::toupper(ch1) == ::toupper(ch2); }
+                    );
+                    if (it != line.end())
+                    {
+                        switch (i)
+                        {
+                        case 0:
+                            drawProps[ShaderProgram::CullFace] = { GL_FRONT }; break;
+                        case 1:
+                            drawProps[ShaderProgram::CullFace] = { GL_BACK }; break;
+                        case 2:
+                            drawProps[ShaderProgram::CullFace] = { GL_FRONT_AND_BACK }; break;
+                        }
+                        break;
+                    }
+                    i++;
+                }
+                }
+                std::array<std::string, 3> cullFaces = { "FRONT", "BACK", "BOTH" };
+                int i = 0;
+                for (const auto& str : cullFaces)
+                {
+                    const auto& it = std::search(line.begin() + 11, line.end(),
+                        str.begin(), str.end(),
+                        [](char ch1, char ch2) { return ::toupper(ch1) == ::toupper(ch2); }
+                    );
+                    if (it != line.end())
+                    {
+                        switch (i)
+                        {
+                        case 0:
+                            drawProps[ShaderProgram::CullFace] = { GL_FRONT }; break;
+                        case 1:
+                            drawProps[ShaderProgram::CullFace] = { GL_BACK }; break;
+                        case 2:
+                            drawProps[ShaderProgram::CullFace] = { GL_FRONT_AND_BACK }; break;
+                        }
+                        break;
+                    }
+                    i++;
+                }
+            }
+        }
+        else if (line.find("#shader ") != std::string::npos)
         {
             if (line.find("vert") != std::string::npos)
             {
@@ -339,6 +583,10 @@ auto ShaderSystem::parseProgram(const std::string& fileString,
         }
         else
         {
+            if (currentlyReading == NONE)
+            {
+                LOG_ERROR("Trying to read %s into NONE. Has the shader been set with the \"#shader\" directive?", fileString.c_str());
+            }
             ss[(int)currentlyReading] << line << '\n';
         }
     }
@@ -346,12 +594,14 @@ auto ShaderSystem::parseProgram(const std::string& fileString,
     *outVert = ss[(int)VERT].str();
     *outFrag = ss[(int)FRAG].str();
     *outGeom = ss[(int)GEOM].str();
+    *drawProperties = drawProps;
     return 0;
 }
 
 auto ShaderSystem::makeProgram(const std::string& vert, 
                                const std::string& frag, 
-                               const std::string& geom, 
+                               const std::string& geom,
+                               const std::array<std::vector<GLenum>, 3>& drawProperties,
                                ShaderProgram* outProgram) -> C::Err
 {
     const auto attachShader = [](const GLuint programId, const std::string& source, GLuint type) -> C::Err
@@ -466,6 +716,8 @@ auto ShaderSystem::makeProgram(const std::string& vert,
     }
 
     GLCall_ReturnIfError(glValidateProgram(program.id));
+
+    program.drawProperties = drawProperties;
 
     *outProgram = program;
     return 0;
