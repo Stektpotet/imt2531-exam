@@ -223,6 +223,7 @@ auto Parser::nextKeyVertex() -> KeyVertex {
 
     return KeyVertex{key, vert, PARSE_SUCCESS };
 }
+
 auto Parser::nextKeyTriangle() -> KeyTriangle
 { 
     auto[key, valueString, err] = nextKeyString();
@@ -284,5 +285,127 @@ auto Parser::nextKeyColor() -> KeyColor
     return KeyColor{key, color, PARSE_SUCCESS };
 
 }
+
+
+auto Parser::nextKeyVec3() -> KeyVec3 
+{
+    auto[key, valueString, err] = nextKeyString();
+    
+    if (err == PARSE_ERROR)
+        return KeyVec3{key, {}, PARSE_ERROR};
+
+    std::stringstream ss;
+    ss << valueString;
+
+    glm::vec3 vec3{};
+
+    ss >> vec3.x;
+    if(ss.fail()){
+        return KeyVec3{key, {}, PARSE_ERROR};
+    }
+    ss >> vec3.y;
+    if(ss.fail()){
+        return KeyVec3{key, {}, PARSE_ERROR};
+    }
+    ss >> vec3.z;
+    if(ss.fail()){
+        return KeyVec3{key, {}, PARSE_ERROR};
+    }
+    return KeyVec3{key, vec3, PARSE_SUCCESS };
+
+}
+
+//
+// New API 2.0
+// 
+auto Parser::keyInteger(const std::string& wantedKey) -> KeyInteger
+{
+    auto[key, valueString, err] = nextKeyString();
+
+    if (err)
+        return KeyInteger{key, {}, err};
+
+    if (key != wantedKey)
+        return KeyInteger{key, {}, ParserErr_WrongKey};
+
+
+    std::stringstream ss;
+    ss << valueString;
+
+    int myint;
+    ss >> myint;
+    if (ss.fail()) {
+        return KeyInteger{key, {}, ParserErr_Stringstream};
+    }
+
+    return KeyInteger{key, myint, ParserSuccess};
+}
+
+auto Parser::keyString(const std::string& wantedKey) -> KeyString
+{
+    auto[key, valueString, err] = nextKeyString();
+
+    if (err)
+        return KeyString{key, {}, err};
+    
+    if (key != wantedKey)
+        return KeyString{key, {}, ParserErr_WrongKey};
+
+    return KeyString{ key, valueString, ParserSuccess };
+}
+
+auto Parser::keyVec3(const std::string& wantedKey) -> KeyVec3
+{
+    auto[key, valueString, err] = nextKeyString();
+
+    if (err)
+        return KeyVec3{key, {}, err};
+    
+    if (key != wantedKey)
+        return KeyVec3{key, {}, ParserErr_WrongKey};
+
+    std::stringstream ss;
+    ss << valueString;
+
+    glm::vec3 vec3{};
+
+    ss >> vec3.x;
+    if(ss.fail()){
+        return KeyVec3{key, {}, ParserErr_Stringstream};
+    }
+    ss >> vec3.y;
+    if(ss.fail()){
+        return KeyVec3{key, {}, ParserErr_Stringstream};
+    }
+    ss >> vec3.z;
+    if(ss.fail()){
+        return KeyVec3{key, {}, ParserErr_Stringstream};
+    }
+
+    return KeyVec3{key, vec3, ParserSuccess };
+}
+
+auto Parser::keyFloat(const std::string& wantedKey) -> KeyFloat
+{
+    auto[key, valueString, err] = nextKeyString();
+    if (err)
+        return KeyFloat{key, {}, err};
+
+    if (key != wantedKey)
+        return KeyFloat{key, {}, ParserErr_WrongKey};
+
+
+    std::stringstream ss;
+    ss << valueString;
+
+    float fp;
+    
+    ss >> fp;
+    if (ss.fail()) {
+        return KeyFloat{key, {}, ParserErr_Stringstream};        
+    }
+    return KeyFloat{key, fp, ParserSuccess};    
+}
+
 
 }

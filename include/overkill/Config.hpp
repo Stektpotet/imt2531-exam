@@ -1,6 +1,8 @@
 #pragma once
 #include <glm/glm.hpp>
 #include <string>
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 
 #include <PMS/logger.h>
 
@@ -44,6 +46,7 @@ public:
     static char ScenesFolder[StrSize];
 
     static unsigned int MAX_LIGHTS; //inject it into shaders
+    static GLFWwindow* window;
 };
 
 }

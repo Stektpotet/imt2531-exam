@@ -15,7 +15,7 @@ camera: maincam
 # Define entities from bottom up
 # Childrens first, then parents
 
-entity: 4
+entities: 4
 
 entity: childCube
   model: cube

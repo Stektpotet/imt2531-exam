@@ -28,4 +28,6 @@ namespace overkill
     char C::ScenesFolder[C::StrSize]    = "assets/scenes";
 
     unsigned int C::MAX_LIGHTS = 8; //inject it into shaders
+
+    GLFWwindow* C::window;
 }
