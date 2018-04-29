@@ -5,20 +5,20 @@ camera: maincam
   rotation: 0 0 0
   velocity: 0 0 0
   angleVelocity: 0 0 0
-  mode: freelook
+  mode: orbital
   fov: 90
   aspectRatio: 1.25
   nearClip: 0.1
-  farClip: -100
+  farClip: 500
 
 entities: 1
 
 
 entity: Suzanne
-  model: Serapis
+  model: Suzanne
   position: 0 0 0
   rotation: 0 0 0
-  scale: 0.1 0.1 0.1
+  scale: 10 10 10
   velocity: 0 0 0
   angleVelocity: 0 0 0
 
