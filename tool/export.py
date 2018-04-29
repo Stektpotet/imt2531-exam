@@ -4,6 +4,7 @@ import bmesh
 
 # input
 scale   = 1
+workdir = "../assets/models/"
 
 # @doc https://blender.stackexchange.com/questions/45698/triangulate-mesh-in-python - 21.04.2018
 def triangulate(obj):
@@ -19,28 +20,31 @@ def triangulate(obj):
     bm.free()
 
 
-def writeVertices(outfile, vertices):
+def writeVertices(outfile, vertices, uvs):
     global scale
     outfile.write("vertices: {}\n".format(len(vertices)))
+
     for vc in vertices:
-        outfile.write("v: {:9.6f} {:9.6f} {:9.6f}   {:6.3f} {:6.3f} {:6.3f}   {:6.3f} {:6.3f}   {:3} {:3} {:3} {:3}\n".format( 
+        outfile.write("v: {:9.6f} {:9.6f} {:9.6f}   {:6.3f} {:6.3f} {:6.3f}   {:6.3f} {:6.3f}   {:3} {:3} {:3} {:3}\n".format(
                         vc.co[0]*scale,
                         vc.co[1]*scale,
                         vc.co[2]*scale,
                         vc.normal[0],
                         vc.normal[1],
                         vc.normal[2],
-                        0, 0, 255, 255, 255, 255))
+                        uvs[vc.index][0],
+                        uvs[vc.index][1],
+                        255, 255, 255, 255))
 
 
 def writeTriangles(outfile, polygons):
-    
+
     outfile.write("triangles: {}\n".format(len(polygons)))
     for p in polygons:
         if len(p.vertices) != 3:
             print("\nERROR, TRIANGULATE YOUR MESH!!!!")
             print("Vertexcount: ", len(p.vertices) )
-            
+
         outfile.write("t: {} {} {}\n".format(
             p.vertices[0],
             p.vertices[1],
@@ -50,7 +54,7 @@ def writeTriangles(outfile, polygons):
 if __name__ == "__main__":
 
     active_object = bpy.context.active_object
-    
+
     mesh = active_object.data
 
     vertices = mesh.vertices
@@ -61,16 +65,30 @@ if __name__ == "__main__":
     if len(polygons[0].vertices) != 3:
         print("len(polygons[0].vertices) != 3, triangulating mesh....")
         triangulate(active_object)
-   
-    # @debug info 
+
+    loops = mesh.loops
+    uv_layer = mesh.uv_layers.active.data
+
+    uvDict = {}
+    for poly in polygons:
+        for li in poly.loop_indices:
+            vi = loops[li].vertex_index
+            uvDict[vi] = uv_layer[li].uv
+
+    print("uvList:", uvDict);
+    print("uvItem:", uvDict[0]);
+
+
+
+    # @debug info
     print("Active name:", active_object.name)
     print("Vertexcount: ", len(vertices))
-    print("TriangleCount: ", len(polygons))      
+    print("TriangleCount: ", len(polygons))
     print("Outputfile:", active_object.name+".yml")
 
     outfile = open(active_object.name+".yml", "w")
-    
-    writeVertices(outfile, vertices)
+
+    writeVertices(outfile, vertices, uvDict)
     outfile.write("\n")
 
     outfile.write("meshes: 1\n");
@@ -78,6 +96,5 @@ if __name__ == "__main__":
     outfile.write("material: default\n")
     outfile.write("shader: default\n")
     writeTriangles(outfile, polygons)
-        
-    outfile.close()
 
+    outfile.close()
