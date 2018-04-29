@@ -11,7 +11,7 @@ camera: maincam
   nearClip: 0.1
   farClip: 4000
 
-entities: 3
+entities: 5
 
 
 entity: skybox
@@ -32,28 +32,62 @@ entity: Suzanne
 
   
 entity: cube
-  model: cube
+  model: Icosphere
   position: 10 0 0
   rotation: 0 0 0
   scale: 1 1 1
   velocity: 0 0 0
   angleVelocity: 0 0 0
 
-pointlights: 1
+entity: light0
+  model: null
+  position: 10 0 0
+  rotation: 0 0 0
+  scale: 1 1 1
+  velocity: 0 0 0
+  angleVelocity: 0 0 0
+  
+entity: light1
+  model: null
+  position: -10 0 0
+  rotation: 0 0 0
+  scale: 1 1 1
+  velocity: 0 0 0
+  angleVelocity: 0 0 0
+
+pointlights: 3
 
 pointlight: red
-  position: 0 0 0
+  position: 0 0 0 #use parent position instead
   velocity: 0 0 0
-  intensities: 10 0 0
+  intensities: 2 0 0
+  falloff: 1.0 0.03125 0.0625
+  
+pointlight: green
+  position: 10 0 0 #use parent position instead
+  velocity: 0 0 0
+  intensities: 0 2 0
+  falloff: 1.0 0.03125 0.0625
+  
+pointlight: blue
+  position: -10 0 0 #use parent position instead
+  velocity: 0 0 0
+  intensities: 0 0 2
   falloff: 1.0 0.03125 0.0625
 
 
 hasSun: 0
 
 
-relations: 3
+relations: 7
   red: 0
+  green: 0
+  blue: 0
   cube: 1
     red
   Suzanne: 1
 	cube
+  light0: 1
+    green
+  light1: 1
+    blue

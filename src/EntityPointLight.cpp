@@ -36,7 +36,7 @@ void EntityPointLight::update(float dt, glm::mat4 parentMatrix)
     m_transformMatrix = getModelMatrix(parentMatrix);
     m_position += m_velocity * dt;
     m_rotation += m_angularVelocity * dt;
-    
+
     m_position = glm::vec3(parentMatrix[3]);
 
     
