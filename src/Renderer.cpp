@@ -27,6 +27,7 @@ void Renderer::draw(const Model& model, glm::mat4 modelMatrix)
     {
         mesh.m_ebo.bind();
         mesh.m_shaderProgram.bind();
+        mesh.m_shaderProgram.setMaterial(MaterialSystem::getById(mesh.m_materialID));
         GLint uniformModel = mesh.m_shaderProgram.getUniformLocation("model");
         GLCall(glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(modelMatrix)));
         GLCall(glDrawElements(GL_TRIANGLES, mesh.m_ebo.count(), GL_UNSIGNED_INT, nullptr));
