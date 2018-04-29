@@ -9,7 +9,7 @@ camera: mainCam
   fov: 90
   aspectRatio: 1.25
   nearClip: 0.1
-  farClip: 3000
+  farClip: 500
 
   camera: venusCam
     position: 0 0 -10
@@ -20,7 +20,7 @@ camera: mainCam
     fov: 90
     aspectRatio: 1.25
     nearClip: 0.1
-    farClip: 3000
+    farClip: 500
 
   camera: earthCam
     position: 23 0 -10
@@ -31,7 +31,7 @@ camera: mainCam
     fov: 90
     aspectRatio: 1.25
     nearClip: 0.1
-    farClip: 3000
+    farClip: 500
 
   camera: saturnCam
     position: 0 0 -10
@@ -42,7 +42,7 @@ camera: mainCam
     fov: 90
     aspectRatio: 1.25
     nearClip: 0.1
-    farClip: 3000
+    farClip: 500
 
  camera: moonMoonCam
    position: 0 1 -1
@@ -53,7 +53,7 @@ camera: mainCam
    fov: 90
    aspectRatio: 1.25
    nearClip: 0.1
-   farClip: 30000
+   farClip: 500
 
 entities: 21
 
@@ -61,7 +61,7 @@ entity: skybox
     model: spaceSkybox
     position: 0 0 0
     rotation: 4 0 90
-    scale: 1000 1000 1000
+    scale: 2 2 2
     velocity: 0 0 0
     angleVelocity: 0 0.5 0
 
