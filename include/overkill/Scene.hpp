@@ -6,6 +6,7 @@
 #include <overkill/Config.hpp>
 #include <overkill/EntityModel.hpp>
 #include <overkill/EntityCamera.hpp>
+#include <overkill/EntityDirectionalLight.hpp>
 #include <overkill/EntityPointLight.hpp>
 #include <overkill/EntityNode.hpp>
 #include <overkill/Parser.hpp>

@@ -23,17 +23,6 @@ entity: Suzanne
   angleVelocity: 0 0 0
 
 
-
-relations: 0
-
-childCube: 0
-parentCube: 1
-  childCube
-  
-Suzanne: 1
-  parentCube
-
-
 pointlights: 3
 
 pointlight: red
@@ -54,3 +43,12 @@ pointlight: blue
   intensities: 0 0 1
   falloff: 1.0 0.03125 0.0625
 
+
+sun: 1
+
+dirlight: sun
+  rotation: 0 -75 30
+  intensities: 1.0 0.756 0.553
+
+  
+relations: 0

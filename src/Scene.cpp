@@ -341,14 +341,159 @@ int Scene::m_lightsCount;
         }
 
 
-        // LOAD LIGHTS
-        int lightsCount = 3;
+        //
+        //  PointLights:
+        //
+        if (auto[key, lights, err] = p.keyInteger("pointlights"); err)
+        {
+            LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
+        }
+        else
+        {
+            m_lightsCount = lights;
+            LOG_INFO("%s: %d", key.data(), m_lightsCount);
+        }
+
         m_lightsOffset = count;
-        m_lightsCount  = lightsCount;    
-                                              // posiiotn     velocity  intensitis constant liiear  quadratic
-        addEntity((Entity*)new EntityPointLight{"light1", ++count, { -15, 2,  10, }, {0,0,0}, { 8, 0, 0 }, 1.0f, 0.03125f, 0.0625f });
-        addEntity((Entity*)new EntityPointLight{"light2", ++count, {  0,  2,  10, }, {0,0,0}, { 0, 8, 0 }, 1.0f, 0.03125f, 0.0625f });
-        addEntity((Entity*)new EntityPointLight{"light3", ++count, {  15, 2,  10, }, {0,0,0}, { 0, 0, 8 }, 1.0f, 0.03125f, 0.0625f });
+
+        for (; count < m_lightsOffset + m_lightsCount; count++ )
+        {
+            C::Tag lightTag;
+            glm::vec3 pos;
+            glm::vec3 vel;
+            glm::vec3 intensities;
+            glm::vec3  falloff;
+
+
+            //position: -15 2 10
+            //velocity : 0 0 0
+            //intensities : 1 0 0
+            //falloff : 1.0 0.03125 0.0625
+
+            // char  entityTag.    
+            if (auto[key, light, err] = p.keyString("pointlight"); err)
+            {
+                LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
+            }
+            else
+            {
+                lightTag = light;
+                LOG_INFO("%s: %s", key.data(), lightTag.data());
+            }
+
+            // vec3 position.    
+            if (auto[key, position, err] = p.keyVec3("position"); err)
+            {
+                LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
+            }
+            else
+            {
+                pos = position;
+                LOG_INFO("%s: (%f, %f, %f)", key.data(), pos.x, pos.y, pos.z);
+            }
+
+            // vec3 velocity.    
+            if (auto[key, velocity, err] = p.keyVec3("velocity"); err)
+            {
+                LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
+            }
+            else
+            {
+                vel = velocity;
+                LOG_INFO("%s: (%f, %f, %f)", key.data(), vel.x, vel.y, vel.z);
+            }
+
+            // vec3 intensity.    
+            if (auto[key, intensity, err] = p.keyVec3("intensities"); err)
+            {
+                LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
+            }
+            else
+            {
+                intensities = intensity;
+                LOG_INFO("%s: (%f, %f, %f)", key.data(), intensity.x, intensity.y, intensity.z);
+            }
+            // vec3 falloff.    
+            if (auto[key, foff, err] = p.keyVec3("falloff"); err)
+            {
+                LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
+            }
+            else
+            {
+                falloff = foff;
+                LOG_INFO("%s: (%f, %f, %f)", key.data(), foff.x, foff.y, foff.z);
+            }
+            auto lightEntity = new EntityPointLight(lightTag,
+                count,
+                pos,
+                vel,
+                intensities,
+                falloff.x,
+                falloff.y,
+                falloff.z);
+            addEntity((Entity*)lightEntity);
+        }
+
+
+        //
+        //  DirectionalLights:
+        //
+
+        bool hasSun;
+        if (auto[key, sunToggle, err] = p.keyInteger("sun"); err)
+        {
+            LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
+        }
+        else
+        {
+            hasSun = (sunToggle != 0);
+            LOG_INFO("%s: %i", key.data(), hasSun);
+
+
+            C::Tag lightTag;
+            glm::vec3 rot;
+            glm::vec3 intensities;
+
+
+            // char  entityTag.    
+            if (auto[key, light, err] = p.keyString("dirlight"); err)
+            {
+                LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
+            }
+            else
+            {
+                lightTag = light;
+                LOG_INFO("%s: %s", key.data(), lightTag.data());
+            }
+
+            // vec3 position.    
+            if (auto[key, rotation, err] = p.keyVec3("rotation"); err)
+            {
+                LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
+            }
+            else
+            {
+                rot = rotation;
+                LOG_INFO("%s: (%f, %f, %f)", key.data(), rotation.x, rotation.y, rotation.z);
+            }
+            // vec3 intensity.    
+            if (auto[key, intensity, err] = p.keyVec3("intensities"); err)
+            {
+                LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
+            }
+            else
+            {
+                intensities = intensity;
+                LOG_INFO("%s: (%f, %f, %f)", key.data(), intensity.x, intensity.y, intensity.z);
+            }
+
+            auto sunEntity = new EntityDirectionalLight(lightTag,
+                count,
+                rot,
+                intensities
+            );
+            addEntity((Entity*)sunEntity);
+        }
 
 
         m_matrixBuffer      = ShaderSystem::getUniformBuffer("OK_Matrices");
@@ -356,11 +501,14 @@ int Scene::m_lightsCount;
         m_projectionGLindex = m_matrixBuffer.getUniformIndex("projection");
         m_pointLightGLindex = m_lightBuffer.getUniformIndex("light[0].position"); 
         m_sunGLindex        = m_lightBuffer.getUniformIndex("sun.direction");
-
+/*
         m_sun = DirectionalLight { 
                 -glm::vec4{ 10, 9, 8, 7 },
                 { 1.0f, 0.756862745f, 0.552941176f,0.0f } 
         };
+*/
+
+
 
 
         if (auto[key, _relationsCount, err] = p.keyInteger("relations"); err )
@@ -538,7 +686,7 @@ int Scene::m_lightsCount;
 
         // Buffer light data
         Scene::bufferPointLights();
-        m_lightBuffer.update(m_sunGLindex, sizeof(DirectionalLight), &(m_sun));
+        m_lightBuffer.update(m_sunGLindex, sizeof(DirectionalLightBO), &(((EntityDirectionalLight*)m_entities[m_lightsOffset + m_lightsCount])->pack()));
 
 
         for (Entity* entity : m_entities)
