@@ -686,7 +686,8 @@ int Scene::m_lightsCount;
 
         // Buffer light data
         Scene::bufferPointLights();
-        m_lightBuffer.update(m_sunGLindex, sizeof(DirectionalLightBO), &(((EntityDirectionalLight*)m_entities[m_lightsOffset + m_lightsCount])->pack()));
+        auto pointLight = (((EntityDirectionalLight*)m_entities[m_lightsOffset + m_lightsCount])->pack());
+        m_lightBuffer.update(m_sunGLindex, sizeof(DirectionalLightBO), &pointLight);
 
 
         for (Entity* entity : m_entities)
