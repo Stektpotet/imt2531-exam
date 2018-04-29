@@ -19,9 +19,7 @@ ShaderProgram::operator GLuint() const
 void ShaderProgram::setMaterial(const Material& mat) const
 {
     
-    LOG_DEBUG("\nSetting material on shader: %s", m_tag.c_str());
-    LOG_DEBUG("\nSetting material on shader: %s", m_tag.c_str());
-    LOG_DEBUG("\nSetting material on shader: %s", m_tag.c_str());
+    LOG_DEBUG("Setting material %s on shader: %s\n", mat.m_tag.c_str(), m_tag.c_str());
 
     GLCall(glUseProgram(id));
     std::size_t i = 0;
