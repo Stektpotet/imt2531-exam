@@ -37,7 +37,7 @@ namespace overkill
         // int   cameraCount.
         if (auto[key, cameras, err] = p.keyInteger("cameras"); err) 
         {
-            LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
+            LOG_ERROR("%s error reading cameraCount on key --> %s...", filestring.c_str(), key.data());
         } 
         else 
         {
@@ -62,7 +62,7 @@ namespace overkill
             // char  entityTag.    
             if (auto[key, camera, err] = p.keyString("camera"); err) 
             {
-                LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
+                LOG_ERROR("%s error on cameraTag key --> %s...", filestring.c_str(), key.data());
             } 
             else 
             {
@@ -73,7 +73,7 @@ namespace overkill
             // vec3 position.
             if (auto[key, position, err] = p.keyVec3("position"); err) 
             {
-                LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
+                LOG_ERROR("%s error on camera position key --> %s...", filestring.c_str(), key.data());
             } 
             else 
             {
@@ -84,7 +84,7 @@ namespace overkill
             // vec3 rotation.
             if (auto[key, rotation, err] = p.keyVec3("rotation"); err) 
             {
-                LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
+                LOG_ERROR("%s error on camera rotation key --> %s...", filestring.c_str(), key.data());
             } 
             else 
             {
@@ -95,7 +95,7 @@ namespace overkill
             // vec3 velocity.
             if (auto[key, velocity, err] = p.keyVec3("velocity"); err) 
             {
-                LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
+                LOG_ERROR("%s error on camera velocity key --> %s...", filestring.c_str(), key.data());
             } 
             else 
             {
@@ -106,7 +106,7 @@ namespace overkill
             // vec3 rotation.
             if (auto[key, angleVelocity, err] = p.keyVec3("angleVelocity"); err) 
             {
-                LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
+                LOG_ERROR("%s error on camera angle velocity key --> %s...", filestring.c_str(), key.data());
             } 
             else 
             {
@@ -117,7 +117,7 @@ namespace overkill
             // char  CameraMode.    
             if (auto[key, mode, err] = p.keyString("mode"); err) 
             {
-                LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
+                LOG_ERROR("%s error on camera mode key --> %s...", filestring.c_str(), key.data());
             } 
             else 
             {
@@ -139,7 +139,7 @@ namespace overkill
             // float fov.
             if (auto[key, fov, err] = p.keyFloat("fov"); err) 
             {
-                LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
+                LOG_ERROR("%s error on camera fov key --> %s...", filestring.c_str(), key.data());
             }
             else
             {
@@ -150,7 +150,7 @@ namespace overkill
             // float aspectRatio.
             if (auto[key, aspectRatio, err] = p.keyFloat("aspectRatio"); err) 
             {
-                LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
+                LOG_ERROR("%s error on camera aspect ratio key --> %s...", filestring.c_str(), key.data());
             } 
             else 
             {
@@ -161,7 +161,7 @@ namespace overkill
             // float nearClip.
             if (auto[key, _nearClip, err] = p.keyFloat("nearClip"); err) 
             {
-                LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
+                LOG_ERROR("%s error on camera nearclip key --> %s...", filestring.c_str(), key.data());
             } 
             else 
             {
@@ -172,7 +172,7 @@ namespace overkill
             // float farClip.
             if (auto[key, _farClip, err] = p.keyFloat("farClip"); err) 
             {
-                LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
+                LOG_ERROR("%s error on camera farclip key --> %s...", filestring.c_str(), key.data());
             } 
             else 
             {
@@ -206,7 +206,7 @@ namespace overkill
         //
         if (auto[key, entites, err] = p.keyInteger("entities"); err) 
         {
-            LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
+            LOG_ERROR("%s error on entityCount key --> %s...", filestring.c_str(), key.data());
         } 
         else 
         {
@@ -228,7 +228,7 @@ namespace overkill
             // char  entityTag.    
             if (auto[key, entity, err] = p.keyString("entity"); err) 
             {
-                LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
+                LOG_ERROR("%s error on entityTag key --> %s...", filestring.c_str(), key.data());
             } 
             else 
             {
@@ -239,7 +239,7 @@ namespace overkill
             // char  modelTag.    
             if (auto[key, model, err] = p.keyString("model"); err) 
             {
-                LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
+                LOG_ERROR("%s error on entityModelTag key --> %s...", filestring.c_str(), key.data());
             } 
             else 
             {
@@ -250,7 +250,7 @@ namespace overkill
             // vec3 position.
             if (auto[key, position, err] = p.keyVec3("position"); err) 
             {
-                LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
+                LOG_ERROR("%s error on entity position key --> %s...", filestring.c_str(), key.data());
             } 
             else 
             {
@@ -261,7 +261,7 @@ namespace overkill
             // vec3 rotation.
             if (auto[key, rotation, err] = p.keyVec3("rotation"); err) 
             {
-                LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
+                LOG_ERROR("%s error on entity rotation key --> %s...", filestring.c_str(), key.data());
             } 
             else 
             {
@@ -272,7 +272,7 @@ namespace overkill
             // vec3 scale.
             if (auto[key, scale, err] = p.keyVec3("scale"); err) 
             {
-                LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
+                LOG_ERROR("%s error on entity scale key --> %s...", filestring.c_str(), key.data());
             } 
             else 
             {
@@ -283,7 +283,7 @@ namespace overkill
             // vec3 velocity.
             if (auto[key, velocity, err] = p.keyVec3("velocity"); err) 
             {
-                LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
+                LOG_ERROR("%s error on entity velocity key --> %s...", filestring.c_str(), key.data());
             } 
             else 
              {
@@ -294,7 +294,7 @@ namespace overkill
             // vec3 angularVelocity.
             if (auto[key, angleVelocity, err] = p.keyVec3("angleVelocity"); err) 
             {
-                LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
+                LOG_ERROR("%s error on entity angle velocity key --> %s...", filestring.c_str(), key.data());
             } 
             else 
             {
@@ -342,7 +342,7 @@ namespace overkill
 
         if (auto[key, _relationsCount, err] = p.keyInteger("relations"); err )
         {
-            LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
+            LOG_ERROR("%s error on relationsCount key --> %s...", filestring.c_str(), key.data());
         }
         else 
         {
@@ -356,7 +356,7 @@ namespace overkill
             std::string parentTag;
             if (auto[key, _childCount, err] = p.nextKeyInteger(); err)
             {
-                LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
+                LOG_ERROR("%s error on childCount key --> %s...", filestring.c_str(), key.data());
             }
             else 
             {
