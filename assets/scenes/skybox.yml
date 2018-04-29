@@ -32,14 +32,11 @@ entity: Suzanne
   angleVelocity: 1 3.4 1.67
 
 
-relations: 0
+relations: 1
 
-childCube: 0
-parentCube: 1
-  childCube
-  
-Suzanne: 1
-  parentCube
+skybox: 0
+maincam: 1
+  skybox
 
 
 
