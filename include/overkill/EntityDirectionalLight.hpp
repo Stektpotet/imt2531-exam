@@ -1,6 +1,7 @@
 #pragma once
 
 #include <overkill/Entity.hpp>
+#include <overkill/Scene.hpp>
 
 namespace overkill 
 {
@@ -32,6 +33,9 @@ public:
     {}
 
     auto pack() ->DirectionalLightBO ;
+
+    glm::mat4 getModelMatrix(glm::mat4 parentModelMatrix = glm::mat4(1));
+    void update(float dt, glm::mat4 parentMatrix = glm::mat4(1)) override final;
 };
 
 

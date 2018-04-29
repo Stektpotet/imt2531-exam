@@ -5,13 +5,13 @@ camera: maincam
   rotation: 0 0 0
   velocity: 0 0 0
   angleVelocity: 0 0 0
-  mode: freelook
+  mode: orbital
   fov: 90
   aspectRatio: 1.25
   nearClip: 0.1
   farClip: 4000
 
-entities: 2
+entities: 3
 
 
 entity: skybox
@@ -23,44 +23,37 @@ entity: skybox
   angleVelocity: 0 0 0
 
 entity: Suzanne
-  model: Suzanne
+  model: Icosphere
   position: 0 0 0
+  rotation: 0 0 0
+  scale: 1 1 1
+  velocity: 0 0 0
+  angleVelocity: 50 0 50
+
+  
+entity: cube
+  model: cube
+  position: 10 0 0
   rotation: 0 0 0
   scale: 1 1 1
   velocity: 0 0 0
   angleVelocity: 0 0 0
 
-pointlights: 3
+pointlights: 1
 
 pointlight: red
-  position: -15 2 10
+  position: 0 0 0
   velocity: 0 0 0
-  intensities: 1 0 0
+  intensities: 10 0 0
   falloff: 1.0 0.03125 0.0625
 
-pointlight: green
-  position: 0 2 10
-  velocity: 0 0 0
-  intensities: 0 1 0
-  falloff: 1.0 0.03125 0.0625
 
-pointlight: blue
-  position: 15 2 10
-  velocity: 0 0 0
-  intensities: 0 0 1
-  falloff: 1.0 0.03125 0.0625
-
-directionalLights: 1
-directionalLight: sun
-  rotation: 0 0 0
-  intensities: 1 1 1
+hasSun: 0
 
 
-hasSun: 1
-
-dirlight: sun
-  rotation: 0 -75 30
-  intensities: 1.0 0.756 0.553
-
-  
-relations: 0
+relations: 3
+  red: 0
+  cube: 1
+    red
+  Suzanne: 1
+	cube

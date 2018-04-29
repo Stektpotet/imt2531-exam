@@ -163,7 +163,7 @@ vec3 OK_DirectionalLight(in vec3 lightDir, in vec3 intensities) {
 }
 
 void main() {
-	vec3 lights = 0*OK_DirectionalLight(sun.direction.xyz, sun.intensities.rgb);
+	vec3 lights = OK_DirectionalLight(sun.direction.xyz, sun.intensities.rgb);
 	for(int i = 0; i < MAX_LIGHTS; i++)
 	{
 		lights += OK_PointLight(

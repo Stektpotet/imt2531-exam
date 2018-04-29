@@ -438,7 +438,6 @@ int Scene::m_lightsCount;
         //
         //  DirectionalLights:
         //
-
         bool hasSun;
         if (auto[key, sunToggle, err] = p.keyInteger("hasSun"); err)
         {
@@ -448,8 +447,9 @@ int Scene::m_lightsCount;
         {
             hasSun = (sunToggle != 0);
             LOG_INFO("%s: %i", key.data(), hasSun);
-
-
+        }
+        EntityDirectionalLight * sunEntity;
+        if (hasSun) {
             C::Tag lightTag;
             glm::vec3 rot;
             glm::vec3 intensities;
@@ -487,14 +487,20 @@ int Scene::m_lightsCount;
                 LOG_INFO("%s: (%f, %f, %f)", key.data(), intensity.x, intensity.y, intensity.z);
             }
 
-            auto sunEntity = new EntityDirectionalLight(lightTag,
+            sunEntity = new EntityDirectionalLight(lightTag,
                 count,
                 rot,
                 intensities
             );
-            addEntity((Entity*)sunEntity);
         }
-
+        else {
+            sunEntity = new EntityDirectionalLight("NOT_SUN",
+                count,
+                glm::vec3(0),
+                glm::vec3(0)
+            );
+        }
+        addEntity((Entity*)sunEntity);
 
         m_matrixBuffer      = ShaderSystem::getUniformBuffer("OK_Matrices");
         m_lightBuffer       = ShaderSystem::getUniformBuffer("OK_Lights");
@@ -686,7 +692,8 @@ int Scene::m_lightsCount;
 
         // Buffer light data
         Scene::bufferPointLights();
-        m_lightBuffer.update(m_sunGLindex, sizeof(DirectionalLightBO), &(((EntityDirectionalLight*)m_entities[m_lightsOffset + m_lightsCount])->pack()));
+        auto pointLight = (((EntityDirectionalLight*)m_entities[m_lightsOffset + m_lightsCount])->pack());
+        m_lightBuffer.update(m_sunGLindex, sizeof(DirectionalLightBO), &pointLight);
 
 
         for (Entity* entity : m_entities)

@@ -36,6 +36,11 @@ glm::mat4 EntityCamera::getModelToWorldMatrix(glm::mat4 parentModelMatrix)
     }
     else if (m_cameraMode == ORBITAL)
     {
+        /*glm::vec3 direction = glm::vec3{
+            cos(m_rotation.y)*cos(m_rotation.x),
+            sin(m_rotation.y)*cos(m_rotation.x),
+            sin(m_rotation.z)
+        };*/
         model = parentModelMatrix * rotation * worldPos;        
     }
     else 
@@ -145,17 +150,17 @@ void EntityCamera::update(float dt, glm::mat4 parentMatrix)
         m_cameraTransform.position = glm::vec4(m_position.x, m_position.y, -m_position.z, 1.0f);
         m_transformMatrix = getModelToWorldMatrix(parentMatrix);
 
-        // LOG_DEBUG("Update()\n\nentityID %d, entityTag %s,\nFOV %f, aspectRatio %f\nnearClip %f, farClip %f \nm_position %f, %f, %f\nm_rotation %f, %f, %f\nm_angVel %f, %f, %f\ndeltatime %f\n", 
-        //         m_entityID, m_entityTag.data(),
-        //         m_FOV, m_aspectRatio, m_nearClip, m_farClip,
-        //         m_position.x, m_position.y, m_position.z, 
-        //         glm::degrees(m_rotation.x), glm::degrees(m_rotation.y), glm::degrees(m_rotation.z), 
-        //         glm::degrees(m_angularVelocity.x), glm::degrees(m_angularVelocity.y), glm::degrees(m_angularVelocity.z), 
-        //         dt);
-        // Util::printMatrix(parentMatrix, "ParentMatrix:");
-        // Util::printMatrix(m_cameraTransform.viewMatrix, "ViewMatrix:");
-        // printf("\n\n");
-
+        /*LOG_DEBUG("Update()\n\nentityID %d, entityTag %s,\nFOV %f, aspectRatio %f\nnearClip %f, farClip %f \nm_position %f, %f, %f\nm_rotation %f, %f, %f\nm_angVel %f, %f, %f\ndeltatime %f\n", 
+                 m_entityID, m_entityTag.data(),
+                 m_FOV, m_aspectRatio, m_nearClip, m_farClip,
+                 m_position.x, m_position.y, m_position.z, 
+                 glm::degrees(m_rotation.x), glm::degrees(m_rotation.y), glm::degrees(m_rotation.z), 
+                 glm::degrees(m_angularVelocity.x), glm::degrees(m_angularVelocity.y), glm::degrees(m_angularVelocity.z), 
+                 dt);
+         Util::printMatrix(parentMatrix, "ParentMatrix:");
+         Util::printMatrix(m_cameraTransform.viewMatrix, "ViewMatrix:");
+         printf("\n\n");
+*/
 
         if (m_childIDs.size() > 0)                  // If we actually have kids.
         {            
