@@ -32,8 +32,8 @@ def writeVertices(outfile, vertices, uvs):
                         vc.normal[0],
                         vc.normal[1],
                         vc.normal[2],
-                        uvs[vc.index][0],
-                        uvs[vc.index][1],
+                        uvs.get(vc.index, [0,0])[0],
+                        uvs.get(vc.index, [0,0])[1],
                         255, 255, 255, 255))
 
 
@@ -66,19 +66,17 @@ if __name__ == "__main__":
         print("len(polygons[0].vertices) != 3, triangulating mesh....")
         triangulate(active_object)
 
-    loops = mesh.loops
-    uv_layer = mesh.uv_layers.active.data
-
     uvDict = {}
-    for poly in polygons:
-        for li in poly.loop_indices:
-            vi = loops[li].vertex_index
-            uvDict[vi] = uv_layer[li].uv
+    loops = mesh.loops
+    active_layer = mesh.uv_layers.active
 
-    print("uvList:", uvDict);
-    print("uvItem:", uvDict[0]);
+    if active_layer:
+        uv_layer = mesh.uv_layers.active.data
 
-
+        for poly in polygons:
+            for li in poly.loop_indices:
+                vi = loops[li].vertex_index
+                uvDict[vi] = uv_layer[li].uv
 
     # @debug info
     print("Active name:", active_object.name)
