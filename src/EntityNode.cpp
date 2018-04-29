@@ -6,7 +6,7 @@ namespace overkill
 EntityNode::EntityNode(C::Tag entityTag, int entityID,
                         glm::vec3 pos, glm::vec3 rot, 
                         glm::vec3 scale, glm::vec3 vel, 
-                        glm::vec3 angVel) : Entity(entityTag, entityID, pos, scale, rot, vel, angVel)
+                        glm::vec3 angVel) : Entity(entityTag, entityID, pos, rot, scale, vel, angVel)
 {
     glm::mat4 m_transformMatrix = getModelMatrix();
     update(0);

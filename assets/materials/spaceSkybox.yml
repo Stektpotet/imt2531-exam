@@ -1,0 +1,5 @@
+maps: 1
+  skyTexture: spaceSkybox
+
+values: 1
+  intensity: 1

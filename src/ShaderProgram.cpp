@@ -18,8 +18,6 @@ ShaderProgram::operator GLuint() const
 
 void ShaderProgram::setMaterial(const Material& mat) const
 {
- //   LOG_DEBUG("Setting material on shader: %u", id);
-
     GLCall(glUseProgram(id));
     std::size_t i = 0;
     for (const auto unimap : mat.m_unimaps)

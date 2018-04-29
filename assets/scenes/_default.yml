@@ -9,19 +9,26 @@ camera: maincam
   fov: 90
   aspectRatio: 1.25
   nearClip: 0.1
-  farClip: -100
+  farClip: 4000
 
-entities: 1
+entities: 2
 
 
-entity: Suzanne
-  model: Serapis
+entity: skybox
+  model: skybox
   position: 0 0 0
   rotation: 0 0 0
-  scale: 0.1 0.1 0.1
+  scale: 5 5 5
   velocity: 0 0 0
   angleVelocity: 0 0 0
 
+entity: Suzanne
+  model: Suzanne
+  position: 0 0 0
+  rotation: 0 0 0
+  scale: 1 1 1
+  velocity: 0 0 0
+  angleVelocity: 0 0 0
 
 pointlights: 3
 
@@ -43,8 +50,13 @@ pointlight: blue
   intensities: 0 0 1
   falloff: 1.0 0.03125 0.0625
 
+directionalLights: 1
+directionalLight: sun
+  rotation: 0 0 0
+  intensities: 1 1 1
 
-sun: 1
+
+hasSun: 1
 
 dirlight: sun
   rotation: 0 -75 30

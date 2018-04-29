@@ -1,0 +1,265 @@
+cameras: 5
+
+camera: mainCam
+  position: 0 0 -20
+  rotation: 0 0 0
+  velocity: 0 0 0
+  angleVelocity: 0 0 0
+  mode: orbital
+  fov: 90
+  aspectRatio: 1.25
+  nearClip: 0.1
+  farClip: 500
+
+  camera: venusCam
+    position: 0 0 -10
+    rotation: 0 0 0
+    velocity: 0 0 0
+    angleVelocity: 0 0 0
+    mode: orbital
+    fov: 90
+    aspectRatio: 1.25
+    nearClip: 0.1
+    farClip: 500
+
+  camera: earthCam
+    position: 23 0 -10
+    rotation: 0 0 0
+    velocity: 0 0 0
+    angleVelocity: 0 0 0
+    mode: freelook
+    fov: 90
+    aspectRatio: 1.25
+    nearClip: 0.1
+    farClip: 500
+
+  camera: saturnCam
+    position: 0 0 -10
+    rotation: 0 0 0
+    velocity: 0 0 0
+    angleVelocity: 0 0 0
+    mode: freelook
+    fov: 90
+    aspectRatio: 1.25
+    nearClip: 0.1
+    farClip: 500
+
+ camera: moonMoonCam
+   position: 0 1 -1
+   rotation: 0 0 0
+   velocity: 0 0 0
+   angleVelocity: 0 0 0
+   mode: orbital
+   fov: 90
+   aspectRatio: 1.25
+   nearClip: 0.1
+   farClip: 500
+
+entities: 21
+
+entity: skybox
+    model: spaceSkybox
+    position: 0 0 0
+    rotation: 4 0 90
+    scale: 2 2 2
+    velocity: 0 0 0
+    angleVelocity: 0 0.5 0
+
+entity: sun
+    model: Suzanne
+    position: 0 0 0
+    rotation: 0 0 0
+    scale: 10 10 10
+    velocity: 0 0 0
+    angleVelocity: 9 1 3
+
+    entity: mercuryCore
+        model: null
+        position: 0 0 0
+        rotation: 0 0 0
+        scale: 1 1 1
+        velocity: 0 0 0
+        angleVelocity: 0 150 0
+        entity: mercury
+            model: Suzanne
+            position: 12 0 0
+            rotation: 0 0 0
+            scale: 0.2 0.2 0.2
+            velocity: 0 0 0
+            angleVelocity: 0 -40 0
+
+    entity: venusCore
+        model: null
+        position: 0 0 0
+        rotation: 0 0 0
+        scale: 1 1 1
+        velocity: 0 0 0
+        angleVelocity: 0 130 0
+        entity: venus
+            model: Suzanne
+            position: 18 0 0
+            rotation: 1 1 1
+            scale: 0.5 0.5 0.5
+            velocity: 0 0 0
+            angleVelocity: 0 -26 0
+
+    entity: earthCore
+        model: null
+        position: 0 0 0
+        rotation: 0 0 0
+        scale: 1 1 1
+        velocity: 0 0 0
+        angleVelocity: 0 100 0
+        entity: earth
+            model: cube
+            position: 23 0 0
+            rotation: 10 0 0
+            scale: 0.55 0.55 0.55
+            velocity: 0 0 0
+            angleVelocity: 0 -120 0
+        entity: moonCore
+            model: null
+            position: 23 0 0
+            rotation: 0 0 0
+            scale: 1 1 1
+            velocity: 0 0 0
+            angleVelocity: 0 120 0
+            entity: moon
+                model: Icosphere
+                position: 5 0 0
+                rotation: 10 0 0
+                scale: 0.55 0.55 0.55
+                velocity: 0 0 0
+                angleVelocity: 0 -120 0
+                entity: moonCore2
+                    model: null
+                    position: 0 0 0
+                    rotation: 0 0 0
+                    scale: 0.35 0.35 0.35
+                    velocity: 0 0 0
+                    angleVelocity: 0 0 120
+                    entity: moon2
+                        model: Icosphere
+                        position: 5 0 0
+                        rotation: 0 0 0
+                        scale: 0.55 0.55 0.55
+                        velocity: 0 0 0
+                        angleVelocity: 0 0 0
+
+    entity: jupiterCore
+        model: null
+        position: 0 0 0
+        rotation: 0 0 0
+        scale: 1 1 1
+        velocity: 0 0 0
+        angleVelocity: 0 70 0
+        entity: jupiter
+            model: Icosphere
+            position: 31 0 0
+            rotation: 10 0 0
+            scale: 2.3 2.3 2.3
+            velocity: 0 0 0
+            angleVelocity: 0 -120 0
+
+    entity: saturnCore
+        model: null
+        position: 0 0 0
+        rotation: 0 0 0
+        scale: 1 1 1
+        velocity: 0 0 0
+        angleVelocity: 0 60 0
+        entity: saturn
+            model: Icosphere
+            position: 44 0 0
+            rotation: 10 0 0
+            scale: 1.85 1.85 1.85
+            velocity: 0 0 0
+            angleVelocity: 0 -10 0
+            entity: saturnRings
+                model: Icosphere
+                position: 0 0 0
+                rotation: 13 0 0
+                scale: 2 0.03 2
+                velocity: 0 0 0
+                angleVelocity: 0 3 0
+
+    entity: uranusCore
+        model: null
+        position: 0 0 0
+        rotation: 0 0 0
+        scale: 1 1 1
+        velocity: 0 0 0
+        angleVelocity: 0 40 0
+        entity: uranus
+            model: Suzanne
+            position: 60 0 0
+            rotation: 10 0 0
+            scale: 1.4 1.4 1.4
+            velocity: 0 0 0
+            angleVelocity: 0 -120 0
+
+    entity: neptuneCore
+        model: null
+        position: 0 0 0
+        rotation: 0 0 0
+        scale: 1 1 1
+        velocity: 0 0 0
+        angleVelocity: 0 25 0
+        entity: neptune
+            model: Icosphere
+            position: 69 0 0
+            rotation: 10 0 0
+            scale: 1.4 1.4 1.4
+            velocity: 0 0 0
+            angleVelocity: 0 -120 0
+
+
+relations: 24
+
+    sun: 0
+
+    mercury: 0
+    mercuryCore: 1
+        mercury
+
+    venusCam: 0
+    venus: 1
+        venusCam
+    venusCore: 1
+        venus
+
+    earthCam: 0
+    moonMoonCam: 0
+    moon2: 0
+    moonCore2: 1
+        moon2
+    moon: 2
+        moonCore2
+        moonMoonCam
+    moonCore: 1
+        moon
+    earth: 0
+    earthCore: 3
+        earth
+        earthCam
+        moonCore
+
+    jupiter: 0
+    jupiterCore: 1
+        jupiter
+
+    saturnCam: 0
+    saturnRings: 0
+    saturn: 2
+        saturnRings
+        saturnCam
+    saturnCore: 1
+        saturn
+
+    uranus: 0
+    uranusCore: 1
+        uranus
+
+    neptune: 0
+    neptuneCore: 1
+        neptune
