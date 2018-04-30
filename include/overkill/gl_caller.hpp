@@ -5,6 +5,8 @@
 #include <PMS/logger.h>
 #include <overkill/Config.hpp>
 
+
+
 #if _MSC
     #define ASSERT(notglerr) if (!(notglerr)) __debugbreak();
 #else
@@ -27,3 +29,5 @@
 void GLClearError();
 bool GLLogCall(const char* function, const char* file, int line);
 auto GLLogFirstError() -> overkill::C::Err;
+
+

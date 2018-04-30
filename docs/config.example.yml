@@ -1,21 +1,22 @@
 GLVersionMajor: 4
 GLVersionMinor: 1
 
-WinWidth: 1000
+WinWidth: 600
 WinHeight: 800
 WinName: Assignment 2 - Cube
-ClearColor: 0.05   0.06   0.075   1.0
+ClearColor: 0.4   0.4   0.5   1.0
 
 FOV: 88.0
 MaxFOV: 88.2
 MinFOV: 87.97
 ZoomSensitivity: 0.0
 LookSensitivity: 0.084
-PanSensitivity: 0.03
+PanSensitivity: 0.3
 NearClip: 0.1
 FarClip: 100.0
 CameraOffset: -70
 
+PythonPath: python3
     
 TexturesFolder: assets/textures
 ShadersFolder: assets/shaders
