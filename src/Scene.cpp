@@ -573,7 +573,7 @@ int Scene::m_lightsCount;
 
     void Scene::reload()
     {
-        Init::loadConfig();
+        Init::Config();
         Init::OpenGL(C::ClearColor);
         glfwSetWindowSize(C::window, C::WinWidth, C::WinHeight);
         Scene::clean();

@@ -42,7 +42,7 @@ int main(int argc, char** args)
         LOG_ERROR("No more than 0 or 1 parameters. Parameter is path to scene file to load. Example: ./cube assets/scenes/_default.yml");
     }
 
-    Init::loadConfig();
+    Init::Config();
 
     // Init libraries + Watcher callbacks
 	C::window = Init::GLFW(

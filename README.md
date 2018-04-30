@@ -43,7 +43,7 @@ We want to model an entire scene graph.
      - from gitbash: `> cd "./yourdesiredworkdir/"`
      - from gitbash: `> git clone http://prod3.imt.hig.no/overkill-studios/imt2531-assignment2.git`
  4. In Visual Studio: go to `File->Open->CMake...`, and select the CMakeLists.txt file located in `./yourdesiredworkdir/imt2531-assignment2/`
-
+    # Copy default config to build.
 
 ##### Additional/Optional setup
  - Running the program with different scenes:
@@ -90,8 +90,10 @@ We are also using python3 or above.
 
     cmake .. -DCMAKE_CXX_COMPILER=clang++-5.0
     make
+    
+    cp ../docs/config.example.yml config.yml    # Copy default config to build.
 
-    ./cube
+    ./cube                         # Load default scene.
     ./cube assets/scenes/demo1.yml # Load specific scene.
 ```
 

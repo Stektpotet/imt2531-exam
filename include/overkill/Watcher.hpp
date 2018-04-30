@@ -12,6 +12,7 @@
 #include <algorithm>
 
 #include <PMS/logger.h>
+#include <overkill/Config.hpp>
 
 namespace overkill 
 {
