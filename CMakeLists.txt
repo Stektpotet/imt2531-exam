@@ -52,6 +52,8 @@ target_sources(
     PRIVATE ${SRCDIR}/src/EntityNode.cpp    
     PRIVATE ${SRCDIR}/src/EntityModel.cpp
     PRIVATE ${SRCDIR}/src/EntityCamera.cpp
+    PRIVATE ${SRCDIR}/src/EntityPointLight.cpp
+    PRIVATE ${SRCDIR}/src/EntityDirectionalLight.cpp
     PRIVATE ${SRCDIR}/src/Init.cpp
     PRIVATE ${SRCDIR}/src/Input.cpp
     PRIVATE ${SRCDIR}/src/Material.cpp

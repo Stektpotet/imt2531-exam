@@ -155,6 +155,7 @@ private:
 	BlockLayout m_blockLayout;
 public:
 
+    UniformBuffer()=default;
 	UniformBuffer(const char *name, const BlockLayout& layout, const GLenum drawMode);
    
     explicit operator C::Tag() const;

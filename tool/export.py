@@ -88,11 +88,11 @@ if __name__ == "__main__":
     print("Active name:", active_object.name)
     print("Vertexcount: ", len(vertices))
     print("TriangleCount: ", len(polygons))
-    print("Outputfile:", workdir + active_object.name+".yml")
+    print("Outputfile:", workdir+active_object.name+".yml")
 
-    outfile = open(workdir + active_object.name+".yml", "w")
+    outfile = open(workdir+active_object.name+".yml", "w")
 
-    writeVertices(outfile, vertices, uvDict)
+    writeVertices(outfile, vertices)
     outfile.write("\n")
 
     outfile.write("meshes: 1\n");

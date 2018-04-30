@@ -58,9 +58,10 @@ void main() {
 }
 
 #shader fragment
-#version 140
+#version 410
 
 #define MAX_LIGHTS 8
+#define EPSILON 0.0000000000000001
 
 in vec4 gl_FragCoord;
 in vec2 texCoord;
@@ -125,8 +126,8 @@ vec3 OK_PointLight(in vec3 position, in vec3 intensities, in float constant, in 
 
     // Attenuation
     float distance = length(position - fragVert);
-    float attenuation = 1.0 / (constant + linear * distance + quadratic * distance * distance);
-	
+    float attenuation = 1.0 / (constant + linear * distance + quadratic * distance * distance +EPSILON);
+
 	//Fast subsurface scattering
 	vec3 halfwayDir = normalize(lightDir + norm * distortion);
 	float backLight = pow(clamp(dot(viewDir, -halfwayDir),0.0,1.0), scatterPower) * scatterScale;
@@ -162,17 +163,16 @@ vec3 OK_DirectionalLight(in vec3 lightDir, in vec3 intensities) {
 }
 
 void main() {
-	vec3 lights = 0.2*OK_DirectionalLight(sun.direction.xyz, sun.intensities.rgb);	
+	vec3 lights = OK_DirectionalLight(sun.direction.xyz, sun.intensities.rgb);
 	for(int i = 0; i < MAX_LIGHTS; i++)
 	{
 		lights += OK_PointLight(
-						light[i].position.xyz, 
+						light[i].position.xyz,
 						light[i].intensities.rgb,
 						light[i].constant,
 						light[i].linear,
 						light[i].quadratic
 					);
 	}
-
     out_color = vec4(lights, 1);
 }

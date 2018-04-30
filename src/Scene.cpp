@@ -3,17 +3,27 @@
 
 namespace overkill
 {
-    // EntityCamera* Scene::m_camera;
-    std::vector<Entity*> Scene::m_entities;
-    std::vector<int> Scene::m_rootEntities;
-    EntityCamera* Scene::m_activeCamera;
-    int Scene::m_cameraCount;
-    std::string Scene::m_sceneLoaded;
 
-    Scene::Scene()
-    {
 
-    }
+// EntityCamera* Scene::m_camera;
+std::string Scene::m_sceneLoaded;
+std::vector<Entity*> Scene::m_entities;
+std::vector<int>     Scene::m_rootEntities;
+EntityCamera*        Scene::m_activeCamera;
+int                  Scene::m_cameraCount;
+
+
+DirectionalLight Scene::m_sun;
+
+UniformBuffer Scene::m_matrixBuffer;
+UniformBuffer Scene::m_lightBuffer;
+GLuint Scene::m_projectionGLindex;
+GLuint Scene::m_pointLightGLindex;
+GLuint Scene::m_sunGLindex;
+
+int Scene::m_entitiesOffset;
+int Scene::m_lightsOffset;
+int Scene::m_lightsCount;
 
 
     void Scene::load(std::string sceneFile)
@@ -214,6 +224,7 @@ namespace overkill
             LOG_INFO("%s: %d",key.data(), modelCount);        
         }
 
+        m_entitiesOffset = count;
 
         for (; count < m_cameraCount +  modelCount; count++)     
         {   
@@ -330,15 +341,181 @@ namespace overkill
         }
 
 
-       // Scene::m_directionalLights.resize(C::MAX_LIGHTS);
-       // Scene::m_pointsLights.resize(C::MAX_LIGHTS);
+        //
+        //  PointLights:
+        //
+        if (auto[key, lights, err] = p.keyInteger("pointlights"); err)
+        {
+            LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
+        }
+        else
+        {
+            m_lightsCount = lights;
+            LOG_INFO("%s: %d", key.data(), m_lightsCount);
+        }
 
+        m_lightsOffset = count;
+
+        for (; count < m_lightsOffset + m_lightsCount; count++ )
+        {
+            C::Tag lightTag;
+            glm::vec3 pos;
+            glm::vec3 vel;
+            glm::vec3 intensities;
+            glm::vec3  falloff;
+
+
+            //position: -15 2 10
+            //velocity : 0 0 0
+            //intensities : 1 0 0
+            //falloff : 1.0 0.03125 0.0625
+
+            // char  entityTag.    
+            if (auto[key, light, err] = p.keyString("pointlight"); err)
+            {
+                LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
+            }
+            else
+            {
+                lightTag = light;
+                LOG_INFO("%s: %s", key.data(), lightTag.data());
+            }
+
+            // vec3 position.    
+            if (auto[key, position, err] = p.keyVec3("position"); err)
+            {
+                LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
+            }
+            else
+            {
+                pos = position;
+                LOG_INFO("%s: (%f, %f, %f)", key.data(), pos.x, pos.y, pos.z);
+            }
+
+            // vec3 velocity.    
+            if (auto[key, velocity, err] = p.keyVec3("velocity"); err)
+            {
+                LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
+            }
+            else
+            {
+                vel = velocity;
+                LOG_INFO("%s: (%f, %f, %f)", key.data(), vel.x, vel.y, vel.z);
+            }
+
+            // vec3 intensity.    
+            if (auto[key, intensity, err] = p.keyVec3("intensities"); err)
+            {
+                LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
+            }
+            else
+            {
+                intensities = intensity;
+                LOG_INFO("%s: (%f, %f, %f)", key.data(), intensity.x, intensity.y, intensity.z);
+            }
+            // vec3 falloff.    
+            if (auto[key, foff, err] = p.keyVec3("falloff"); err)
+            {
+                LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
+            }
+            else
+            {
+                falloff = foff;
+                LOG_INFO("%s: (%f, %f, %f)", key.data(), foff.x, foff.y, foff.z);
+            }
+            auto lightEntity = new EntityPointLight(lightTag,
+                count,
+                pos,
+                vel,
+                intensities,
+                falloff.x,
+                falloff.y,
+                falloff.z);
+            addEntity((Entity*)lightEntity);
+        }
+
+
+        //
+        //  DirectionalLights:
+        //
+        bool hasSun;
+        if (auto[key, sunToggle, err] = p.keyInteger("hasSun"); err)
+        {
+            LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
+        }
+        else
+        {
+            hasSun = (sunToggle != 0);
+            LOG_INFO("%s: %i", key.data(), hasSun);
+        }
+        EntityDirectionalLight * sunEntity;
+        if (hasSun) {
+            C::Tag lightTag;
+            glm::vec3 rot;
+            glm::vec3 intensities;
+
+
+            // char  entityTag.    
+            if (auto[key, light, err] = p.keyString("dirlight"); err)
+            {
+                LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
+            }
+            else
+            {
+                lightTag = light;
+                LOG_INFO("%s: %s", key.data(), lightTag.data());
+            }
+
+            // vec3 position.    
+            if (auto[key, rotation, err] = p.keyVec3("rotation"); err)
+            {
+                LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
+            }
+            else
+            {
+                rot = rotation;
+                LOG_INFO("%s: (%f, %f, %f)", key.data(), rotation.x, rotation.y, rotation.z);
+            }
+            // vec3 intensity.    
+            if (auto[key, intensity, err] = p.keyVec3("intensities"); err)
+            {
+                LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
+            }
+            else
+            {
+                intensities = intensity;
+                LOG_INFO("%s: (%f, %f, %f)", key.data(), intensity.x, intensity.y, intensity.z);
+            }
+
+            sunEntity = new EntityDirectionalLight(lightTag,
+                count,
+                rot,
+                intensities
+            );
+        }
+        else {
+            sunEntity = new EntityDirectionalLight("NOT_SUN",
+                count,
+                glm::vec3(0),
+                glm::vec3(0)
+            );
+        }
+        addEntity((Entity*)sunEntity);
+
+        m_matrixBuffer      = ShaderSystem::getUniformBuffer("OK_Matrices");
+        m_lightBuffer       = ShaderSystem::getUniformBuffer("OK_Lights");
+        m_projectionGLindex = m_matrixBuffer.getUniformIndex("projection");
+        m_pointLightGLindex = m_lightBuffer.getUniformIndex("light[0].position"); 
+        m_sunGLindex        = m_lightBuffer.getUniformIndex("sun.direction");
 /*
-        // for ()      // Load EntityLights. NOT IMPLEMENTED.
-        // {
-
-        // }
+        m_sun = DirectionalLight { 
+                -glm::vec4{ 10, 9, 8, 7 },
+                { 1.0f, 0.756862745f, 0.552941176f,0.0f } 
+        };
 */
+
+
+
 
         if (auto[key, _relationsCount, err] = p.keyInteger("relations"); err )
         {
@@ -388,6 +565,7 @@ namespace overkill
 */
                  // All cameras in the beginning of scene file, first one active by default.
         //
+ 
     }
 
 
@@ -439,7 +617,6 @@ namespace overkill
         }
         return exist;
     }
-
 
 
     int Scene::addEntity(Entity* entity)
@@ -495,7 +672,11 @@ namespace overkill
 
     void Scene::update(float dt)
     {
-        m_activeCamera -> checkInput();     // Only update the active camera on input.
+
+        // Update active camera
+        m_activeCamera -> checkInput();     // Only update the active camera on input.    
+    
+        // Update entities
         for (auto ID : m_rootEntities)      // all the cameras update() is still being run in here.
         {
             getEntity(ID)-> update(dt);
@@ -504,11 +685,40 @@ namespace overkill
 
     void Scene::draw(float t)
     {
+        // Buffer camera data
+        Scene::m_matrixBuffer.update(m_projectionGLindex, 
+                              sizeof(CameraTransform), 
+                              &(m_activeCamera -> m_cameraTransform));
+
+        // Buffer light data
+        Scene::bufferPointLights();
+        auto pointLight = (((EntityDirectionalLight*)m_entities[m_lightsOffset + m_lightsCount])->pack());
+        m_lightBuffer.update(m_sunGLindex, sizeof(DirectionalLightBO), &pointLight);
+
+
         for (Entity* entity : m_entities)
         {
             entity-> draw(t);
         }
     }
+
+    void Scene::bufferPointLights()
+    {
+        std::vector<PointLightBO> pbos;
+        pbos.resize(C::MAX_LIGHTS);
+
+        int count = 0;
+        for(int off = m_lightsOffset; off < m_lightsOffset + m_lightsCount; ++off) 
+        {
+            pbos[count++] = (((EntityPointLight*)m_entities[off])->pack());
+        }
+
+        m_lightBuffer.update(m_pointLightGLindex, sizeof(PointLightBO) * C::MAX_LIGHTS, pbos.data());
+    }
+
+
+
+
 
     void Scene::clean()
     {
