@@ -4,7 +4,13 @@ import bmesh
 
 # input
 scale   = 1
+
+#Just comment out the one not in use
 workdir = "../assets/models/"
+# workdir = "C:/Users/Halvor/CMakeBuilds/621c328c-e411-0639-97bb-a40cd0883fa6/build/x64-Debug/assets/models/"
+
+material = "INSERTMATERIALNAMEHERE"
+shader = "INSERTSHADERNAMEHERE"
 
 # @doc https://blender.stackexchange.com/questions/45698/triangulate-mesh-in-python - 21.04.2018
 def triangulate(obj):
@@ -32,8 +38,8 @@ def writeVertices(outfile, vertices, uvs):
                         vc.normal[0],
                         vc.normal[1],
                         vc.normal[2],
-                        uvs.get(vc.index, [0,0])[0],
-                        uvs.get(vc.index, [0,0])[1],
+                        (uvs.get(vc.index, [0,0])[0]),
+                        (1-uvs.get(vc.index, [0,0])[1]),
                         255, 255, 255, 255))
 
 
@@ -68,7 +74,7 @@ if __name__ == "__main__":
 
     uvDict = {}
     loops = mesh.loops
-    active_layer = mesh.uv_layers.active
+    active_layer = mesh.uv_layers[0]
 
     if active_layer:
         uv_layer = mesh.uv_layers.active.data
@@ -91,8 +97,8 @@ if __name__ == "__main__":
 
     outfile.write("meshes: 1\n");
     outfile.write("mesh: blendermesh\n")
-    outfile.write("material: _default\n")
-    outfile.write("shader: _default\n")
+    outfile.write("material: " + material + "\n")
+    outfile.write("shader: " + shader +"\n")
     writeTriangles(outfile, polygons)
 
     outfile.close()
