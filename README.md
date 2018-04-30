@@ -1,11 +1,11 @@
 ## Curiosity task - 3D object viewer
 
-We are not doing Pacman. Instead we are doing a Curiousity Task.
+We are not doing Pacman. Instead we are doing a Curiosity Task.
 We are focusing heavily on Architecture/Framework development for an OpenGL
-graphics engine. 
+graphics engine.
 
-The goal of our engine is to provide a 3D viewer with loading of resource files 
-during run-time. The 3D-viewer will support 5 different files which may be 
+The goal of our engine is to provide a 3D viewer with loading of resource files
+during run-time. The 3D-viewer will support 5 different files which may be
 loaded, edited, re-loaded during run-time by the user:
 - Texture files   (e.g. brickwall.jpg)
 - Shader files    (e.g. base.glsl)
@@ -13,12 +13,12 @@ loaded, edited, re-loaded during run-time by the user:
 - Model files     (e.g. cube.yml       - custom format)
 - Scene files     (e.g. playground.yml - custom format)
 
-We are focusing on beiing as generic as possible when supporting these files, 
+We are focusing on being as generic as possible when supporting these files,
 to empower the user. We are trying to make it possible for non-programmers
 to enjoy the 3D-viewer, although the text-only input system might scare some
-people awy.
+people away.
 
-Our target user is an educator or a student who wants to learn about 3D 
+Our target user is an educator or a student who wants to learn about 3D
 graphics datastructures.
 
 To make our custom Model format usable, we want to write an exporter for Blender
@@ -26,6 +26,32 @@ for exporting high-poly models to our custom format.
 
 We want to model an entire scene graph.
 
+
+## Install Instructions
+
+#### Windows
+
+#### MacOS
+
+#### Linux
+Since we are using c++17 features, a newer compiler is necessary.
+We are also using python3 or above.
+```bash
+    sudo apt-get install clang++-5.0
+    sudo apt-get install python3.5
+    #TODO insert install instructions for cmake 11.
+
+    git clone <REPO LINK>
+    cd imt2531-assignment2
+    mkdir build
+    cd build
+
+    cmake .. -DCMAKE_CXX_COMPILER=clang++-5.0
+    make
+
+    ./cube
+    ./cube assets/scenes/demo1.yml # Load specific scene.
+```
 
 ## Roadmap
 
@@ -40,12 +66,12 @@ We want to model an entire scene graph.
 ### Optional requirement assignment 2
 
 - [x] Advanced lighting/reflection materials
-- [x] Change perspective 
+- [x] Change perspective
 - [x] Use of multiple advanced mesh.
 - [x] Write own object loader
 - [x] Make Camera movable
-- [ ] Multiple scenes
- 
+- [x] Multiple scenes.
+
 
 ### Own requirements Engine
 
@@ -82,7 +108,7 @@ We want to model an entire scene graph.
 
 
 
-## Reflection 
+## Reflection
 
 ### Things we would have done differently
 
@@ -157,4 +183,3 @@ meshes: 1
     material: glass
 
 ```
-
