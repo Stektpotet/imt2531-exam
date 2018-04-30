@@ -3,7 +3,7 @@
 #include <overkill/Entity.hpp>
 #include <overkill/Scene.hpp>
 
-namespace overkill 
+namespace overkill
 {
 
 struct DirectionalLightBO
@@ -21,14 +21,15 @@ public:
     EntityDirectionalLight(C::Tag tag,
 					       int id,
 					       glm::vec3 rotation,
+                           glm::vec3 angVel,
                            glm::vec3 intensities)
-    :Entity(tag, 
-             id, 
+    :Entity(tag,
+             id,
 			 glm::vec3(0),
-             rotation, 
+             rotation,
              glm::vec3(0),
-             glm::vec3(0), 
-             glm::vec3(0))
+             glm::vec3(0),
+             angVel)
     ,m_intensities(intensities)
     {}
 

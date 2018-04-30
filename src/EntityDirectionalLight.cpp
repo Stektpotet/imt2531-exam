@@ -7,8 +7,8 @@ namespace overkill
         return DirectionalLightBO
         {
             //euler angles to vector conversion
-            glm::vec4{ 
-                cos(m_rotation.y)*cos(m_rotation.x), 
+            glm::vec4{
+                cos(m_rotation.y)*cos(m_rotation.x),
                 sin(m_rotation.y)*cos(m_rotation.x),
                 sin(m_rotation.z),
                 0
@@ -35,10 +35,11 @@ namespace overkill
     void EntityDirectionalLight::update(float dt, glm::mat4 parentMatrix)
     {
         m_transformMatrix = getModelMatrix(parentMatrix);
+        m_rotation += m_angularVelocity * dt;
         //Renderer::draw(ModelSystem::getById(0), m_transformMatrix);
         //m_rotation = glm::vec3(parentMatrix * glm::vec4(m_rotation,1.0f));
 
-        /*
+
         LOG_DEBUG("Update()\n\nentityID %d, entiryTag %s, \nm_position %f, %f, %f\nm_rotation %f, %f, %f\nm_angVel %f, %f, %f\ndeltatime %f\n",
         m_entityID,  m_entityTag.data(),
         m_position.x, m_position.y, m_position.z,
@@ -48,7 +49,7 @@ namespace overkill
         Util::printMatrix(parentMatrix, "ParentMatrix:");
         Util::printMatrix(m_transformMatrix, "TransormMatrix:");
         printf("\n\n");
-        */
+
 
         if (m_childIDs.size() > 0)                  // If we actually have kids.
         {

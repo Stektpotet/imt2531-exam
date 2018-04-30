@@ -27,7 +27,7 @@ int Scene::m_lightsCount;
 
 
     void Scene::load(std::string sceneFile)
-    {          
+    {
         // Reset values:
         int count = 0;
         int modelCount = 0;
@@ -45,19 +45,19 @@ int Scene::m_lightsCount;
         //  EntityCameras:
         //
         // int   cameraCount.
-        if (auto[key, cameras, err] = p.keyInteger("cameras"); err) 
+        if (auto[key, cameras, err] = p.keyInteger("cameras"); err)
         {
             LOG_ERROR("%s error reading cameraCount on key --> %s...", filestring.c_str(), key.data());
-        } 
-        else 
+        }
+        else
         {
             m_cameraCount = cameras;
-            LOG_INFO("%s: %d",key.data(), m_cameraCount);        
+            LOG_INFO("%s: %d",key.data(), m_cameraCount);
         }
 
         // Load EntityCameras.
-        for (; count < m_cameraCount; count++)     
-        {   
+        for (; count < m_cameraCount; count++)
+        {
             C::Tag tag;
             glm::vec3 pos;
             glm::vec3 rot;
@@ -69,67 +69,67 @@ int Scene::m_lightsCount;
             float nearClip = 0;
             float farClip = 0;
 
-            // char  entityTag.    
-            if (auto[key, camera, err] = p.keyString("camera"); err) 
+            // char  entityTag.
+            if (auto[key, camera, err] = p.keyString("camera"); err)
             {
                 LOG_ERROR("%s error on cameraTag key --> %s...", filestring.c_str(), key.data());
-            } 
-            else 
+            }
+            else
             {
                 tag = camera;
-                LOG_INFO("%s: %s",key.data(), tag.data());             
+                LOG_INFO("%s: %s",key.data(), tag.data());
             }
 
             // vec3 position.
-            if (auto[key, position, err] = p.keyVec3("position"); err) 
+            if (auto[key, position, err] = p.keyVec3("position"); err)
             {
                 LOG_ERROR("%s error on camera position key --> %s...", filestring.c_str(), key.data());
-            } 
-            else 
+            }
+            else
             {
                 pos = position;
-                LOG_INFO("%s: (%f, %f, %f)",key.data(), pos.x, pos.y, pos.z);                    
+                LOG_INFO("%s: (%f, %f, %f)",key.data(), pos.x, pos.y, pos.z);
             }
 
             // vec3 rotation.
-            if (auto[key, rotation, err] = p.keyVec3("rotation"); err) 
+            if (auto[key, rotation, err] = p.keyVec3("rotation"); err)
             {
                 LOG_ERROR("%s error on camera rotation key --> %s...", filestring.c_str(), key.data());
-            } 
-            else 
+            }
+            else
             {
                 rot = rotation;
-                LOG_INFO("%s: (%f, %f, %f)",key.data(), rot.x, rot.y, rot.z);                    
+                LOG_INFO("%s: (%f, %f, %f)",key.data(), rot.x, rot.y, rot.z);
             }
 
             // vec3 velocity.
-            if (auto[key, velocity, err] = p.keyVec3("velocity"); err) 
+            if (auto[key, velocity, err] = p.keyVec3("velocity"); err)
             {
                 LOG_ERROR("%s error on camera velocity key --> %s...", filestring.c_str(), key.data());
-            } 
-            else 
+            }
+            else
             {
                 vel = velocity;
-                LOG_INFO("%s: (%f, %f, %f)",key.data(), vel.x, vel.y, vel.z);                    
+                LOG_INFO("%s: (%f, %f, %f)",key.data(), vel.x, vel.y, vel.z);
             }
 
             // vec3 rotation.
-            if (auto[key, angleVelocity, err] = p.keyVec3("angleVelocity"); err) 
+            if (auto[key, angleVelocity, err] = p.keyVec3("angleVelocity"); err)
             {
                 LOG_ERROR("%s error on camera angle velocity key --> %s...", filestring.c_str(), key.data());
-            } 
-            else 
+            }
+            else
             {
                 angVel = angleVelocity;
-                LOG_INFO("%s: (%f, %f, %f)",key.data(), angVel.x, angVel.y, angVel.z);                    
+                LOG_INFO("%s: (%f, %f, %f)",key.data(), angVel.x, angVel.y, angVel.z);
             }
 
-            // char  CameraMode.    
-            if (auto[key, mode, err] = p.keyString("mode"); err) 
+            // char  CameraMode.
+            if (auto[key, mode, err] = p.keyString("mode"); err)
             {
                 LOG_ERROR("%s error on camera mode key --> %s...", filestring.c_str(), key.data());
-            } 
-            else 
+            }
+            else
             {
                 if (!strcmp("freelook", mode.data()))
                 {
@@ -143,91 +143,91 @@ int Scene::m_lightsCount;
                 {
                     LOG_ERROR("%s error on key --> %s... expected freelook or orbital.", filestring.c_str(), key.data());
                 }
-                LOG_INFO("%s: %s",key.data(), mode.data());                    
+                LOG_INFO("%s: %s",key.data(), mode.data());
             }
 
             // float fov.
-            if (auto[key, fov, err] = p.keyFloat("fov"); err) 
+            if (auto[key, fov, err] = p.keyFloat("fov"); err)
             {
                 LOG_ERROR("%s error on camera fov key --> %s...", filestring.c_str(), key.data());
             }
             else
             {
                 camFov = fov;
-                LOG_INFO("%s: %f",key.data(), camFov);                    
+                LOG_INFO("%s: %f",key.data(), camFov);
             }
 
             // float aspectRatio.
-            if (auto[key, aspectRatio, err] = p.keyFloat("aspectRatio"); err) 
+            if (auto[key, aspectRatio, err] = p.keyFloat("aspectRatio"); err)
             {
                 LOG_ERROR("%s error on camera aspect ratio key --> %s...", filestring.c_str(), key.data());
-            } 
-            else 
+            }
+            else
             {
                 aspect = aspectRatio;
-                LOG_INFO("%s: %f",key.data(), aspect);                    
+                LOG_INFO("%s: %f",key.data(), aspect);
             }
 
             // float nearClip.
-            if (auto[key, _nearClip, err] = p.keyFloat("nearClip"); err) 
+            if (auto[key, _nearClip, err] = p.keyFloat("nearClip"); err)
             {
                 LOG_ERROR("%s error on camera nearclip key --> %s...", filestring.c_str(), key.data());
-            } 
-            else 
+            }
+            else
             {
                 nearClip = _nearClip;
                 LOG_INFO("%s: %f",key.data(), nearClip);
             }
 
             // float farClip.
-            if (auto[key, _farClip, err] = p.keyFloat("farClip"); err) 
+            if (auto[key, _farClip, err] = p.keyFloat("farClip"); err)
             {
                 LOG_ERROR("%s error on camera farclip key --> %s...", filestring.c_str(), key.data());
-            } 
-            else 
+            }
+            else
             {
                 farClip = _farClip;
                 LOG_INFO("%s: %f",key.data(), farClip);
             }
 
-            auto camEntity = new EntityCamera(tag, 
-                                              count, 
-                                              pos, 
-                                              rot, 
-                                              vel, 
-                                              angVel, 
-                                              camMode, 
-                                              camFov, 
-                                              aspect, 
+            auto camEntity = new EntityCamera(tag,
+                                              count,
+                                              pos,
+                                              rot,
+                                              vel,
+                                              angVel,
+                                              camMode,
+                                              camFov,
+                                              aspect,
                                               nearClip,
                                               farClip);
-            Scene::addEntity(camEntity);   
+            Scene::addEntity(camEntity);
         }
 
         if (m_cameraCount == 0)
         {
             LOG_ERROR("m_cameraCount == 0: A scene has to have at least one camera");
-        } 
+        }
 
         Scene::m_activeCamera = (EntityCamera*) Scene::m_entities[0];     // First camera in file is default camera.
 
         //
         //  EntityModels:
         //
-        if (auto[key, entites, err] = p.keyInteger("entities"); err) 
+        if (auto[key, entites, err] = p.keyInteger("entities"); err)
         {
             LOG_ERROR("%s error on entityCount key --> %s...", filestring.c_str(), key.data());
-        } 
-        else 
+        }
+        else
         {
             modelCount = entites;
-            LOG_INFO("%s: %d",key.data(), modelCount);        
+            LOG_INFO("%s: %d",key.data(), modelCount);
         }
 
         m_entitiesOffset = count;
 
-        for (; count < m_cameraCount +  modelCount; count++)     
-        {   
+        for (; count < m_cameraCount +  modelCount; count++)
+        {
             C::Tag entityTag;
             C::Tag modelTag;
             glm::vec3 pos;
@@ -236,106 +236,106 @@ int Scene::m_lightsCount;
             glm::vec3 vel;
             glm::vec3 angVel;
 
-            // char  entityTag.    
-            if (auto[key, entity, err] = p.keyString("entity"); err) 
+            // char  entityTag.
+            if (auto[key, entity, err] = p.keyString("entity"); err)
             {
                 LOG_ERROR("%s error on entityTag key --> %s...", filestring.c_str(), key.data());
-            } 
-            else 
+            }
+            else
             {
                 entityTag = entity;
-                LOG_INFO("%s: %s",key.data(), entityTag.data());                    
+                LOG_INFO("%s: %s",key.data(), entityTag.data());
             }
 
-            // char  modelTag.    
-            if (auto[key, model, err] = p.keyString("model"); err) 
+            // char  modelTag.
+            if (auto[key, model, err] = p.keyString("model"); err)
             {
                 LOG_ERROR("%s error on entityModelTag key --> %s...", filestring.c_str(), key.data());
-            } 
-            else 
+            }
+            else
             {
                 modelTag = model;
-                LOG_INFO("%s: %s",key.data(), modelTag.data());                    
+                LOG_INFO("%s: %s",key.data(), modelTag.data());
             }
 
             // vec3 position.
-            if (auto[key, position, err] = p.keyVec3("position"); err) 
+            if (auto[key, position, err] = p.keyVec3("position"); err)
             {
                 LOG_ERROR("%s error on entity position key --> %s...", filestring.c_str(), key.data());
-            } 
-            else 
+            }
+            else
             {
                 pos = position;
-                LOG_INFO("%s: (%f, %f, %f)",key.data(), pos.x, pos.y, pos.z);                    
+                LOG_INFO("%s: (%f, %f, %f)",key.data(), pos.x, pos.y, pos.z);
             }
 
             // vec3 rotation.
-            if (auto[key, rotation, err] = p.keyVec3("rotation"); err) 
+            if (auto[key, rotation, err] = p.keyVec3("rotation"); err)
             {
                 LOG_ERROR("%s error on entity rotation key --> %s...", filestring.c_str(), key.data());
-            } 
-            else 
+            }
+            else
             {
                 rot = rotation;
-                LOG_INFO("%s: (%f, %f, %f)", key.data(), rot.x, rot.y, rot.z);                    
+                LOG_INFO("%s: (%f, %f, %f)", key.data(), rot.x, rot.y, rot.z);
             }
 
             // vec3 scale.
-            if (auto[key, scale, err] = p.keyVec3("scale"); err) 
+            if (auto[key, scale, err] = p.keyVec3("scale"); err)
             {
                 LOG_ERROR("%s error on entity scale key --> %s...", filestring.c_str(), key.data());
-            } 
-            else 
+            }
+            else
             {
                 scl = scale;
-                LOG_INFO("%s: (%f, %f, %f)",key.data(), scl.x, scl.y, scl.z);                    
+                LOG_INFO("%s: (%f, %f, %f)",key.data(), scl.x, scl.y, scl.z);
             }
 
             // vec3 velocity.
-            if (auto[key, velocity, err] = p.keyVec3("velocity"); err) 
+            if (auto[key, velocity, err] = p.keyVec3("velocity"); err)
             {
                 LOG_ERROR("%s error on entity velocity key --> %s...", filestring.c_str(), key.data());
-            } 
-            else 
+            }
+            else
              {
                 vel = velocity;
-                LOG_INFO("%s: (%f, %f, %f)",key.data(), vel.x, vel.y, vel.z);                    
+                LOG_INFO("%s: (%f, %f, %f)",key.data(), vel.x, vel.y, vel.z);
             }
 
             // vec3 angularVelocity.
-            if (auto[key, angleVelocity, err] = p.keyVec3("angleVelocity"); err) 
+            if (auto[key, angleVelocity, err] = p.keyVec3("angleVelocity"); err)
             {
                 LOG_ERROR("%s error on entity angle velocity key --> %s...", filestring.c_str(), key.data());
-            } 
-            else 
+            }
+            else
             {
                 angVel = angleVelocity;
-                LOG_INFO("%s: (%f, %f, %f)",key.data(), angVel.x, angVel.y, angVel.z);                    
+                LOG_INFO("%s: (%f, %f, %f)",key.data(), angVel.x, angVel.y, angVel.z);
             }
 
 
             if (modelTag == "NULL" || modelTag == "null" || modelTag == "none" || modelTag == "_")
             {
-                auto nodeEntity =  new EntityNode(entityTag, 
-                                    count, 
-                                    pos, 
+                auto nodeEntity =  new EntityNode(entityTag,
+                                    count,
+                                    pos,
                                     rot,
                                     scl,
-                                    vel, 
+                                    vel,
                                     angVel);
-                addEntity((Entity*) nodeEntity); 
+                addEntity((Entity*) nodeEntity);
             }
-            else 
+            else
             {
-                auto modelEntity = new EntityModel(modelTag, 
-                                    entityTag, 
-                                    count, 
-                                    pos, 
+                auto modelEntity = new EntityModel(modelTag,
+                                    entityTag,
+                                    count,
+                                    pos,
                                     rot,
                                     scl,
-                                    vel, 
+                                    vel,
                                     angVel);
-                addEntity((Entity*) modelEntity); 
+                addEntity((Entity*) modelEntity);
             }
 
         }
@@ -370,7 +370,7 @@ int Scene::m_lightsCount;
             //intensities : 1 0 0
             //falloff : 1.0 0.03125 0.0625
 
-            // char  entityTag.    
+            // char  entityTag.
             if (auto[key, light, err] = p.keyString("pointlight"); err)
             {
                 LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
@@ -381,7 +381,7 @@ int Scene::m_lightsCount;
                 LOG_INFO("%s: %s", key.data(), lightTag.data());
             }
 
-            // vec3 position.    
+            // vec3 position.
             if (auto[key, position, err] = p.keyVec3("position"); err)
             {
                 LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
@@ -392,7 +392,7 @@ int Scene::m_lightsCount;
                 LOG_INFO("%s: (%f, %f, %f)", key.data(), pos.x, pos.y, pos.z);
             }
 
-            // vec3 velocity.    
+            // vec3 velocity.
             if (auto[key, velocity, err] = p.keyVec3("velocity"); err)
             {
                 LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
@@ -403,7 +403,7 @@ int Scene::m_lightsCount;
                 LOG_INFO("%s: (%f, %f, %f)", key.data(), vel.x, vel.y, vel.z);
             }
 
-            // vec3 intensity.    
+            // vec3 intensity.
             if (auto[key, intensity, err] = p.keyVec3("intensities"); err)
             {
                 LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
@@ -413,7 +413,7 @@ int Scene::m_lightsCount;
                 intensities = intensity;
                 LOG_INFO("%s: (%f, %f, %f)", key.data(), intensity.x, intensity.y, intensity.z);
             }
-            // vec3 falloff.    
+            // vec3 falloff.
             if (auto[key, foff, err] = p.keyVec3("falloff"); err)
             {
                 LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
@@ -441,7 +441,7 @@ int Scene::m_lightsCount;
         bool hasSun;
         if (auto[key, sunToggle, err] = p.keyInteger("hasSun"); err)
         {
-            LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
+            LOG_ERROR("%s error on hasSun key --> %s...", filestring.c_str(), key.data());
         }
         else
         {
@@ -452,13 +452,14 @@ int Scene::m_lightsCount;
         if (hasSun) {
             C::Tag lightTag;
             glm::vec3 rot;
+            glm::vec3 angVel;
             glm::vec3 intensities;
 
 
-            // char  entityTag.    
+            // char  entityTag.
             if (auto[key, light, err] = p.keyString("dirlight"); err)
             {
-                LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
+                LOG_ERROR("%s error dirLight tag on key --> %s...", filestring.c_str(), key.data());
             }
             else
             {
@@ -466,20 +467,30 @@ int Scene::m_lightsCount;
                 LOG_INFO("%s: %s", key.data(), lightTag.data());
             }
 
-            // vec3 position.    
+            // vec3 rotation.
             if (auto[key, rotation, err] = p.keyVec3("rotation"); err)
             {
-                LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
+                LOG_ERROR("%s error dirlight rotation on key --> %s...", filestring.c_str(), key.data());
             }
             else
             {
                 rot = rotation;
                 LOG_INFO("%s: (%f, %f, %f)", key.data(), rotation.x, rotation.y, rotation.z);
             }
-            // vec3 intensity.    
+            // vec3 angularVelocity.
+            if (auto[key, angleVelocity, err] = p.keyVec3("angleVelocity"); err)
+            {
+                LOG_ERROR("%s error on DirectionalLight angle velocity key --> %s...", filestring.c_str(), key.data());
+            }
+            else
+            {
+                angVel = angleVelocity;
+                LOG_INFO("%s: (%f, %f, %f)",key.data(), angVel.x, angVel.y, angVel.z);
+            }
+            // vec3 intensity.
             if (auto[key, intensity, err] = p.keyVec3("intensities"); err)
             {
-                LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
+                LOG_ERROR("%s error on DirectionalLight intensities key --> %s...", filestring.c_str(), key.data());
             }
             else
             {
@@ -490,12 +501,14 @@ int Scene::m_lightsCount;
             sunEntity = new EntityDirectionalLight(lightTag,
                 count,
                 rot,
+                angVel,
                 intensities
             );
         }
         else {
             sunEntity = new EntityDirectionalLight("NOT_SUN",
                 count,
+                glm::vec3(0),
                 glm::vec3(0),
                 glm::vec3(0)
             );
@@ -505,12 +518,12 @@ int Scene::m_lightsCount;
         m_matrixBuffer      = ShaderSystem::getUniformBuffer("OK_Matrices");
         m_lightBuffer       = ShaderSystem::getUniformBuffer("OK_Lights");
         m_projectionGLindex = m_matrixBuffer.getUniformIndex("projection");
-        m_pointLightGLindex = m_lightBuffer.getUniformIndex("light[0].position"); 
+        m_pointLightGLindex = m_lightBuffer.getUniformIndex("light[0].position");
         m_sunGLindex        = m_lightBuffer.getUniformIndex("sun.direction");
 /*
-        m_sun = DirectionalLight { 
+        m_sun = DirectionalLight {
                 -glm::vec4{ 10, 9, 8, 7 },
-                { 1.0f, 0.756862745f, 0.552941176f,0.0f } 
+                { 1.0f, 0.756862745f, 0.552941176f,0.0f }
         };
 */
 
@@ -521,7 +534,7 @@ int Scene::m_lightsCount;
         {
             LOG_ERROR("%s error on relationsCount key --> %s...", filestring.c_str(), key.data());
         }
-        else 
+        else
         {
             LOG_DEBUG("relations: %d", _relationsCount);
             relationsCount = _relationsCount;
@@ -535,7 +548,7 @@ int Scene::m_lightsCount;
             {
                 LOG_ERROR("%s error on childCount key --> %s...", filestring.c_str(), key.data());
             }
-            else 
+            else
             {
                 childCount = _childCount;
                 parentTag = key;
@@ -556,21 +569,21 @@ int Scene::m_lightsCount;
             setChild(modelCubeGrandChildObject -> getEntityID(), cameraFour -> getEntityID());
 
             setChild(camera->getEntityID(), debugCamPos->getEntityID());
-            
+
             setChild(modelCubeObject-> getEntityID(), modelCubeChildObject-> getEntityID());      // Set entity with id 1 as a child of entity with id 0.
             setChild(modelCubeChildObject-> getEntityID(), modelCubeGrandChildObject-> getEntityID());      // Set entity with id 1 as a child of entity with id 0.
-        
-        
+
+
             m_activeCamera = (EntityCamera*) m_entities[0];
 */
                  // All cameras in the beginning of scene file, first one active by default.
         //
- 
+
     }
 
 
 
-    void Scene::reload() 
+    void Scene::reload()
     {
         Init::loadConfig();
         Init::OpenGL(C::ClearColor);
@@ -580,7 +593,7 @@ int Scene::m_lightsCount;
         Scene::m_rootEntities.clear();
         Scene::m_cameraCount = 0;
         Scene::m_activeCamera = nullptr;
-        Scene::load(m_sceneLoaded);        
+        Scene::load(m_sceneLoaded);
     }
 
 
@@ -594,7 +607,7 @@ int Scene::m_lightsCount;
         m_rootEntities.erase(rootToRemove);
 
         getEntity(parentID)-> addChild(childID);
-    
+
         LOG_DEBUG("parent: %s --> child: %s",
             getEntity(parentID)-> getTag().data(),
             getEntity(childID)-> getTag().data());
@@ -602,7 +615,7 @@ int Scene::m_lightsCount;
 
 
     bool Scene::entityExist(const C::Tag tag)
-    {   
+    {
         bool exist = true;
 
         auto comp = [tag](Entity* entity)       // Lambda to compare two entities by tag.
@@ -622,8 +635,8 @@ int Scene::m_lightsCount;
     int Scene::addEntity(Entity* entity)
     {
         int ID = -1;
-        
-        if (!entityExist(entity-> getTag()))  // If entity with this tag does not exist yet.                           
+
+        if (!entityExist(entity-> getTag()))  // If entity with this tag does not exist yet.
         {
             ID = m_entities.size();
             m_rootEntities.push_back(ID);
@@ -632,7 +645,7 @@ int Scene::m_lightsCount;
         else                                                            // Entity with tag already exist.
         {
             LOG_ERROR("Attempt to create duplicate entity with tag: %s"
-                    "\n\t\t\t\t  Check that your scene file does not contain two entities with the tag(%s).", 
+                    "\n\t\t\t\t  Check that your scene file does not contain two entities with the tag(%s).",
                     entity-> getTag().c_str(), entity-> getTag().c_str());
         }
 
@@ -674,8 +687,8 @@ int Scene::m_lightsCount;
     {
 
         // Update active camera
-        m_activeCamera -> checkInput();     // Only update the active camera on input.    
-    
+        m_activeCamera -> checkInput();     // Only update the active camera on input.
+
         // Update entities
         for (auto ID : m_rootEntities)      // all the cameras update() is still being run in here.
         {
@@ -686,8 +699,8 @@ int Scene::m_lightsCount;
     void Scene::draw(float t)
     {
         // Buffer camera data
-        Scene::m_matrixBuffer.update(m_projectionGLindex, 
-                              sizeof(CameraTransform), 
+        Scene::m_matrixBuffer.update(m_projectionGLindex,
+                              sizeof(CameraTransform),
                               &(m_activeCamera -> m_cameraTransform));
 
         // Buffer light data
@@ -708,7 +721,7 @@ int Scene::m_lightsCount;
         pbos.resize(C::MAX_LIGHTS);
 
         int count = 0;
-        for(int off = m_lightsOffset; off < m_lightsOffset + m_lightsCount; ++off) 
+        for(int off = m_lightsOffset; off < m_lightsOffset + m_lightsCount; ++off)
         {
             pbos[count++] = (((EntityPointLight*)m_entities[off])->pack());
         }
