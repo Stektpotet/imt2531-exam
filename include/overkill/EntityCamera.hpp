@@ -32,6 +32,7 @@ private:
     float m_nearClip;
     float m_farClip;
     enum CameraMode m_cameraMode;
+    glm::vec3 m_modelSpacePos;
 
     glm::mat4 getViewMatrix(glm::mat4 parentMatrix = glm::mat4(1));
     glm::mat4 getModelToWorldMatrix(glm::mat4 parentMatrix = glm::mat4(1));
