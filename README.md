@@ -44,6 +44,29 @@ We want to model an entire scene graph.
      - from gitbash: `> git clone http://prod3.imt.hig.no/overkill-studios/imt2531-assignment2.git`
  4. In Visual Studio: go to `File->Open->CMake...`, and select the CMakeLists.txt file located in `./yourdesiredworkdir/imt2531-assignment2/`
 
+# Controls
+```
+Reload shaders   - 1
+Reload materials - 2
+Reload models    - 3
+Reload scene     - 4
+
+Move camera:
+    Forwards   -  W
+    Left       -  A
+    Backwards  -  S
+    Right      -  D
+    Down       -  Q 
+    Up         -  E
+Rotate camera:
+    Pitch      - Mouse up/down
+    Yaw        - Mouse left/right
+    
+Switch camera  - Tab
+Switch camera mode - Space
+
+```
+
 ##### Additional/Optional setup
  - Running the program with different scenes:
     To start the program from a differet scene all you need to do is specify another configuration in the file named `launch.vs.json`, this can be found in the hidden directory `.vs`, or by going to `CMake->Debug and Launch Settings`.
@@ -148,38 +171,115 @@ We are also using python3 or above.
 - [x] Update render of loaded Entity on file change <br>
 
 
-# Full feature list
- ### Rendering of 3D models.
-3D models are rendered in a GLFW window.  
- ### Loading of 3D models from custom simplified format.
+# Extended feature list
+
+## 1. Rendering of 3D models.
+3D models are rendered in a GLFW window. Rendering 3D models in it's simplest form is just pushing each individual vertex down the 3D rendering pipeline of the GPU using shaders. In OpenGL this is achieved by writing -> loading -> compiling -> linking -> buffering -> binding and running the following shader minimum.
+
+```c=
+#shader vertex
+#version 150
+
+in vec4 position;
+in vec4 color;
+out vec4 color_from_vshader;
+
+void main() {
+    gl_Position = position;
+    color_from_vshader = color;
+}
+
+#shader fragment
+#version 150
+
+in vec4 color_from_vshader;
+out vec4 out_color;
+
+void main() {
+    out_color = color_from_vshader;
+}
+```
+
+We expanded quite a bit more than just rendering 3D models.
+Some of the features you will find in our shaders are:
+* Texture mapping
+* Bump mapping (normal mapping)
+* Ambient lighting
+* Diffuse lighting
+* Specular lighting
+* Subsurface scattering
+
+ ## 2. Loading of 3D models from custom simplified format.
 The costum file format in yaml that consists of a vertex count, then a list of vertecies where each define a point in space, its normal vector, its UV coordintes and lastly color. <br>
+
+```yaml
+vertices: 1560
+#      x   y    z     nx   ny     nz    u   v    r   g   b   a 
+v:  1.24 0.65 0.10  -0.85 -0.52  0.00  0.0 0.0  255 255 255 150
+v:  1.27 0.67 0.10 ......
+v:  1.30 0.60 0.10 .......
+...
+
+```
 Then a mesh count, describing how many meshes are to come.<br>
 Each mesh has its name, material, shader and count of how many triangles it consists of. Each triangle lists three vertex indecies to define it.
- ### Python script for blender, to export to custom model format.
- ### Transorms, complete with position, rotation, scale, velocity,angular velocity, and children.
+ 
+```yaml
+meshes: 1
+mesh: blendermesh
+material: _default
+shader: _default
+triangles: 1166
+t: 64 92 65
+t: 92 66 65
+t: 92 0 66
+```
+ 
+ ## 3. Python script for blender, to export to custom model format.
+
+Since we had our own model format, we needed a way to bring in models. Using Blender for this was a good choice. It supports almost any model format. The only thing we need is an exporter from Blender. 
+
+Blender is also an excellent tool for just fixing stuff related to models. Triangulation, scaling, rotation.
+
+Blender is scripted using Python. The Python script can be executed inside blenders text-editor.
+```python=
+import bpy
+active_object = bpy.context.active_object
+```
+By reading the data stored in the `bpy.context` we can pull out almost anything. A comprehensive documentation of the Blender Python API can be found here https://docs.blender.org/api/2.79/ - 30.04.2018
+
+Blender also has a python console for easy testing
+
+![Imgur](https://i.imgur.com/8AUWTTo.png)
+ 
+ ## 4. Transorms, complete with position, rotation, scale, velocity,angular velocity, and children.
  Entities in the framework have a tag(string) that is unique, with a corresponing id(int) that is equally unique. The reason is that int are much faster to address by during runtime. However strings are much more readable.<br>
 The entity uses 6 glm vector3s to keep track of its position, rotation, scale, velocity and angular velocity. These vectors are in model space, if the entiry is root in the world, that vector is in the world's model space, more commonly refered to as world space. Hovever if it is child of another entity, the position is relative to it's parent's. <br>
 Each entity also has a list of entity ids that describe which other entities in the world that are children of the entity. When the entity updates, the model matrix is passed to each of the children.
- ### Shader programs combined in single files. Parsed during runtime.
+
+ ## 5. Shader programs combined in single files. Parsed during runtime.
  Our shader program parser reads entire shaderprograms written as a single file with the directives `#shader vertex | geometry | fragment` marking the start of different shaders. 
  This allows users to more clearly see the flow of input/output between shaders.
- ### Additional syntax for shaders
+ ## 6. Additional syntax for shaders
  As mentioned above, we've added custom directives for the parser to handle. in addition to the `#shader` directive, we've added the `#prop` directive.
 The `#prop` directive is used for setting program specific draw properties.
 The draw properties we allow to change through this directive are:
  - Culling
- `#prop Cull <[on | off] [back | front | both]>`
+ `#prop Cull {{on | off} | {back | front | both}}`
  - Depth Test
- `#prop ZTest <on | off>`
+ `#prop ZTest {on | off}`
  - Blend Function
-  `#prop Blend <[on | off] [A | B]>`
+  `#prop Blend {{on | off} | <A> <B>}`
   where A and B may be one of the following (see [OpenGL blending](https://www.khronos.org/opengl/wiki/Blending) for further explanation):
 ```
     OneMinusConstantAlpha, OneMinusConstantColor, OneMinusDstAlpha, OneMinusSrcColor, 
     OneMinusDstColor, OneMinusSrcAlpha, SrcAlphaSaturate, ConstantColor, ConstantAlpha
     Zero, One, SrcColor, DstColor, SrcAlpha, DstAlpha
 ```
-`on | off`
+for readability the parser allows the following negative values:
+`off | false | 0 | disabled`
+and positive values:
+`on | true | 1 | enabled` (or for that matter anything else that is not considered negative)
 
 if these directives are not used, the program will default to the following:
 ```
@@ -188,24 +288,76 @@ BlendFunc: SrcAlpha, OneMinusDstAlpha
 DepthTest: On
 ```
  These directives allow shader programs to take control of the way they are rendered by the renderer by swapping the state of said properties on just before anything is drawn (i.e. on binding), and disabling them as soon as the drawcall is done.
- ### Material files coupled with shaders that are attached to models. Transformable enity.
+ ## 7. Material files coupled with shaders that are attached to models. Transformable enity.
  yaml
- ### Point lights. Transformable entity.
- ### Directional light. Transformable entity(only rotation and angular velocity).
- ### Cameras using perspective projection 
- There can be several cameras in the scene. You can switch between them using TAB. There are also two camera modes, FREELOOK and ORBITAL.  
+ 
+ ## 8. Point lights. Transformable entity.
+ ## 9. Directional light. Transformable entity(only rotation and angular velocity).
+ ## 10. Cameras using perspective projection 
+ There can be several cameras in the scene. You can switch between them using TAB. There are also two camera modes, FREELOOK and ORBITAL, which you switch between using SPACE. 
+ 
+```cpp
+ enum CameraMode
+{
+    FREELOOK,
+    ORBITAL
+};
+```
+  
 The freelook mode is like the noclip mode first person shooter often have when spectating a game. You can look around with the mouse, and move in whatever direction you're pointing(using WASD-QE).  
+  
 Orbital mode is similar to freelook. However, when moving the mouse, the camera will orbit around origin of the camera's parent. If the camera is root that's 0,0,0 world space.  
-Implementing a third camera mode would be pretty painless as the structure of the camer
- ### Loading of scene files that defines the layout of cameras, models, directional light, and pointlights.
-The scene file consists of cameras, entities(models, and empty nodes), point lights, directional light, and child-parent relations. <br>
+Implementing a third camera mode would be pretty painless as the structure of the camera is set up to support several. It would be as simpe as adding an enum entry, and two switch cases, all in the same class.
+
+ ## 11. Loading of scene files that defines the layout of cameras, models, directional light, and pointlights.
+The scene file consists of cameras, entities(models, and empty nodes), point lights, directional light, and child-parent relations.  
+  
 The file starts with a camera count, then the camera entities.  
-Each camera entity has position, rotation, velocity and angular velocity. Followed by the camera mode...
+Each camera entity has it's tag, position, rotation, velocity and angular velocity. Followed by the camera mode, nearclip and lastly farclip.  
+  
+Then entity count. An entity has it's unique entity tag, a model tag that is unique per model, position, roation, scale, velocity and it's angular velocity.  
+  
+Then point light count, then the point light entites.  
+Each point light has an entity tag, it's position, velocity, it's vec3 of light intensities which determine it's color, lastly it's cev
  
- 
- (good feedback)
- ### Child-parent relationship between entities where children inherit their parent's transormation. 
- - 
+ ## 12. Robust feedback
+ Somewhat good error feedback - 
+ - **For shader errors**: we're using program introspection to get linking status which in turn allows us to direct users to potential issues in their shader code. We print information about which shader is unable to attatch/link (vertex/fragment/geometry), and the line in the shaderprogram file in which the error occurs. Additionally an error-shader is used, clearly indicating to the user that something went wrong.
+ - **For model errors**: if you're trying to use a non-existing model in a scene, the application will instead plug in an error-model where the model should've appeared.
+ - **For material errors**: if you're trying to use a non-existing material on a model, the application will instead use an error-material. This material applies _crazy_ values to uniforms to try to make the shader program result as _wrong_ as possible, indicating that something is wrong.
+
+All of the above cases will be logged to the console, allowing the user to inspect exactly what went wrong when loading.
+
+ ## 13. Child-parent relationship between entities where children inherit their parent's transormation. 
+
+```yaml
+relations: 24
+
+    sun: 0
+
+    mercury: 0
+    mercuryCore: 1
+        mercury
+
+    venusCam: 0
+    venus: 1
+        venusCam
+    venusCore: 1
+        venus
+
+    earthCam: 0
+    moonMoonCam: 0
+    moon2: 0
+    moonCore2: 1
+        moon2
+    moon: 2
+        moonCore2
+        moonMoonCam
+    moonCore: 1
+        moon
+        
+# Many more relations....
+```
 
 # Future work / Discussion 
 
@@ -440,7 +592,7 @@ We experienced many ugly atrifacts when rendering models exported from Blender. 
 
 ## 5. Packing vertexdata
 
-We wanted to pack down the vertex data to a minimum practical size before sending it to the GPU.
+We wanted to pack down the vertex data to a minimum practical size before sending it to the GPU, as is described on Khronos' ["Vertex Specification Best Practices" wiki page](https://www.khronos.org/opengl/wiki/Vertex_Specification_Best_Practices#Attribute_sizes)
 
 We managed to pack the normals from 3 floats (12 bytes) -> 1 int (4 bytes). The packing happens when parsing the contents of the file. Since everything is bitwise opeartions it happens really fast, and does not affect load times considerably
 ```cpp
@@ -502,3 +654,22 @@ struct Vertex
 ```
 
 Because of this it did not make sense to pack uv coordinates.
+
+
+## 6. Animations - still a largely unexplored territory.
+
+The only animations we support now is movement and rotation. We can find this in our scene format
+
+```yml
+entity: Suzanne
+  model: Suzanne
+  position: 4 10 1
+  rotation: 45 45 45
+  scale: 10 10 10
+  velocity: 0 0 0 
+  angleVelocity: 1 3.4 1.67
+```
+
+We do not know how actual animation data looks like. How it would fit into our system. Would we have to expand our  vertex file format ?
+What is even animations as data?
+Where does it come from?
