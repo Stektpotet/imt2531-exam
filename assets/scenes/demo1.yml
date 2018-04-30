@@ -7,7 +7,6 @@ camera: mainCam
   angleVelocity: 0 0 0
   mode: orbital
   fov: 90
-  aspectRatio: 1.25
   nearClip: 0.1
   farClip: 800
 
@@ -18,7 +17,6 @@ camera: mainCam
     angleVelocity: 0 0 0
     mode: orbital
     fov: 90
-    aspectRatio: 1.25
     nearClip: 0.1
     farClip: 800
 
@@ -29,7 +27,6 @@ camera: mainCam
     angleVelocity: 0 0 0
     mode: freelook
     fov: 90
-    aspectRatio: 1.25
     nearClip: 0.1
     farClip: 800
 
@@ -40,7 +37,6 @@ camera: mainCam
     angleVelocity: 0 0 0
     mode: freelook
     fov: 90
-    aspectRatio: 1.25
     nearClip: 0.1
     farClip: 800
 
@@ -51,7 +47,6 @@ camera: mainCam
    angleVelocity: 0 0 0
    mode: orbital
    fov: 90
-   aspectRatio: 1.25
    nearClip: 0.1
    farClip: 1000
 

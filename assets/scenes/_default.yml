@@ -7,7 +7,6 @@ camera: maincam
   angleVelocity: 0 0 0
   mode: orbital
   fov: 90
-  aspectRatio: 1.25
   nearClip: 0.1
   farClip: 4000
 
@@ -30,7 +29,7 @@ entity: Suzanne
   velocity: 0 0 0
   angleVelocity: 50 0 50
 
-  
+
 entity: cube
   model: Icosphere
   position: 10 0 0
@@ -46,7 +45,7 @@ entity: light0
   scale: 1 1 1
   velocity: 0 0 0
   angleVelocity: 0 0 0
-  
+
 entity: light1
   model: null
   position: -10 0 0
@@ -62,13 +61,13 @@ pointlight: red
   velocity: 0 0 0
   intensities: 2 0 0
   falloff: 1.0 0.03125 0.0625
-  
+
 pointlight: green
   position: 10 0 0 #use parent position instead
   velocity: 0 0 0
   intensities: 0 2 0
   falloff: 1.0 0.03125 0.0625
-  
+
 pointlight: blue
   position: -10 0 0 #use parent position instead
   velocity: 0 0 0

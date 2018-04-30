@@ -65,7 +65,6 @@ int Scene::m_lightsCount;
             glm::vec3 angVel;
             CameraMode camMode = FREELOOK;
             float camFov = 0;
-            float aspect = 0;
             float nearClip = 0;
             float farClip = 0;
 
@@ -157,17 +156,6 @@ int Scene::m_lightsCount;
                 LOG_INFO("%s: %f",key.data(), camFov);
             }
 
-            // float aspectRatio.
-            if (auto[key, aspectRatio, err] = p.keyFloat("aspectRatio"); err)
-            {
-                LOG_ERROR("%s error on camera aspect ratio key --> %s...", filestring.c_str(), key.data());
-            }
-            else
-            {
-                aspect = aspectRatio;
-                LOG_INFO("%s: %f",key.data(), aspect);
-            }
-
             // float nearClip.
             if (auto[key, _nearClip, err] = p.keyFloat("nearClip"); err)
             {
@@ -198,7 +186,7 @@ int Scene::m_lightsCount;
                                               angVel,
                                               camMode,
                                               camFov,
-                                              aspect,
+                                              C::AspectRatio,
                                               nearClip,
                                               farClip);
             Scene::addEntity(camEntity);
