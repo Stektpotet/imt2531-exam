@@ -76,10 +76,7 @@ auto Util::packNormal(float x, float y, float z) -> GLint
 auto Util::packUV(float u, float v) -> GLushort
 {
     const auto MAX = 255; // 1111 1111
-    const auto DISCARDMASK = 511; //1111 1111 1111 1111
 
-    GLushort su = (GLushort(u * MAX)) << 8;
-    GLushort sv = (GLushort(v * MAX));
     GLushort r = (GLubyte(v * MAX)) << 8 | (GLubyte(u * MAX));
     return r;
 }

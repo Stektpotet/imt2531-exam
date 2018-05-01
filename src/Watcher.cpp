@@ -51,7 +51,7 @@ void Watcher::pollEvents()
 
 
     char* msg;
-    while (msg = fgets(data, DATA_SIZE, pipe)) {
+    while ((msg = fgets(data, DATA_SIZE, pipe))) {
 
         // zero out newline character for prettyer print out
         msg[strlen(msg)-1] = '\0'; 

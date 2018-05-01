@@ -42,7 +42,6 @@ auto packNormal(float x, float y, float z) -> GLint
 
 
 	const auto MAX = 511;		//01 1111 1111
-	const auto MIN = -512;		//10 0000 0000
 	// -1 * 511 = -511
 	GLint ix = (GLint(x * MAX) & 1023);
 	GLint iy = (GLint(y * MAX) & 1023);
