@@ -75,7 +75,8 @@ public:
 
     static auto getUniformBufferIdByTag(const C::Tag& tag)->C::ID;
     static auto getUniformBufferByTag(const C::Tag& tag) -> const UniformBuffer&;
-    static auto getUniformBufferById(C::ID uBufferID) -> const UniformBuffer&;
+    static auto getUniformBufferById(C::ID uBufferID)    -> const UniformBuffer&;
+    static auto getUniformBuffer(const C::Tag& tag) -> UniformBuffer;
     
 
 

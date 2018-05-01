@@ -158,7 +158,8 @@ auto Parser::nextKeyVertex() -> KeyVertex {
     float u, v;
     float nx, ny, nz;
                                            //   1.351676 0.301667  0.100000    0.000  0.000  1.000    0.000  0.000   255 255 255 255
-   auto changecount = sscanf(valueString.data(), "%f  %f  %f    %f  %f  %f    %f  %f   %c %c %c %c", 
+    auto changecount = sscanf(valueString.data(), "%f  %f  %f    %f  %f  %f    %f  %f   %c %c %c %c", 
+
                  &vert.x, &vert.y, &vert.z, &nx, &ny, &nz, &u, &v, &vert.r, &vert.g, &vert.b, &vert.a);
 
     if (changecount != 12) {

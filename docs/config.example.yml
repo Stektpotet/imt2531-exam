@@ -1,8 +1,8 @@
 GLVersionMajor: 4
 GLVersionMinor: 1
 
-WinWidth: 600
-WinHeight: 800
+WinWidth: 800
+WinHeight: 600
 WinName: Assignment 2 - Cube
 ClearColor: 0.4   0.4   0.5   1.0
 

@@ -27,6 +27,7 @@ for exporting models, i.e. their vertex- and face informaion (position, normal, 
 
 We want to model an entire scene graph.
 
+<<<<<<< HEAD
 # Controls
 ```
 Reload shaders   - 1
@@ -49,6 +50,25 @@ Switch camera  - Tab
 Switch camera mode - Space
 
 ```
+=======
+
+# Install Instructions
+
+## Windows
+1. Adding the CMake-module for Visual Studio:
+    - Install Visual Studio 2017 15.4 or newer (the CMake module is only available for these versions).
+    - From Visual Studio: go to `Tools->Get Tools And Features...`
+    - Select the box named `Desktop development with C++`
+    - Enable the checkbox named `Visual C++ Tools for CMake` in the righthand column
+    - Press `Modify` to apply the module
+ 2. Install [python 3](https://www.python.org/downloads/)(or newer)
+    - Make sure the installation directory is `C:\tools\Python36\python.exe`
+ 3. Clone [the repository](http://prod3.imt.hig.no/overkill-studios/imt2531-assignment2)
+     - from gitbash: `> cd "./yourdesiredworkdir/"`
+     - from gitbash: `> git clone http://prod3.imt.hig.no/overkill-studios/imt2531-assignment2.git`
+ 4. In Visual Studio: go to `File->Open->CMake...`, and select the CMakeLists.txt file located in `./yourdesiredworkdir/imt2531-assignment2/`
+    # Copy default config to build.
+>>>>>>> 493bee11f316eb610a91dc210ffd71141ec27ed7
 
 ##### Additional/Optional setup
  - Running the program with different scenes:
@@ -129,11 +149,37 @@ We are also using python3 or above.
 
     cmake .. -DCMAKE_CXX_COMPILER=clang++-5.0
     make
+    
+    cp ../docs/config.example.yml config.yml    # Copy default config to build.
 
-    ./cube
+    ./cube                         # Load default scene.
     ./cube assets/scenes/demo1.yml # Load specific scene.
 ```
 
+
+
+# Controls
+```
+Reload shaders   - 1
+Reload materials - 2
+Reload models    - 3
+Reload scene     - 4
+
+Move camera:
+    Forwards   -  W
+    Left       -  A
+    Backwards  -  S
+    Right      -  D
+    Down       -  Q 
+    Up         -  E
+Rotate camera:
+    Pitch      - Mouse up/down
+    Yaw        - Mouse left/right
+    
+Switch camera  - Tab
+Switch camera mode - Space
+
+```
 
 # Roadmap
 
@@ -202,8 +248,8 @@ in vec4 color;
 out vec4 color_from_vshader;
 
 void main() {
-    gl_Position = position;
-    color_from_vshader = color;
+	gl_Position = position;
+	color_from_vshader = color;
 }
 
 #shader fragment
@@ -213,7 +259,7 @@ in vec4 color_from_vshader;
 out vec4 out_color;
 
 void main() {
-    out_color = color_from_vshader;
+	out_color = color_from_vshader;
 }
 ```
 
@@ -332,10 +378,26 @@ The scene file consists of cameras, entities(models, and empty nodes), point lig
 The file starts with a camera count, then the camera entities.  
 Each camera entity has it's tag, position, rotation, velocity and angular velocity. Followed by the camera mode, nearclip and lastly farclip.  
   
-Then entity count. An entity has it's unique entity tag, a model tag that is unique per model, position, roation, scale, velocity and it's angular velocity.  
+Then entity count. An entity has it's unique entity tag, a model tag that is unique per model(the model tag can be NULL/null/none/_ to signify that is should not be drawn. This is useful for grouping entities under a "core"/"container" entity), position, roation, scale, velocity and it's angular velocity.  
   
 Then point light count, then the point light entites.  
-Each point light has an entity tag, it's position, velocity, it's vec3 of light intensities which determine it's color, lastly it's cev
+Each point light has an entity tag, it's position, velocity, it's vec3 of light intensities which determine it's color, lastly it's falloff which is a vec3, with the components a, b and c. The falloff is calculated as described here:  
+https://www.desmos.com/calculator/vgg77cmctb  
+
+Then a bool, hasSun, stating rather there is a directional light in the scene.  
+The directional light has an entity tag, rotation, angular velocity, and intensity.  
+  
+The last section of the scene loading is relations.  
+It starts with a count stating how many realtions exist. Followed by all the leaf nodes(the entities that don't have children). The reason for this is that they should be defined before they are mentioned as someone else's children.
+
+```yaml
+relations: 3
+    grandChild: 0
+    child: 1
+        grandChild
+    parent: 1
+        child
+```
  
  ## 12. Robust feedback
  Somewhat good error feedback - 
@@ -347,6 +409,7 @@ All of the above cases will be logged to the console, allowing the user to inspe
 
  ## 13. Child-parent relationship between entities where children inherit their parent's transormation. 
 
+OPS already described in 11. scene loading.
 ```yaml
 relations: 24
 
