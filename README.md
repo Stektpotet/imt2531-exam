@@ -1,5 +1,16 @@
 [TOC]
-# Curiosity task - 3D object viewer
+# Curiosity task - Overkill Scene Editor
+
+# Summary
+
+* Description: A Scene Viewer with text-based editing capabilities. It features a comprehensive scene graph datastructure with editable entities, light sources, cameras, parent-child relationships, shaders, materials, meshes and textures.
+* Game logic: Camera can move around in FREELOOK mode or in ORBITAL. It can also cycle between entities. Entities move, rotate, scale according to their initial starting state.
+* Tools used: CMake, Python3, Blender, SOIL, Visual Studio "Performance Analysis", Photoshop, Discord, git.
+* Sample output: ![Solar System demo (giphy.com)](http://www.giphy.com/gifs/tJqSLr4XYExjSfI6j8)
+* Future work: More robust file loading, make datastructure more modular (should be like Lego), add sounds/music.
+
+
+# Goal of project 
 
 We are not doing Pacman. Instead we are doing a Curiousity Task.
 We are focusing heavily on Architecture/Framework development for an OpenGL
@@ -27,7 +38,7 @@ for exporting models, i.e. their vertex- and face informaion (position, normal, 
 
 We want to model an entire scene graph.
 
-<<<<<<< HEAD
+
 # Controls
 ```
 Reload shaders   - 1
