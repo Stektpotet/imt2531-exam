@@ -20,6 +20,7 @@ public:
     constexpr static unsigned int StrSize = 80;
     constexpr static float PI             = 3.14159265359f;
     constexpr static char  Configpath[C::StrSize] = "config.yml";
+    static std::string     PythonPath;
 
     static int   GLVersionMajor  ;
     static int   GLVersionMinor  ;

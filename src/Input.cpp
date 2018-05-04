@@ -83,7 +83,7 @@ namespace overkill
         }
     }
 
-    void Input::OnInputKeyHold(GLFWwindow* /*window*/, int keyCode, int /*scanCode*/, int /*mods*/)
+    void Input::OnInputKeyHold(GLFWwindow* /*window*/, int /*keyCode*/, int /*scanCode*/, int /*mods*/)
     {
         // LOG_DEBUG("Holding %i, as char: %c\n", keyCode, char(keyCode));
     }
@@ -137,8 +137,11 @@ namespace overkill
         float deltaY= y - m_cursorY;
 
         ////Camera rotation:
-        //if (m_leftButtonDown) //Click and drag to rotate.
-        //{
+        
+#ifdef __APPLE__
+        if (m_leftButtonDown) //Click and drag to rotate.
+        {
+#endif
             EntityCamera* camera = (EntityCamera*) Scene::getActiveCamera();
             if (camera != nullptr)
             {
@@ -149,13 +152,16 @@ namespace overkill
             {
                 LOG_WARN("Main camera not set. The scene most likely loaded incorrectly.")
             }
-        //}
+#ifdef __APPLE__
+        }
+#endif
+
 
         m_cursorX = x;  // Save current cursor pos.
-        m_cursorY = y;  // important to do this last since the logic to rotate and pan
+        m_cursorY = y;  // important to do this last since the logic to rotate and pan*/
     }                   // uses the difference between now sand last mouse pos.
 
-    void Input::OnScrollChange(GLFWwindow* /*window*/, double x, double y)
+    void Input::OnScrollChange(GLFWwindow* /*window*/, double /*x*/, double /*y*/)
     {
     //    printf("Scroll: x: %f,\ty:%f\t\tfovy:%f\n", x, y, m_fovy);
     }

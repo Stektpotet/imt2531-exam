@@ -19,8 +19,6 @@
 namespace overkill::Init
 {
 
-void loadConfig();
-
 auto GLFW(
     const int openglMajor, 
     const int openglMinor, 
@@ -30,5 +28,6 @@ auto GLFW(
 void GLEW();
 void OpenGL(const glm::vec4 background);
 
+void Config();
 
 } // ::Init::overkill

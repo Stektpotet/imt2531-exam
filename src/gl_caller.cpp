@@ -1,5 +1,6 @@
 #include <overkill/gl_caller.hpp>
 
+
 void GLClearError()
 {
     while (glGetError() != GL_NO_ERROR);
@@ -27,3 +28,4 @@ auto GLLogFirstError() -> overkill::C::Err
     }
     return 0;
 }
+

@@ -27,6 +27,30 @@ for exporting models, i.e. their vertex- and face informaion (position, normal, 
 
 We want to model an entire scene graph.
 
+<<<<<<< HEAD
+# Controls
+```
+Reload shaders   - 1
+Reload materials - 2
+Reload models    - 3
+Reload scene     - 4
+
+Move camera:
+    Forwards   -  W
+    Left       -  A
+    Backwards  -  S
+    Right      -  D
+    Down       -  Q 
+    Up         -  E
+Rotate camera:
+    Pitch      - Mouse up/down
+    Yaw        - Mouse left/right
+    
+Switch camera  - Tab
+Switch camera mode - Space
+
+```
+=======
 
 # Install Instructions
 
@@ -43,14 +67,49 @@ We want to model an entire scene graph.
      - from gitbash: `> cd "./yourdesiredworkdir/"`
      - from gitbash: `> git clone http://prod3.imt.hig.no/overkill-studios/imt2531-assignment2.git`
  4. In Visual Studio: go to `File->Open->CMake...`, and select the CMakeLists.txt file located in `./yourdesiredworkdir/imt2531-assignment2/`
-
+    # Copy default config to build.
+>>>>>>> 493bee11f316eb610a91dc210ffd71141ec27ed7
 
 ##### Additional/Optional setup
  - Running the program with different scenes:
     To start the program from a differet scene all you need to do is specify another configuration in the file named `launch.vs.json`, this can be found in the hidden directory `.vs`, or by going to `CMake->Debug and Launch Settings`.
 Setting the args of a configuration to reflect a scene will make that scene open upon building & debugging with said configuration.
 
+# Install Instructions
+
+## All systems
+
+Copy the contents of `docs/config.example.yml` into `config.yml` in the root directory. Make sure your `pythonpath:` is setup correctly.
+
+## Windows
+1. Adding the CMake-module for Visual Studio:
+    - Install Visual Studio 2017 15.4 or newer (the CMake module is only available for these versions).
+    - From Visual Studio: go to `Tools->Get Tools And Features...`
+    - Select the box named `Desktop development with C++`
+    - Enable the checkbox named `Visual C++ Tools for CMake` in the righthand column
+    - Press `Modify` to apply the module
+ 2. Install [python 3](https://www.python.org/downloads/)(or newer)
+    - Make sure the installation directory is `C:\tools\Python36\python.exe`
+ 3. Clone [the repository](http://prod3.imt.hig.no/overkill-studios/imt2531-assignment2)
+     - from gitbash: `> cd "./yourdesiredworkdir/"`
+     - from gitbash: `> git clone http://prod3.imt.hig.no/overkill-studios/imt2531-assignment2.git`
+ 4. In Visual Studio: go to `File->Open->CMake...`, and select the CMakeLists.txt file located in `./yourdesiredworkdir/imt2531-assignment2/`
+
+
 ## MacOS
+
+```shell
+brew install cmake
+
+git clone git@prod3.imt.hig.no:overkill-studios/imt2531-assignment2.git
+cd ./imt2531-assignment2
+
+cp docs/config.example.yml config.yml # Edit this to fit your system
+mkdir build/
+cd build/
+cmake ..
+make
+```
 
 ## Linux
 Since we are using c++17 features, a newer compiler is necessary.
@@ -90,8 +149,10 @@ We are also using python3 or above.
 
     cmake .. -DCMAKE_CXX_COMPILER=clang++-5.0
     make
+    
+    cp ../docs/config.example.yml config.yml    # Copy default config to build.
 
-    ./cube
+    ./cube                         # Load default scene.
     ./cube assets/scenes/demo1.yml # Load specific scene.
 ```
 

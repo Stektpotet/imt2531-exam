@@ -17,7 +17,7 @@ namespace overkill
         {
             m_modelID =  ModelSystem::getIdByTag(modelTag);
         }
-        glm::mat4 m_transformMatrix = getModelMatrix();
+        m_transformMatrix = getModelMatrix();
         update(0);
     }
 

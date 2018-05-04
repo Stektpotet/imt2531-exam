@@ -8,7 +8,7 @@ EntityNode::EntityNode(C::Tag entityTag, int entityID,
                         glm::vec3 scale, glm::vec3 vel, 
                         glm::vec3 angVel) : Entity(entityTag, entityID, pos, rot, scale, vel, angVel)
 {
-    glm::mat4 m_transformMatrix = getModelMatrix();
+    m_transformMatrix = getModelMatrix();
     update(0);
 }
 
@@ -43,7 +43,7 @@ void EntityNode::update(float dt, glm::mat4 parentMatrix)
         }
 }
 
-void EntityNode::draw(float t)
+void EntityNode::draw(float /*t*/)
 {
 
 }

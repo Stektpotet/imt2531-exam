@@ -54,7 +54,6 @@ void ShaderSystem::linkUniformBlocks()
         for (GLint i = 0; i < uBlockCount; i++)
         {
             auto name = ShaderIntrospector::getUnifromBlockName(id, i);
-            GLuint uBlockIndex = ShaderIntrospector::getUniformBlockIndex(id, name);
          //   LOG_INFO("Uniform Block #%i, indexed as #%u, Name: %s", i, uBlockIndex, name.c_str());
 			auto search = m_mapUniformBufferTargets.find(name);
 			if (search != m_mapUniformBufferTargets.end())
@@ -341,7 +340,7 @@ auto ShaderSystem::parseProgram(const std::string& fileString,
         {
             if (line.find("ZTest ") != std::string::npos)
             {
-                std::array<std::string, 4> offCases = { "OFF", "FALSE", "0", "DISABLED" };
+                auto offCases = std::array<std::string, 4> {{ "OFF", "FALSE", "0", "DISABLED" }};
                 for (const auto& str : offCases)
                 {
                     const auto& it = std::search(line.begin() + 12, line.end(),
@@ -365,7 +364,7 @@ auto ShaderSystem::parseProgram(const std::string& fileString,
             }
             else if (line.find("Blend ") != std::string::npos)
             {
-                std::array<std::string, 4> offCases = { "OFF", "FALSE", "0", "DISABLED" };
+                std::array<std::string, 4> offCases = { {"OFF", "FALSE", "0", "DISABLED"} };
                 for (const auto& str : offCases)
                 {
                     const auto& it = std::search(line.begin() + 12, line.end(),
@@ -385,7 +384,7 @@ auto ShaderSystem::parseProgram(const std::string& fileString,
                         );
                     }
                 }
-                std::array<std::string, 15> blendParam = { 
+                std::array<std::string, 15> blendParam = {{
                     "ONEMINUSCONSTANTALPHA", 
                     "ONEMINUSCONSTANTCOLOR", 
                     "ONEMINUSDSTALPHA", 
@@ -401,7 +400,7 @@ auto ShaderSystem::parseProgram(const std::string& fileString,
                     "DSTCOLOR", 
                     "SRCALPHA", 
                     "DSTALPHA", 
-                };
+                }};
                 int i = 0;
                 int start = 11;
                 for (const auto& str : blendParam)
@@ -499,7 +498,7 @@ auto ShaderSystem::parseProgram(const std::string& fileString,
             }
             if (line.find("Cull ") != std::string::npos)
             {
-                std::array<std::string, 4> offCases = { "OFF", "FALSE", "0", "DISABLED" };
+                std::array<std::string, 4> offCases = { {"OFF", "FALSE", "0", "DISABLED"} };
                 for (const auto& str : offCases)
                 {
                     const auto& it = std::search(line.begin() + 12, line.end(),
@@ -519,7 +518,7 @@ auto ShaderSystem::parseProgram(const std::string& fileString,
                         );
                         break;
                     }
-                    std::array<std::string, 3> cullFaces = { "FRONT", "BACK", "BOTH" };
+                    std::array<std::string, 3> cullFaces = { {"FRONT", "BACK", "BOTH"} };
                 int i = 0;
                 for (const auto& str : cullFaces)
                 {
@@ -543,7 +542,7 @@ auto ShaderSystem::parseProgram(const std::string& fileString,
                     i++;
                 }
                 }
-                std::array<std::string, 3> cullFaces = { "FRONT", "BACK", "BOTH" };
+                std::array<std::string, 3> cullFaces = { {"FRONT", "BACK", "BOTH" }};
                 int i = 0;
                 for (const auto& str : cullFaces)
                 {

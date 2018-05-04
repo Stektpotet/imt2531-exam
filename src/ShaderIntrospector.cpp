@@ -139,7 +139,7 @@ const std::vector<GLint> ShaderIntrospector::getUniformBlockUniformIndices(const
 
     std::vector<GLint> result;
     result.reserve(count);
-    for (GLuint i = 0; i < count; i++)
+    for (GLint i = 0; i < count; i++)
     {
         result.push_back(indices[i]);
     }

@@ -173,7 +173,7 @@ void EntityCamera::update(float dt, glm::mat4 parentMatrix)
         }
 }
 
-void EntityCamera::draw(float t)
+void EntityCamera::draw(float /*t*/)
 {
 
 }

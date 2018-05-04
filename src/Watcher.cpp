@@ -6,9 +6,6 @@ namespace overkill
 #ifdef WIN32
     const auto& popen = _popen;
     const auto& pclose = _pclose;
-    constexpr char PYTHON_COMMAND[] = "C:\\tools\\Python36\\python.exe tool\\discover.py";
-#else
-    constexpr char PYTHON_COMMAND[] = "/usr/bin/python3 tool/discover.py";
 #endif
 
 
@@ -41,18 +38,20 @@ void Watcher::pollEvents()
 {
     using namespace std::chrono_literals;
 
+    std::string PYTHON_COMMAND = {C::PythonPath + " tool/discover.py"};
+
     const int DATA_SIZE = 128;
     char  data[DATA_SIZE] = "\n";
 
-    FILE* pipe = popen(PYTHON_COMMAND, "r");
+    FILE* pipe = popen(PYTHON_COMMAND.data(), "r");
     if (!pipe) {
         LOG_ERROR("FAILED OPENING python pipe");
     }
-    LOG_INFO("OPENING python pipe %s", PYTHON_COMMAND);
+    LOG_INFO("OPENING python pipe %s", PYTHON_COMMAND.data());
 
 
     char* msg;
-    while (msg = fgets(data, DATA_SIZE, pipe)) {
+    while ((msg = fgets(data, DATA_SIZE, pipe))) {
 
         // zero out newline character for prettyer print out
         msg[strlen(msg)-1] = '\0'; 
