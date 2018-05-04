@@ -334,7 +334,7 @@ int Scene::m_lightsCount;
         //
         if (auto[key, lights, err] = p.keyInteger("pointlights"); err)
         {
-            LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
+            LOG_ERROR("%s error on point light count key --> %s...", filestring.c_str(), key.data());
         }
         else
         {
@@ -361,7 +361,7 @@ int Scene::m_lightsCount;
             // char  entityTag.
             if (auto[key, light, err] = p.keyString("pointlight"); err)
             {
-                LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
+                LOG_ERROR("%s error on point light tag key --> %s...", filestring.c_str(), key.data());
             }
             else
             {
@@ -372,7 +372,7 @@ int Scene::m_lightsCount;
             // vec3 position.
             if (auto[key, position, err] = p.keyVec3("position"); err)
             {
-                LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
+                LOG_ERROR("%s error on point light position key --> %s...", filestring.c_str(), key.data());
             }
             else
             {
@@ -383,7 +383,7 @@ int Scene::m_lightsCount;
             // vec3 velocity.
             if (auto[key, velocity, err] = p.keyVec3("velocity"); err)
             {
-                LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
+                LOG_ERROR("%s error on point light velocity key --> %s...", filestring.c_str(), key.data());
             }
             else
             {
@@ -394,7 +394,7 @@ int Scene::m_lightsCount;
             // vec3 intensity.
             if (auto[key, intensity, err] = p.keyVec3("intensities"); err)
             {
-                LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
+                LOG_ERROR("%s error on point light intencities key --> %s...", filestring.c_str(), key.data());
             }
             else
             {
@@ -404,7 +404,7 @@ int Scene::m_lightsCount;
             // vec3 falloff.
             if (auto[key, foff, err] = p.keyVec3("falloff"); err)
             {
-                LOG_ERROR("%s error on key --> %s...", filestring.c_str(), key.data());
+                LOG_ERROR("%s error on point light falloff key --> %s...", filestring.c_str(), key.data());
             }
             else
             {
