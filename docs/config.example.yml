@@ -16,7 +16,8 @@ NearClip: 0.1
 FarClip: 100.0
 CameraOffset: -70
 
-    
+PythonPath: python3
+
 TexturesFolder: assets/textures
 ShadersFolder: assets/shaders
 MaterialsFolder: assets/materials
@@ -24,3 +25,5 @@ ModelsFolder: assets/models
 ScenesFolder: assets/scenes
 
 MAX_LIGHTS: 8
+
+
