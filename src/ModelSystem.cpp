@@ -86,20 +86,19 @@ auto ModelSystem::makeModel(const C::Tag& tag, const std::string& modelString, M
     //
     // VERTICES
     //
-    // Vertex count
-    auto[vertexCountKey, vertexCount, err1] = p.nextKeyInteger();
-    if(err1) {
-        return 1;
-    }
-
-    // Iterate vertices
     std::vector<Vertex> vertices;
-    vertices.resize(vertexCount);
-    LOG_DEBUG("vertexcount: %d", vertexCount);
 
-    for(int i = 0; i < vertexCount; ++i) 
-    {
-        vertices[i] = p.nextVertex();
+    // Vertex count
+    if (auto[key, vertexCount, err] = p.keyInteger("vertices"); err) {
+        return 1;
+    } else {
+        vertices.resize(vertexCount);
+        LOG_DEBUG("vertexcount: %d", vertexCount);
+
+        for(int i = 0; i < vertexCount; ++i) 
+        {
+            vertices[i] = p.onlyVertex();
+        }        
     }
 
 
@@ -121,56 +120,72 @@ auto ModelSystem::makeModel(const C::Tag& tag, const std::string& modelString, M
     // MESHES
     //
     // Mesh count
-    auto[meshCountKey, meshCount, err3] = p.nextKeyInteger();
-    if(err3) {
+    
+    int meshCount;
+    if (auto[key, meshCount_, err] = p.keyInteger("meshes"); err) {
         return 1;
+    } else {
+        meshCount = meshCount_;
     }
 
     // Iterate meshes
     for(int i = 0; i < meshCount; ++i) 
     {
+        std::string meshTag,
+                    materialTag,
+                    shaderTag;
+
         // mesh tag
-        auto[meshtagKey, meshtag, err2] = p.nextKeyString();
-        if(err2) {
+        if (auto[key, meshTag_, err] = p.keyString("mesh"); err) {
             return 1;
-        }
-        // material tag
-        auto[materialtagKey, materialtag, err4] = p.nextKeyString();
-        if(err4) {
-            return 1;
-        }
-        // shader tag
-        auto[shadertagKey, shadertag, err5] = p.nextKeyString();
-        if(err5) {
-            return 1;
-        }
-        
-        // Triangle count
-        auto[triCountKey, triCount, err6]   = p.nextKeyInteger();
-        if(err6) {
-            return 1;
+        } else {
+            meshTag = std::string(meshTag_);
         }
 
+        // material tag
+        if (auto[key, materialTag_, err] = p.keyString("material"); err) {
+            return 1;
+        } else {
+            materialTag = std::string(materialTag_);
+        }
+
+        // shader tag
+        if (auto[key, shaderTag_, err] = p.keyString("shader"); err) {
+            return 1;
+        } else {
+            shaderTag = std::string(shaderTag_);            
+        }
+        
+
+        //
+        // TRIANGLES 
+        //
         std::vector<Triangle> indices;
-        indices.resize(triCount);
-        LOG_DEBUG("tricount: %d", triCount);
-        // Triangles 
-        for(int j = 0; j < triCount; ++j) 
-        {
-            indices[j] = p.nextTriangle();
-        } 
+
+        // Triangle count
+        if (auto[key, triCount, err] = p.keyInteger("triangles"); err){
+            return err;
+        } else {
+
+            indices.resize(triCount);
+            LOG_DEBUG("tricount: %d", triCount);
+            for(int j = 0; j < triCount; ++j) 
+            {
+                indices[j] = p.onlyTriangle();
+            } 
+        }
 
         // Construct mesh, buffer ElementBuffer data to GPU
         auto meshID = newModel.m_meshes.size();
         auto newMesh = newModel.m_meshes.emplace_back(
             Mesh{
-                std::string(meshtag),
+                meshTag,
                 ElementBuffer((unsigned int*)indices.data(), indices.size() * 3),
-                MaterialSystem::getIdByTag(std::string(materialtag)),
-                ShaderSystem::copyByTag(std::string(shadertag))
+                MaterialSystem::getIdByTag(materialTag),
+                ShaderSystem::copyByTag(shaderTag)
             }
         );
-        newMesh.m_shaderProgram.setMaterial(MaterialSystem::getByTag(std::string(materialtag)));
+        newMesh.m_shaderProgram.setMaterial(MaterialSystem::getByTag(materialTag));
 
     }
 

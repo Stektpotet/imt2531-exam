@@ -76,7 +76,7 @@ int main(int argc, char** args)
     }
 
 
-    exit(0); // for performance analysis
+   // exit(0); // for performance analysis
     float oldT = 0, t = 0, dt = 0;
 
     for(;;)

@@ -2,7 +2,7 @@ project(cube)
 cmake_minimum_required (VERSION 3.8 FATAL_ERROR)
 
 # Set global variables
-set(CMAKE_BUILD_TYPE RelWithDebInfo)
+set(CMAKE_BUILD_TYPE Debug)
 
 # Aliases
 set(SRCDIR ${CMAKE_SOURCE_DIR}) 

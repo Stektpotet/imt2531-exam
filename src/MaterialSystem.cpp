@@ -102,43 +102,51 @@ void MaterialSystem::unbindAll()
 
 auto MaterialSystem::makeMaterial(const std::string& materialString, Material* outMaterial) -> C::Err 
 {
-    auto p = Parser(materialString);
+    auto parse = Parser(materialString);
 
     Material material;
 
     // Iterating through maps from material file
-    auto[mapcountkey, mapcount, err1] = p.nextKeyInteger();
-    if (err1 == PARSE_ERROR)
+    int mapCount;
+    if (auto[key, mapCount_, err] = parse.keyInteger("maps"); err) {
         return 1;
+    } else {
+        mapCount = mapCount_;
+    }
 
-    for (int i = 0; i < mapcount; ++i) 
+
+    for (int i = 0; i < mapCount; ++i) 
     {
-        auto[uniformtag, maptag, err2] = p.nextKeyString();
-        if (err2 == PARSE_ERROR)
-            return 1;
+        if (auto[uniformTag, textureTag, err] = parse.keyString(); err) {
+            return 1;            
+        } else {
 
-        material.m_unimaps.emplace_back(
-            UniformTexture {
-                std::string(uniformtag),
-                TextureSystem::copyByTag(std::string(maptag))
-            }
-        );
+            material.m_unimaps.emplace_back(
+                UniformTexture {
+                    std::string(uniformTag),
+                    TextureSystem::copyByTag(std::string(textureTag))
+                }
+            );
+        }
     }
 
     // Iterating through values from material file
-    auto[valueskey, valuescount, err3] = p.nextKeyInteger();
-    if (err3 == PARSE_ERROR)
+    int valuesCount;
+    if(auto[key, valuesCount_, err] = parse.keyInteger("values"); err) {
         return 1;
+    } else {
+        valuesCount = valuesCount_;
+    }
         
-    for (int i = 0; i < valuescount; ++i) 
+    for (int i = 0; i < valuesCount; ++i) 
     {
-        auto[uniformtag, value, err4] = p.nextKeyFloat();
-        if (err4 == PARSE_ERROR)
+        if (auto[uniformTag, value, err] = parse.keyFloat(); err) {
             return 1;
-
-        material.m_univalues.emplace_back(
-            UniformFloat{ std::string(uniformtag), value }
-        );
+        } else {
+            material.m_univalues.emplace_back(
+                UniformFloat{ std::string(uniformTag), value }
+            );
+        }
     }
 
     *outMaterial = material;

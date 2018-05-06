@@ -88,8 +88,7 @@ void Init::Config()
 
 
     // int   C::GLVersionMajor 
-    if (auto[key, GLVersionMajor, err] = p.nextKeyInteger(); err) {
-        LOG_ERROR("config.yml error on key --> %s...", key.data());
+    if (auto[key, GLVersionMajor, err] = p.keyInteger("GLVersionMajor"); err) {
         return;
     } else {
         C::GLVersionMajor = GLVersionMajor;
@@ -97,8 +96,7 @@ void Init::Config()
     }
 
     // int   C::GLVersionMinor
-    if (auto[key, GLVersionMinor, err] = p.nextKeyInteger(); err) {
-        LOG_ERROR("config.yml error on key --> %s...", key.data());
+    if (auto[key, GLVersionMinor, err] = p.keyInteger("GLVersionMinor"); err) {
         return;
     } else {
         C::GLVersionMinor = GLVersionMinor;
@@ -110,9 +108,8 @@ void Init::Config()
     // WINDOW CONFIG
     //
 
-    // int   C::WinWidth     
-    if (auto[key, WinWidth, err] = p.nextKeyInteger(); err) {
-        LOG_ERROR("config.yml error on key --> %s...", key.data());
+    // int   C::WinWidth
+    if (auto[key, WinWidth, err] = p.keyInteger("WinWidth"); err) {
         return;
     } else {
         C::WinWidth = WinWidth;
@@ -120,17 +117,15 @@ void Init::Config()
     }
 
     // int   C::WinHeight 
-    if (auto[key, WinHeight, err] = p.nextKeyInteger(); err) {
-        LOG_ERROR("config.yml error on key --> %s...", key.data());
+    if (auto[key, WinHeight, err] = p.keyInteger("WinHeight"); err) {
         return;
     } else {
         C::WinHeight = WinHeight;
         LOG_INFO("%s: %d",key.data(), C::WinHeight);                
     }
 
-    // char  C::WinName[MaxString]    
-    if (auto[key, WinName, err] = p.nextKeyString(); err) {
-        LOG_ERROR("config.yml error on key --> %s...", key.data());
+    // char  C::WinName[MaxString]
+    if (auto[key, WinName, err] = p.keyString("WinName"); err) {
         return;
     } else {
         strcpy(C::WinName, WinName.data());
@@ -138,9 +133,8 @@ void Init::Config()
     }       
 
 
-    // glm::vec4 C::ClearColor  
-    if (auto[key, ClearColor, err] = p.nextKeyColor(); err) {
-        LOG_ERROR("config.yml error on key --> %s...", key.data());
+    // glm::vec4 C::ClearColor
+    if (auto[key, ClearColor, err] = p.keyVec4("ClearColor"); err) {
         return;
     } else {
         C::ClearColor = ClearColor;
@@ -156,8 +150,7 @@ void Init::Config()
 
 
     // float C::FOV           
-    if (auto[key, FOV, err] = p.nextKeyFloat(); err) {
-        LOG_ERROR("config.yml error on FOV key --> %s...", key.data());
+    if (auto[key, FOV, err] = p.keyFloat("FOV"); err) {
         return;
     } else {
         C::FOV = FOV;
@@ -165,16 +158,14 @@ void Init::Config()
     }       
 
     // float C::MaxFOV   
-    if (auto[key, MaxFOV, err] = p.nextKeyFloat(); err) {
-        LOG_ERROR("config.yml error on MAXFOV key --> %s...", key.data());
+    if (auto[key, MaxFOV, err] = p.keyFloat("MaxFOV"); err) {
         return;
     } else {
         C::MaxFOV = MaxFOV;
         LOG_INFO("%s: %f",key.data(), C::MaxFOV);        
     }              
     // float C::MinFOV 
-    if (auto[key, MinFOV, err] = p.nextKeyFloat(); err) {
-        LOG_ERROR("config.yml error on MINFOV key --> %s...", key.data());
+    if (auto[key, MinFOV, err] = p.keyFloat("MinFOV"); err) {
         return;
     } else {
         C::MinFOV = MinFOV;
@@ -182,48 +173,42 @@ void Init::Config()
         
     }                
     // float C::ZoomSensitivity 
-    if (auto[key, ZoomSensitivity, err] = p.nextKeyFloat(); err) {
-        LOG_ERROR("config.yml error on zoomsensitivity key --> %s...", key.data());
+    if (auto[key, ZoomSensitivity, err] = p.keyFloat("ZoomSensitivity"); err) {
         return;
     } else {
         C::ZoomSensitivity = ZoomSensitivity;
         LOG_INFO("%s: %f",key.data(), C::ZoomSensitivity);                
     }       
     // float C::LookSensitivity 
-    if (auto[key, LookSensitivity, err] = p.nextKeyFloat(); err) {
-        LOG_ERROR("config.yml error on lookSensitivity key --> %s...", key.data());
+    if (auto[key, LookSensitivity, err] = p.keyFloat("LookSensitivity"); err) {
         return;
     } else {
         C::LookSensitivity = LookSensitivity;
         LOG_INFO("%s: %f",key.data(), C::LookSensitivity);                        
     }       
     // float C::PanSensitivity  
-    if (auto[key, PanSensitivity, err] = p.nextKeyFloat(); err) {
-        LOG_ERROR("config.yml error on panSensitivity key --> %s...", key.data());
+    if (auto[key, PanSensitivity, err] = p.keyFloat("PanSensitivity"); err) {
         return;
     } else {
         C::PanSensitivity = PanSensitivity;
         LOG_INFO("%s: %f",key.data(), C::PanSensitivity);                                
     }       
     // float C::NearClip   
-    if (auto[key, NearClip, err] = p.nextKeyFloat(); err) {
-        LOG_ERROR("config.yml error on NearClip key --> %s...", key.data());
+    if (auto[key, NearClip, err] = p.keyFloat("NearClip"); err) {
         return;
     } else {
         C::NearClip = NearClip;
         LOG_INFO("%s: %f",key.data(), C::NearClip);                                        
     }            
     // float C::FarClip      
-    if (auto[key, FarClip, err] = p.nextKeyFloat(); err) {
-        LOG_ERROR("config.yml error on Farclip key --> %s...", key.data());
+    if (auto[key, FarClip, err] = p.keyFloat("FarClip"); err) {
         return;
     } else {
         C::FarClip = FarClip;
         LOG_INFO("%s: %f",key.data(), C::FarClip);                                                
     }          
     // float C::CameraOffset    
-    if (auto[key, CameraOffset, err] = p.nextKeyFloat(); err) {
-        LOG_ERROR("config.yml error on CameraOffset key --> %s...", key.data());
+    if (auto[key, CameraOffset, err] = p.keyFloat("CameraOffset"); err) {
         return;
     } else {
         C::CameraOffset = CameraOffset;
@@ -236,9 +221,8 @@ void Init::Config()
     //
 
 
-    // char C::PythonPath  
-    if (auto[key, PythonPath, err] = p.nextKeyString(); err) {
-        LOG_ERROR("config.yml error on key --> %s...", key.data());
+    // char C::PythonPath
+    if (auto[key, PythonPath, err] = p.keyString("PythonPath"); err) {
         return;
     } else {
         C::PythonPath = PythonPath;
@@ -247,8 +231,7 @@ void Init::Config()
  
 
     // char C::TexturesFolder[MaxString]   
-    if (auto[key, TexturesFolder, err] = p.nextKeyString(); err) {
-        LOG_ERROR("config.yml error on Texture folder key --> %s...", key.data());
+    if (auto[key, TexturesFolder, err] = p.keyString("TexturesFolder"); err) {
         return;
     } else {
         strcpy(C::TexturesFolder, std::string(TexturesFolder).data());
@@ -257,8 +240,7 @@ void Init::Config()
  
 
     // char C::ShadersFolder[MaxString] 
-    if (auto[key, ShadersFolder, err] = p.nextKeyString(); err) {
-        LOG_ERROR("config.yml error on shaderFolder key --> %s...", key.data());
+    if (auto[key, ShadersFolder, err] = p.keyString("ShadersFolder"); err) {
         return;
     } else {
         strcpy(C::ShadersFolder, std::string(ShadersFolder).data());
@@ -267,30 +249,27 @@ void Init::Config()
     }       
 
     // char C::MaterialsFolder[MaxString] 
-    if (auto[key, MaterialsFolder, err] = p.nextKeyString(); err) {
-        LOG_ERROR("config.yml error on Materials folder key --> %s...", key.data());
+    if (auto[key, MaterialsFolder, err] = p.keyString("MaterialsFolder"); err) {
         return;
     } else {
         strcpy(C::MaterialsFolder, std::string(MaterialsFolder).data());
-        LOG_INFO("%s: %s",key.data(), C::MaterialsFolder);                                                                        
+        LOG_INFO("%s: %s",key.data(), C::MaterialsFolder);
     }       
 
     // char C::ModelsFolder[MaxString]   
-    if (auto[key, ModelsFolder, err] = p.nextKeyString(); err) {
-        LOG_ERROR("config.yml error on models folder  key --> %s...", key.data());
+    if (auto[key, ModelsFolder, err] = p.keyString("ModelsFolder"); err) {
         return;
     } else {
         strcpy(C::ModelsFolder, std::string(ModelsFolder).data());
-        LOG_INFO("%s: %s",key.data(), C::ModelsFolder);                                                                                
+        LOG_INFO("%s: %s",key.data(), C::ModelsFolder);
     }       
 
     // char C::ScenesFolder[MaxString]    
-    if (auto[key, ScenesFolder, err] = p.nextKeyString(); err) {
-        LOG_ERROR("config.yml error on scenes folder key --> %s...", key.data());
+    if (auto[key, ScenesFolder, err] = p.keyString("ScenesFolder"); err) {
         return;
     } else {
         strcpy(C::ScenesFolder, std::string(ScenesFolder).data());
-        LOG_INFO("%s: %s",key.data(), C::ScenesFolder);                                                                                        
+        LOG_INFO("%s: %s",key.data(), C::ScenesFolder);
     }       
  
 
@@ -298,8 +277,7 @@ void Init::Config()
     // SHADERS CONFIG
     //
     // unsigned int C::MAX_LIGHTS
-    if (auto[key, MAX_LIGHTS, err] = p.nextKeyInteger(); err) {
-        LOG_ERROR("config.yml error maxLights on key --> %s...", key.data());
+    if (auto[key, MAX_LIGHTS, err] = p.keyInteger("MAX_LIGHTS"); err) {
         return;
     } else {
         C::MAX_LIGHTS = unsigned(MAX_LIGHTS);

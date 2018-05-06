@@ -26,14 +26,12 @@ auto Parser::nextLine() -> std::string_view
         // After every iteration startofLine is set to the current value of endofLine +1.
         startofLine = endofLine + 1;
         if (startofLine >= strview.size()) {
-            LOG_WARN("Trying to read a line which begins after the end of the file. Check your that your file has the correct amount of lines.");
-            return "";
+            LOG_ERROR("Trying to read a line which begins after the end of the file. Check your that your file has the correct amount of lines.");
         }
 
         endofLine = strview.find('\n', startofLine);
         if (size_t(endofLine) == std::string::npos) {
-            LOG_WARN("End of line character (\n) not found. Are you missing an end of line character at the end of file?");
-            return "";
+            LOG_ERROR("End of line character (\n) not found. Are you missing an end of line character at the end of file?");
         }
 
         // Eat spaces and tabs. 
@@ -78,96 +76,138 @@ auto Parser::nextLine() -> std::string_view
     return strview.substr(startofLine, endofLine - startofLine);
 };
 
+
+
 //
-// New API 2.0
-// 
-
-auto Parser::keyString(const std::string_view wantedKey) -> KeyString
-{
-    auto line = nextLine();
-
-    if (line.size() == 0) {
-        LOG_WARN("Failed getting the line. Got an empty line.");
-        return KeyString{ line, {}, PARSE_ERROR };
-    }
-
-    auto separatorPosition = line.find(":");
-    if (separatorPosition == std::string::npos) {
-        LOG_WARN("Could not find the ':' separator on line. Every line should have the syntax <key>: <value>. Line: %s", line.data());
-        return KeyString{ line, {}, PARSE_ERROR };
-    }
-
-    std::string_view key = line.substr(0, separatorPosition);
-
-    if (separatorPosition + 2 >= line.size()) {
-        LOG_WARN("Could not find any <value> in <key>: <value> line. Line: %s", line.data());
-        return KeyString{ key, {}, PARSE_ERROR };
-    }
-    std::string_view value = line.substr(separatorPosition + 2);
-
-    if (key != wantedKey) {
-        LOG_WARN("The key wanted was different from the key found,  key: %s vs wantedKey: %s", key.data(), wantedKey.data());
-        return KeyString{ key, {}, ParserErr_WrongKey };
-    }
-    return KeyString{ key, value, ParserSuccess };
-}
-
+// <KEY>: <STRING>
+//
 auto Parser::keyString() -> KeyString
 {
     auto line = nextLine();
 
-    if (line.size() == 0) {
-        LOG_WARN("Failed getting the line. Got an empty line.");
-        return KeyString{ line,{}, PARSE_ERROR };
-    }
-
     auto separatorPosition = line.find(":");
     if (separatorPosition == std::string::npos) {
-        LOG_WARN("Could not find the ':' separator on line. Every line should have the syntax <key>: <value>. Line: %s", line.data());
-        return KeyString{ line,{}, PARSE_ERROR };
+        LOG_WARN("Could not find the ':' separator on line. Every line should have the syntax <key>: <value>. Line: %s", std::string(line).data());
+        return KeyString{ line,{}, ParserErr_MissingSeparator };
     }
 
     std::string_view key = line.substr(0, separatorPosition);
 
     if (separatorPosition + 2 >= line.size()) {
-        LOG_WARN("Could not find any <value> in <key>: <value> line. Line: %s", line.data());
-        return KeyString{ key,{}, PARSE_ERROR };
+        LOG_WARN("Could not find any <value> in <key>: <value> line. Line: %s", std::string(line).data());
+        return KeyString{ key,{}, ParserErr_MissingValue };
     }
     std::string_view value = line.substr(separatorPosition + 2);
 
     return KeyString{ key, value, ParserSuccess };
 }
 
-
-auto Parser::keyInteger(const std::string_view wantedKey) -> KeyInteger
+auto Parser::keyString(const std::string_view wantedKey) -> KeyString
 {
-    auto[key, valueString, err] = keyString(wantedKey);
+    auto keyString_ = keyString();
 
-    if (err)
-        return KeyInteger{key, {}, err};
-
-    std::stringstream ss;
-    ss << valueString;
-
-    int myint;
-    ss >> myint;
-    if (ss.fail()) {
-        return KeyInteger{key, {}, ParserErr_Stringstream};
+    if (keyString_.key != wantedKey) {
+        LOG_ERROR("The key wanted was different from the key found,  key: %s vs wantedKey: %s", std::string(keyString_.key).data(), wantedKey.data());
+        return KeyString{ keyString_.key, keyString_.value, ParserErr_WrongKey };
     }
-
-    return KeyInteger{key, myint, ParserSuccess};
+    return keyString_;
 }
 
 
-auto Parser::keyVec3(const std::string_view wantedKey) -> KeyVec3
+
+
+
+
+//
+// <KEY>: <INTEGER>
+//
+auto Parser::keyInteger() -> KeyInteger
 {
-    auto[key, valueString, err] = keyString(wantedKey);
+    auto[key, value, err] = keyString();
+    if (err)
+        return KeyInteger{key, 0, err };
+
+    // @doc https://stackoverflow.com/a/18534114 - 15.04.2018
+    
+    std::stringstream ss;
+    ss << value;
+
+    int integer;
+    ss >> integer;
+    if (ss.fail()) {
+        return KeyInteger{ key, 0, ParserErr_Stringstream };
+    }
+
+    return KeyInteger{ key, integer, ParserSuccess };
+}
+
+auto Parser::keyInteger(const std::string_view wantedKey) -> KeyInteger
+{
+    auto keyInteger_ = keyInteger();
+    if (keyInteger_.err)
+        return keyInteger_;
+
+    if (keyInteger_.key != wantedKey) {
+        LOG_ERROR("The key wanted was different from the key found,  key: %s vs wantedKey: %s", std::string(keyInteger_.key).data(), wantedKey.data());
+        return KeyInteger{ keyInteger_.key, keyInteger_.value, ParserErr_WrongKey };
+    }
+    return keyInteger_;
+}
+
+
+
+
+//
+// <KEY>: <FLOAT>
+//
+auto Parser::keyFloat() -> KeyFloat
+{
+    auto[key, value, err] = keyString();
+    if (err)
+        return KeyFloat{key, 0.0f, err};
+
+    std::stringstream ss;
+    ss << value;
+
+    float fp;
+    ss >> fp;
+    if (ss.fail()) {
+        return KeyFloat{key, 0.0f, ParserErr_Stringstream};        
+    }
+    return KeyFloat{key, fp, ParserSuccess};    
+}
+
+auto Parser::keyFloat(const std::string_view wantedKey) -> KeyFloat 
+{
+    auto keyFloat_ = keyFloat();
+    if (keyFloat_.err)
+        return keyFloat_;
+
+    if (keyFloat_.key != wantedKey) {
+        LOG_ERROR("The key wanted was different from the key found,  key: %s vs wantedKey: %s", std::string(keyFloat_.key).data(), wantedKey.data());
+        return KeyFloat{ keyFloat_.key, keyFloat_.value, ParserErr_WrongKey };
+    }
+    return keyFloat_;
+}
+
+
+
+
+
+
+//
+// <KEY>: <VEC3>
+// <KEY>: <float> <float> <float>
+//
+auto Parser::keyVec3() -> KeyVec3
+{
+    auto[key, value, err] = keyString();
 
     if (err)
         return KeyVec3{key, {}, err};
 
     std::stringstream ss;
-    ss << valueString;
+    ss << value;
 
     glm::vec3 vec3{};
 
@@ -187,108 +227,78 @@ auto Parser::keyVec3(const std::string_view wantedKey) -> KeyVec3
     return KeyVec3{key, vec3, ParserSuccess };
 }
 
-auto Parser::keyFloat(const std::string_view wantedKey) -> KeyFloat
+auto Parser::keyVec3(const std::string_view wantedKey) -> KeyVec3 
 {
-    auto[key, valueString, err] = keyString(wantedKey);
-    if (err)
-        return KeyFloat{key, {}, err};
+    auto keyVec3_ = keyVec3();
+    if (keyVec3_.err)
+        return keyVec3_;
 
+    if (keyVec3_.key != wantedKey) {
+        LOG_ERROR("The key wanted was different from the key found,  key: %s vs wantedKey: %s", std::string(keyVec3_.key).data(), wantedKey.data());
+        return KeyVec3{ keyVec3_.key, {}, ParserErr_WrongKey };
+    }
+
+    return keyVec3_;
+}
+
+
+
+
+//
+// <KEY>: <VEC4>
+// <KEY>: <FLOAT> <FLOAT> <FLOAT> <FLOAT>
+//
+auto Parser::keyVec4() -> KeyVec4
+{
+    auto[key, value, err] = keyString();
+
+    if (err)
+        return KeyVec4{ key, {}, err };
 
     std::stringstream ss;
-    ss << valueString;
+    ss << value;
 
-    float fp;
-    
-    ss >> fp;
+    glm::vec4 vector4{};
+
+    ss >> vector4.r;
     if (ss.fail()) {
-        return KeyFloat{key, {}, ParserErr_Stringstream};        
+        return KeyVec4{ key,{}, ParserErr_Stringstream };
     }
-    return KeyFloat{key, fp, ParserSuccess};    
+    ss >> vector4.g;
+    if (ss.fail()) {
+        return KeyVec4{ key,{}, ParserErr_Stringstream };
+    }
+    ss >> vector4.b;
+    if (ss.fail()) {
+        return KeyVec4{ key,{}, ParserErr_Stringstream };
+    }
+    ss >> vector4.a;
+    if (ss.fail()) {
+        return KeyVec4{ key,{}, ParserErr_Stringstream };
+    }
+    return KeyVec4{ key, vector4, ParserSuccess };
 }
+
+auto Parser::keyVec4(const std::string_view wantedKey) -> KeyVec4
+{
+    auto keyVec4_ = keyVec4();
+    if (keyVec4_.err)
+        return keyVec4_;
+
+    if (keyVec4_.key != wantedKey) {
+        LOG_ERROR("The key wanted was different from the key found,  key: %s vs wantedKey: %s", std::string(keyVec4_.key).data(), wantedKey.data());
+        return KeyVec4{ keyVec4_.key, keyVec4_.value, ParserErr_WrongKey };
+    }
+    return keyVec4_;
+}
+
+
+
 
 //
-// DEPRECATED FUNCTIONS
+//  v: <float> <float> <float>  <float> <float> <float>  <float> <float>  <byte> <byte> <byte> <byte>
 //
-auto Parser::nextKeyString() -> KeyString
-{
-    auto line = nextLine();
-
-    //LOG_DEBUG("%s", line.data());
-
-    // ERROR If there was an error in the nextLine function()
-    if (line == "")
-        return KeyString{ "","", PARSE_ERROR };
-
-
-    // ERROR If there are no : separator on the line
-    if (line.find(":") == std::string::npos)
-        return KeyString{ "","", PARSE_ERROR };
-
-
-    auto key = line.substr(0, line.find(":"));
-    std::string_view valueString = "";
-
-    // If the value is not empty
-    if (line.find(":") + 2 < line.size())
-        valueString = line.substr(line.find(":") + 2);
-
-    return KeyString{ key, valueString, PARSE_SUCCESS };
-};
-
-
-auto Parser::nextKeyInteger() -> KeyInteger
-{
-    auto[key, valueString, err] = nextKeyString();
-    if (err)
-        return KeyInteger{key, 0, PARSE_ERROR };
-
-    // @doc https://stackoverflow.com/a/18534114 - 15.04.2018
-    try {
-
-        int integer = std::stoi(std::string(valueString));
-        return KeyInteger{ key, integer, PARSE_SUCCESS };
-    }
-    catch (std::invalid_argument& e) {
-        // if no conversion could be performed
-        LOG_WARN("std::stoi catch (std::invalid_argument& e) - no conversion could be performed");
-    }
-    catch (std::out_of_range& e) {
-        // if the converted value would fall out of the range of the result type 
-        // or if the underlying function (std::strtol or std::strtoull) sets errno 
-        // to ERANGE.
-        LOG_WARN("std::stoi catch (std::out_of_range& e) - the converted value would fall out of the range of the result type");
-
-    }
-    return KeyInteger{ "",0, PARSE_ERROR };
-}
-
-
-auto Parser::nextKeyFloat() -> KeyFloat
-{
-    auto[key, valueString, err] = nextKeyString();
-    if (err == PARSE_ERROR)
-        return KeyFloat{ key, 0, PARSE_ERROR };
-
-    // @doc https://stackoverflow.com/a/18534114 - 15.04.2018
-    try {
-        float fp = std::stof(std::string(valueString));
-        return KeyFloat{ key, fp, PARSE_SUCCESS };
-    }
-    catch (std::invalid_argument& e) {
-        // if no conversion could be performed
-        LOG_WARN("std::stof catch (std::invalid_argument& e) - no conversion could be performed");
-    }
-    catch (std::out_of_range& e) {
-        // if the converted value would fall out of the range of the result type 
-        // or if the underlying function (std::strtol or std::strtoull) sets errno 
-        // to ERANGE.
-        LOG_WARN("std::stof catch (std::out_of_range& e) - the converted value would fall out of the range of the result type");
-    }
-    return KeyFloat{ key, 0, PARSE_ERROR };
-}
-
-
-auto Parser::nextVertex() -> Vertex 
+auto Parser::onlyVertex() -> Vertex 
 {
     // @doc Reading material for optimizing this function https://tinodidriksen.com/2011/05/cpp-convert-string-to-double-speed/ - 06.05.2018
     // @note This is not a 'correct' implementation of string to float, and neither is it intended that way.
@@ -341,9 +351,8 @@ auto Parser::nextVertex() -> Vertex
 
 
     auto[key, vertexString, err] = keyString();
-    if (err == PARSE_ERROR)
+    if (err)
         LOG_ERROR("VERTICES IN MODEL FILE IS CORRUPT");
-
 
 
     Vertex vert{};
@@ -394,10 +403,17 @@ auto Parser::nextVertex() -> Vertex
     return vert;
 }
 
-auto Parser::nextTriangle() -> Triangle
+
+
+
+
+//
+// t: <GLuint> <GLuint> <GLuint>
+//
+auto Parser::onlyTriangle() -> Triangle
 {
     auto[key, triangleString, err] = keyString();
-    if (err == PARSE_ERROR)
+    if (err)
         LOG_ERROR("TRIANGLES IN MODEL FILE IS CORRUPT");
 
     Triangle tri{};
@@ -413,70 +429,5 @@ auto Parser::nextTriangle() -> Triangle
 
     return tri;
 }
-
-
-auto Parser::nextKeyColor() -> KeyColor
-{
-    auto[key, valueString, err] = nextKeyString();
-
-    //LOG_ERROR("%s", valueString.data());
-
-    if (err == PARSE_ERROR)
-        return KeyColor{ key,{}, PARSE_ERROR };
-
-    std::stringstream ss;
-    ss << valueString;
-
-    glm::vec4 color{};
-
-    ss >> color.r;
-    if (ss.fail()) {
-        return KeyColor{ key,{}, PARSE_ERROR };
-    }
-    ss >> color.g;
-    if (ss.fail()) {
-        return KeyColor{ key,{}, PARSE_ERROR };
-    }
-    ss >> color.b;
-    if (ss.fail()) {
-        return KeyColor{ key,{}, PARSE_ERROR };
-    }
-    ss >> color.a;
-    if (ss.fail()) {
-        return KeyColor{ key,{}, PARSE_ERROR };
-    }
-    return KeyColor{ key, color, PARSE_SUCCESS };
-
-}
-
-
-auto Parser::nextKeyVec3() -> KeyVec3
-{
-    auto[key, valueString, err] = nextKeyString();
-
-    if (err == PARSE_ERROR)
-        return KeyVec3{ key,{}, PARSE_ERROR };
-
-    std::stringstream ss;
-    ss << valueString;
-
-    glm::vec3 vec3{};
-
-    ss >> vec3.x;
-    if (ss.fail()) {
-        return KeyVec3{ key,{}, PARSE_ERROR };
-    }
-    ss >> vec3.y;
-    if (ss.fail()) {
-        return KeyVec3{ key,{}, PARSE_ERROR };
-    }
-    ss >> vec3.z;
-    if (ss.fail()) {
-        return KeyVec3{ key,{}, PARSE_ERROR };
-    }
-    return KeyVec3{ key, vec3, PARSE_SUCCESS };
-
-}
-
 
 }
