@@ -22,7 +22,7 @@ auto Parser::nextLine() -> std::string_view
     //               which means "not found".
 
     for (;;) {
-        this->lineCount += 1;
+        lineCount += 1;
         // After every iteration startofLine is set to the current value of endofLine +1.
         startofLine = endofLine + 1;
         if (startofLine >= strview.size()) {
@@ -306,7 +306,8 @@ auto Parser::onlyVertex() -> Vertex
     // The function concerns performance only.
     // This function replaces strtof() - which is a much more correct implemetation, but was a performance bottleneck loading 
     // bigger models - JSolsvik 06.05.2018
-    auto naiveStringToFloat = [](const char *p, const char **end) -> float 
+    // @optmization Function will only work here. Not genral at all
+    auto __OPTMIZED__StringToFloat = [](const char *p, const char **end) -> float 
     {
         float res = 0.0f;
         // Eat spaces
@@ -349,60 +350,68 @@ auto Parser::onlyVertex() -> Vertex
         return res;
     };
 
+    const auto line = nextLine();
+    const char* it = line.data();
+    const char* end;
 
-    auto[key, vertexString, err] = keyString();
-    if (err)
-        LOG_ERROR("VERTICES IN MODEL FILE IS CORRUPT");
+    // Find the separtor, the plus 1
+    while(*it != ':') ++it;
+    ++it;
 
-
-    Vertex vert{};
-    float u, v;
-    float nx, ny, nz;
-
-    const char* it = vertexString.data();
-    const char* end_;
-    char* end;
 
     // Position
-    vert.x = naiveStringToFloat(it, &end_);
-    it = end_;
-    vert.y = naiveStringToFloat(it, &end_);
-    it = end_;
-    vert.z = naiveStringToFloat(it, &end_);
-    it = end_;
+    const float x = __OPTMIZED__StringToFloat(it, &end);
+    it = end;
+    const float y = __OPTMIZED__StringToFloat(it, &end);
+    it = end;
+    const float z = __OPTMIZED__StringToFloat(it, &end);
+    it = end;
 
     // Normal
-    nx = naiveStringToFloat(it, &end_);
-    it = end_;
-    ny = naiveStringToFloat(it, &end_);
-    it = end_;
-    nz = naiveStringToFloat(it, &end_);
-    it = end_;
+    const float nx = __OPTMIZED__StringToFloat(it, &end);
+    it = end;
+    const float ny = __OPTMIZED__StringToFloat(it, &end);
+    it = end;
+    const float nz = __OPTMIZED__StringToFloat(it, &end);
+    it = end;
+
+    const GLint n = Util::packNormal(nx,ny,nz);
+
 
     // uv
-    u = naiveStringToFloat(it, &end_);
-    it = end_;
-    v = naiveStringToFloat(it, &end_);
-    it = end_;
+    const GLushort u = 65535U * __OPTMIZED__StringToFloat(it, &end);
+    it = end;
+    const GLushort v = 65535U * __OPTMIZED__StringToFloat(it, &end);
+    it = end;
+
+
+    // @optmization Function will only work here. Not genral at all
+    auto __OPTIMIZED__StringToGLubyte = [](const char *p, const char **end) -> GLubyte 
+    {
+        while (*p == ' ') ++p;
+
+        GLubyte x = 0;
+        while (*p >= '0' && *p <= '9') {
+            x = (x*10) + (*p - '0');
+            ++p;
+        }
+        *end = p;
+        return x;
+    };
 
     // Colors
-    vert.r = (GLubyte)strtoul(it, &end, 10);
+    const GLubyte r = __OPTIMIZED__StringToGLubyte(it, &end);
     it = end;
-    vert.g = (GLubyte)strtoul(it, &end, 10);
+    const GLubyte g = __OPTIMIZED__StringToGLubyte(it, &end);
     it = end;
-    vert.b = (GLubyte)strtoul(it, &end, 10);
+    const GLubyte b = __OPTIMIZED__StringToGLubyte(it, &end);
     it = end;
-    vert.a = (GLubyte)strtoul(it, &end, 10);
-    it = end;
+    const GLubyte a = __OPTIMIZED__StringToGLubyte(it, &end);
 
-    // Packing and normalizing
-    vert.n = Util::packNormal(nx, ny, nz);
-    vert.u = 65535U * u;//vert.uv = Util::packUV(u, v);
-    vert.v = 65535U * v;
-
-    return vert;
+    return Vertex {
+        x,y,z, n, u,v, r,g,b,a
+    };
 }
-
 
 
 
@@ -412,20 +421,38 @@ auto Parser::onlyVertex() -> Vertex
 //
 auto Parser::onlyTriangle() -> Triangle
 {
-    auto[key, triangleString, err] = keyString();
-    if (err)
-        LOG_ERROR("TRIANGLES IN MODEL FILE IS CORRUPT");
 
-    Triangle tri{};
+    // @optmization Function will only work here. Not genral at all
+    auto __OPTIMIZED__StringToGLuint = [](const char *p, const char **end) -> GLuint 
+    {
+        while (*p == ' ') ++p;
 
-    const char* it = triangleString.data();
-    char* end;
+        GLuint x = 0;
+        while (*p >= '0' && *p <= '9') {
+            x = (x*10) + (*p - '0');
+            ++p;
+        }
+        *end = p;
+        return x;
+    };
+
+
+
+    const auto line = nextLine();
+
+    const char* it = line.data();
+    const char* end;
+
+    // Find the separtor, the plus 1
+    while(*it != ':') ++it;
+    ++it;
     
-    tri.a = strtol(it, &end, 10);
+    Triangle tri{};
+    tri.a = __OPTIMIZED__StringToGLuint(it, &end);
     it = end;
-    tri.b = strtol(it, &end, 10);
+    tri.b = __OPTIMIZED__StringToGLuint(it, &end);
     it = end;
-    tri.c = strtol(it, &end, 10);
+    tri.c = __OPTIMIZED__StringToGLuint(it, &end);
 
     return tri;
 }
