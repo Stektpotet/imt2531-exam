@@ -94,17 +94,12 @@ auto ModelSystem::makeModel(const C::Tag& tag, const std::string& modelString, M
 
     // Iterate vertices
     std::vector<Vertex> vertices;
-    vertices.reserve(vertexCount);
+    vertices.resize(vertexCount);
     LOG_DEBUG("vertexcount: %d", vertexCount);
 
-    for(int i = 1; i <= vertexCount; ++i) 
+    for(int i = 0; i < vertexCount; ++i) 
     {
-        auto[vertexKey, vertex, err2] = p.nextKeyVertex();
-        if(err2) {
-            return 1;
-        }
-        //if (i %200000 == 0)LOG_ERROR("%d: %f %f %f", i, vertex.x, vertex.y, vertex.z);
-        vertices.push_back(vertex);
+        vertices[i] = p.nextVertex();
     }
 
 
@@ -156,21 +151,13 @@ auto ModelSystem::makeModel(const C::Tag& tag, const std::string& modelString, M
             return 1;
         }
 
-        std::vector<GLuint> indices;
-        indices.reserve(triCount*3);
+        std::vector<Triangle> indices;
+        indices.resize(triCount);
         LOG_DEBUG("tricount: %d", triCount);
         // Triangles 
         for(int j = 0; j < triCount; ++j) 
         {
-
-            auto[triKey, triangle, err7] = p.nextKeyTriangle();
-            if(err7) {
-                return 1;
-            }
-            indices.push_back(triangle.a);
-            indices.push_back(triangle.b);
-            indices.push_back(triangle.c);
-
+            indices[j] = p.nextTriangle();
         } 
 
         // Construct mesh, buffer ElementBuffer data to GPU
@@ -178,7 +165,7 @@ auto ModelSystem::makeModel(const C::Tag& tag, const std::string& modelString, M
         auto newMesh = newModel.m_meshes.emplace_back(
             Mesh{
                 std::string(meshtag),
-                ElementBuffer(indices.data(), indices.size()),
+                ElementBuffer((unsigned int*)indices.data(), indices.size() * 3),
                 MaterialSystem::getIdByTag(std::string(materialtag)),
                 ShaderSystem::copyByTag(std::string(shadertag))
             }

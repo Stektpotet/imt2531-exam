@@ -287,36 +287,19 @@ auto Parser::nextKeyFloat() -> KeyFloat
     return KeyFloat{ key, 0, PARSE_ERROR };
 }
 
-// 128 bytes in total, two L1 cache lines
-char globalScanfTempStorage[96];
-char globalScanfTempStorageSmall[32];
 
-auto Parser::nextKeyVertex() -> KeyVertex {
+auto Parser::nextVertex() -> Vertex {
 
 
     auto[key, vertexString, err] = keyString();
     if (err == PARSE_ERROR)
-        return KeyVertex{ key, {}, PARSE_ERROR };
+        LOG_ERROR("VERTICES IN MODEL FILE IS CORRUPT");
+
+
 
     Vertex vert{};
     float u, v;
     float nx, ny, nz;
-    //   1.351676 0.301667  0.100000    0.000  0.000  1.000    0.000  0.000   255 255 255 255
-
-    /*
-    strncpy(globalScanfTempStorage, vertexString.data(), vertexString.size());
-    globalScanfTempStorage[vertexString.size()] = '\0';
-    auto changecount = sscanf(globalScanfTempStorage, "%f  %f  %f    %f  %f  %f    %f  %f   %c %c %c %c",
-        &vert.x, &vert.y, &vert.z, 
-        &nx, &ny, &nz, 
-        &u, &v, 
-        &vert.r, &vert.g, &vert.b, &vert.a);
-
-    if (changecount != 12) {
-        LOG_WARN("A vertex should have 12 values. %d found", changecount);
-        return KeyVertex{ {}, {}, PARSE_ERROR };
-    }
-    */
 
     const char* it = vertexString.data();
     char* end;
@@ -358,14 +341,14 @@ auto Parser::nextKeyVertex() -> KeyVertex {
     vert.u = 65535U * u;//vert.uv = Util::packUV(u, v);
     vert.v = 65535U * v;
 
-    return KeyVertex{ key, vert, PARSE_SUCCESS };
+    return vert;
 }
 
-auto Parser::nextKeyTriangle() -> KeyTriangle
+auto Parser::nextTriangle() -> Triangle
 {
     auto[key, triangleString, err] = keyString();
     if (err == PARSE_ERROR)
-        return KeyTriangle{ key,{}, PARSE_ERROR };
+        LOG_ERROR("TRIANGLES IN MODEL FILE IS CORRUPT");
 
     Triangle tri{};
 
@@ -378,7 +361,7 @@ auto Parser::nextKeyTriangle() -> KeyTriangle
     it = end;
     tri.c = strtol(it, &end, 10);
 
-    return KeyTriangle{ key, tri, PARSE_SUCCESS };
+    return tri;
 }
 
 

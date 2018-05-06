@@ -54,14 +54,17 @@ public:
     auto keyFloat(const std::string_view wantedKey) -> KeyFloat;
 
 
+    auto nextVertex()->    Vertex;
+    auto nextTriangle()-> Triangle;
+
     // DEPRECATED FUNCTIONS
     auto nextKeyString()->KeyString;
     auto nextKeyInteger()->KeyInteger;
     auto nextKeyFloat()->KeyFloat;
-    auto nextKeyVertex()->KeyVertex;
-    auto nextKeyTriangle()->KeyTriangle;
     auto nextKeyColor()->KeyColor;
     auto nextKeyVec3()->KeyVec3;
+
+
 };
 
 
