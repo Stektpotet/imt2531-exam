@@ -61,7 +61,7 @@ entity: skybox
     angleVelocity: 0 0 0
 
 entity: sun
-    model: Suzanne
+    model: Dragon
     position: 0 0 0
     rotation: 0 0 0
     scale: 10 10 10

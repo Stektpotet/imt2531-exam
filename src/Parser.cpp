@@ -288,7 +288,56 @@ auto Parser::nextKeyFloat() -> KeyFloat
 }
 
 
-auto Parser::nextVertex() -> Vertex {
+auto Parser::nextVertex() -> Vertex 
+{
+    // @doc Reading material for optimizing this function https://tinodidriksen.com/2011/05/cpp-convert-string-to-double-speed/ - 06.05.2018
+    // @note This is not a 'correct' implementation of string to float, and neither is it intended that way.
+    // This is designed to parse the floats which are present in this system only, and ONLY in the model files.
+    // The function concerns performance only.
+    // This function replaces strtof() - which is a much more correct implemetation, but was a performance bottleneck loading 
+    // bigger models - JSolsvik 06.05.2018
+    auto naiveStringToFloat = [](const char *p, const char **end) -> float 
+    {
+        float res = 0.0f;
+        // Eat spaces
+        while (*p == ' ') ++p;
+
+        // If negative
+        bool neg = false;
+        if (*p == '-') {
+            neg = true;
+            ++p;
+        }
+        while (*p >= '0' && *p <= '9') {
+            res = (res*10.0f) + (*p - '0');
+            ++p;
+        }
+        if (*p == '.') {
+            float f = 0.0f;
+            int n = 0;
+            ++p;
+            while (*p >= '0' && *p <= '9') {
+                f = (f*10.0f) + (*p - '0');
+                ++p;
+                ++n;
+            }
+            // Trying to optimize pow below
+            //res += f / std::pow(10.0, n);
+            
+            // This is 10-20x faster, than above
+            float tenToThePowerOfN = 1.0;
+            while (n) {
+                tenToThePowerOfN *= 10.0;
+                --n;
+            }
+            res += f / tenToThePowerOfN;
+        }
+        if (neg) {
+            res = -res;
+        }
+        *end = p;
+        return res;
+    };
 
 
     auto[key, vertexString, err] = keyString();
@@ -302,29 +351,30 @@ auto Parser::nextVertex() -> Vertex {
     float nx, ny, nz;
 
     const char* it = vertexString.data();
+    const char* end_;
     char* end;
-    
+
     // Position
-    vert.x = strtof(it, &end);
-    it = end;
-    vert.y = strtof(it, &end);
-    it = end;
-    vert.z = strtof(it, &end);
-    it = end;
+    vert.x = naiveStringToFloat(it, &end_);
+    it = end_;
+    vert.y = naiveStringToFloat(it, &end_);
+    it = end_;
+    vert.z = naiveStringToFloat(it, &end_);
+    it = end_;
 
     // Normal
-    nx = strtof(it, &end);
-    it = end;
-    ny = strtof(it, &end);
-    it = end;
-    nz = strtof(it, &end);
-    it = end;
+    nx = naiveStringToFloat(it, &end_);
+    it = end_;
+    ny = naiveStringToFloat(it, &end_);
+    it = end_;
+    nz = naiveStringToFloat(it, &end_);
+    it = end_;
 
     // uv
-    u = strtof(it, &end);
-    it = end;
-    v = strtof(it, &end);
-    it = end;
+    u = naiveStringToFloat(it, &end_);
+    it = end_;
+    v = naiveStringToFloat(it, &end_);
+    it = end_;
 
     // Colors
     vert.r = (GLubyte)strtoul(it, &end, 10);
