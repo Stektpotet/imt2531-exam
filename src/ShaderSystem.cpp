@@ -349,7 +349,7 @@ auto ShaderSystem::parseProgram(const std::string& fileString,
                     );
                     if (it != line.end())
                     {
-                        LOG_INFO("\nShaderProgram: %s Will not use Depth Test, to turn it on, add \"#prop ZTest On | true | 1 | Enabled\" to your program", fileString.c_str());
+                        LOG_INFO("ShaderProgram:  Will not use Depth Test, to turn it on, add \"#prop ZTest On | true | 1 | Enabled\" to your program");
                         drawProps[ShaderProgram::Enable].erase(
                             std::remove(
                                 drawProps[ShaderProgram::Enable].begin(),
@@ -373,7 +373,7 @@ auto ShaderSystem::parseProgram(const std::string& fileString,
                     );
                     if (it != line.end())
                     {
-                        LOG_INFO("\nShaderProgram: %s Will not use Blending, to turn it on, add \"#prop Blend On | true | 1 | Enabled\" to your program", fileString.c_str());
+                        LOG_INFO("\nShaderProgram: Will not use Blending, to turn it on, add \"#prop Blend On | true | 1 | Enabled\" to your program");
                         drawProps[ShaderProgram::Enable].erase(
                             std::remove(
                                 drawProps[ShaderProgram::Enable].begin(),
@@ -507,7 +507,7 @@ auto ShaderSystem::parseProgram(const std::string& fileString,
                     );
                     if (it != line.end())
                     {
-                        LOG_INFO("\nShaderProgram: %s Will not use Blending, to turn it on, add \"#prop Blend On | true | 1 | Enabled\" to your program", fileString.c_str());
+                        LOG_INFO("\nShaderProgram: Will not use Blending, to turn it on, add \"#prop Blend On | true | 1 | Enabled\" to your program");
                         drawProps[ShaderProgram::Enable].erase(
                             std::remove(
                                 drawProps[ShaderProgram::Enable].begin(),

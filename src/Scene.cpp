@@ -142,7 +142,7 @@ void Scene::load(std::string sceneFile)
             {
                 LOG_ERROR("%s error on key --> %s... expected freelook or orbital.", filestring.c_str(), key.data());
             }
-            LOG_INFO("%s: %s",std::string(key).data(), mode.data());
+            LOG_INFO("%s: %s", std::string(key).data(), std::string(mode).data());
         }
 
         // float fov.
@@ -655,7 +655,7 @@ void Scene::load(std::string sceneFile)
         auto entityToGet = std::find_if(m_entities.begin(), m_entities.end(), comp);
         if (entityToGet == m_entities.end())
         {
-            LOG_ERROR("Attempt to find entity that does not exist.");
+            LOG_ERROR("Attempt to find entity that does not exist. Tried to find entity with tag: %s", tag.data());
         }
         return *entityToGet;
     }

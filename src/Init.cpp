@@ -100,7 +100,7 @@ void Init::Config()
         return;
     } else {
         C::GLVersionMinor = GLVersionMinor;
-        LOG_INFO("%s: %d",key.data(), C::GLVersionMinor);        
+        LOG_INFO("%s: %d",std::string(key).data(), C::GLVersionMinor);        
     }
 
 
@@ -113,7 +113,7 @@ void Init::Config()
         return;
     } else {
         C::WinWidth = WinWidth;
-        LOG_INFO("%s: %d",key.data(), C::WinWidth);                
+        LOG_INFO("%s: %d",std::string(key).data(), C::WinWidth);                
     }
 
     // int   C::WinHeight 
@@ -121,15 +121,15 @@ void Init::Config()
         return;
     } else {
         C::WinHeight = WinHeight;
-        LOG_INFO("%s: %d",key.data(), C::WinHeight);                
+        LOG_INFO("%s: %d",std::string(key).data(), C::WinHeight);                
     }
 
     // char  C::WinName[MaxString]
     if (auto[key, WinName, err] = p.keyString("WinName"); err) {
         return;
     } else {
-        strcpy(C::WinName, WinName.data());
-        LOG_INFO("%s: %s",key.data(), C::WinName);                    
+        strcpy(C::WinName, std::string(WinName).data());
+        LOG_INFO("%s: %s",std::string(key).data(), C::WinName);                    
     }       
 
 
@@ -138,7 +138,7 @@ void Init::Config()
         return;
     } else {
         C::ClearColor = ClearColor;
-        LOG_INFO("%s: %f %f %f %f",key.data(), C::ClearColor.r, C::ClearColor.g, C::ClearColor.b, C::ClearColor.a );                            
+        LOG_INFO("%s: %f %f %f %f",std::string(key).data(), C::ClearColor.r, C::ClearColor.g, C::ClearColor.b, C::ClearColor.a );                            
     }
     
 
@@ -154,7 +154,7 @@ void Init::Config()
         return;
     } else {
         C::FOV = FOV;
-        LOG_INFO("%s: %f",key.data(), C::FOV);
+        LOG_INFO("%s: %f",std::string(key).data(), C::FOV);
     }       
 
     // float C::MaxFOV   
@@ -162,14 +162,14 @@ void Init::Config()
         return;
     } else {
         C::MaxFOV = MaxFOV;
-        LOG_INFO("%s: %f",key.data(), C::MaxFOV);        
+        LOG_INFO("%s: %f",std::string(key).data(), C::MaxFOV);        
     }              
     // float C::MinFOV 
     if (auto[key, MinFOV, err] = p.keyFloat("MinFOV"); err) {
         return;
     } else {
         C::MinFOV = MinFOV;
-        LOG_INFO("%s: %f",key.data(), C::MinFOV );        
+        LOG_INFO("%s: %f",std::string(key).data(), C::MinFOV );        
         
     }                
     // float C::ZoomSensitivity 
@@ -177,42 +177,42 @@ void Init::Config()
         return;
     } else {
         C::ZoomSensitivity = ZoomSensitivity;
-        LOG_INFO("%s: %f",key.data(), C::ZoomSensitivity);                
+        LOG_INFO("%s: %f",std::string(key).data(), C::ZoomSensitivity);                
     }       
     // float C::LookSensitivity 
     if (auto[key, LookSensitivity, err] = p.keyFloat("LookSensitivity"); err) {
         return;
     } else {
         C::LookSensitivity = LookSensitivity;
-        LOG_INFO("%s: %f",key.data(), C::LookSensitivity);                        
+        LOG_INFO("%s: %f",std::string(key).data(), C::LookSensitivity);                        
     }       
     // float C::PanSensitivity  
     if (auto[key, PanSensitivity, err] = p.keyFloat("PanSensitivity"); err) {
         return;
     } else {
         C::PanSensitivity = PanSensitivity;
-        LOG_INFO("%s: %f",key.data(), C::PanSensitivity);                                
+        LOG_INFO("%s: %f",std::string(key).data(), C::PanSensitivity);                                
     }       
     // float C::NearClip   
     if (auto[key, NearClip, err] = p.keyFloat("NearClip"); err) {
         return;
     } else {
         C::NearClip = NearClip;
-        LOG_INFO("%s: %f",key.data(), C::NearClip);                                        
+        LOG_INFO("%s: %f",std::string(key).data(), C::NearClip);                                        
     }            
     // float C::FarClip      
     if (auto[key, FarClip, err] = p.keyFloat("FarClip"); err) {
         return;
     } else {
         C::FarClip = FarClip;
-        LOG_INFO("%s: %f",key.data(), C::FarClip);                                                
+        LOG_INFO("%s: %f",std::string(key).data(), C::FarClip);                                                
     }          
     // float C::CameraOffset    
     if (auto[key, CameraOffset, err] = p.keyFloat("CameraOffset"); err) {
         return;
     } else {
         C::CameraOffset = CameraOffset;
-        LOG_INFO("%s: %f",key.data(), C::CameraOffset);                                                        
+        LOG_INFO("%s: %f",std::string(key).data(), C::CameraOffset);                                                        
     }
 
 
@@ -226,7 +226,7 @@ void Init::Config()
         return;
     } else {
         C::PythonPath = PythonPath;
-        LOG_INFO("%s: %s",key.data(), C::PythonPath.data());                                                                
+        LOG_INFO("%s: %s",std::string(key).data(), C::PythonPath.data());                                                                
     }       
  
 
@@ -235,7 +235,7 @@ void Init::Config()
         return;
     } else {
         strcpy(C::TexturesFolder, std::string(TexturesFolder).data());
-        LOG_INFO("%s: %s",key.data(), C::TexturesFolder);                                                                
+        LOG_INFO("%s: %s",std::string(key).data(), C::TexturesFolder);                                                                
     }       
  
 
@@ -244,7 +244,7 @@ void Init::Config()
         return;
     } else {
         strcpy(C::ShadersFolder, std::string(ShadersFolder).data());
-        LOG_INFO("%s: %s",key.data(), C::ShadersFolder);                                                                
+        LOG_INFO("%s: %s",std::string(key).data(), C::ShadersFolder);                                                                
         
     }       
 
@@ -253,7 +253,7 @@ void Init::Config()
         return;
     } else {
         strcpy(C::MaterialsFolder, std::string(MaterialsFolder).data());
-        LOG_INFO("%s: %s",key.data(), C::MaterialsFolder);
+        LOG_INFO("%s: %s",std::string(key).data(), C::MaterialsFolder);
     }       
 
     // char C::ModelsFolder[MaxString]   
@@ -261,7 +261,7 @@ void Init::Config()
         return;
     } else {
         strcpy(C::ModelsFolder, std::string(ModelsFolder).data());
-        LOG_INFO("%s: %s",key.data(), C::ModelsFolder);
+        LOG_INFO("%s: %s",std::string(key).data(), C::ModelsFolder);
     }       
 
     // char C::ScenesFolder[MaxString]    
@@ -269,7 +269,7 @@ void Init::Config()
         return;
     } else {
         strcpy(C::ScenesFolder, std::string(ScenesFolder).data());
-        LOG_INFO("%s: %s",key.data(), C::ScenesFolder);
+        LOG_INFO("%s: %s",std::string(key).data(), C::ScenesFolder);
     }       
  
 
@@ -281,7 +281,7 @@ void Init::Config()
         return;
     } else {
         C::MAX_LIGHTS = unsigned(MAX_LIGHTS);
-        LOG_INFO("%s: %u",key.data(), C::MAX_LIGHTS);                                                                                        
+        LOG_INFO("%s: %u",std::string(key).data(), C::MAX_LIGHTS);                                                                                        
     }
 }
 
