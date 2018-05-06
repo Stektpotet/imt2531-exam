@@ -27,16 +27,34 @@ auto Util::fileToString(const std::string& filepath) -> std::string
     return ss.str();
 }
 
-auto Util::fileToString(const std::string& filepath, std::string* outShaderString) -> C::Err
+#include <fstream>
+#include <streambuf>
+
+std::ifstream t("file.txt");
+
+
+// @ref Inspired by https://stackoverflow.com/a/2602060 - 06.05.2018
+//    and http://insanecoding.blogspot.no/2011/11/how-to-read-in-file-in-c.html - 06.05.2018
+auto Util::fileToString(const std::string& filepath, std::string* outString) -> C::Err
 {
     std::ifstream infile(filepath);
-
+    
     if (!infile) {
-        return 1;    
+        return 1;
     }
-    std::stringstream ss;
+    // Old method
+ /*   std::stringstream ss;
     ss << infile.rdbuf();
-    *outShaderString = ss.str();
+    *outString = ss.str(); */
+
+    // New and possible faster method
+    // UPDATE: Holy fuck this was 10 times faster than old method when loading dragon.yml (400k verts, 800k tris).. JSolsvik - 06.05.2018
+    infile.seekg(0, std::ios::end);
+    outString->resize(infile.tellg());
+    infile.seekg(0, std::ios::beg);
+    infile.read(outString->data(), outString->size());
+    infile.close();
+
     return 0;
 }
 
@@ -81,14 +99,20 @@ auto Util::packUV(float u, float v) -> GLushort
     return r;
 }
 
+#define DEBUG 0
+
 void Util::printMatrix(const glm::mat4& m, const std::string & name)
 {
+
+#if DEBUG
+
     LOG_DEBUG("\n%s\t 4x4\n%f, %f, %f, %f,\n%f, %f, %f, %f,\n%f, %f, %f, %f,\n%f, %f, %f, %f,\n",
         name.c_str(),
         m[0][0], m[0][1], m[0][2], m[0][3],
         m[1][0], m[1][1], m[1][2], m[1][3], 
         m[2][0], m[2][1], m[2][2], m[2][3], 
         m[3][0], m[3][1], m[3][2], m[3][3]);
-}
+#endif
 
+}
 }

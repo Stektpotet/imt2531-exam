@@ -93,7 +93,7 @@ void Init::Config()
         return;
     } else {
         C::GLVersionMajor = GLVersionMajor;
-        LOG_INFO("%s: %d",key.data(), C::GLVersionMajor);        
+        LOG_INFO("%s: %d", std::string(key), C::GLVersionMajor);
     }
 
     // int   C::GLVersionMinor
@@ -251,7 +251,7 @@ void Init::Config()
         LOG_ERROR("config.yml error on Texture folder key --> %s...", key.data());
         return;
     } else {
-        strcpy(C::TexturesFolder, TexturesFolder.data());
+        strcpy(C::TexturesFolder, std::string(TexturesFolder).data());
         LOG_INFO("%s: %s",key.data(), C::TexturesFolder);                                                                
     }       
  
@@ -261,7 +261,7 @@ void Init::Config()
         LOG_ERROR("config.yml error on shaderFolder key --> %s...", key.data());
         return;
     } else {
-        strcpy(C::ShadersFolder, ShadersFolder.data());
+        strcpy(C::ShadersFolder, std::string(ShadersFolder).data());
         LOG_INFO("%s: %s",key.data(), C::ShadersFolder);                                                                
         
     }       
@@ -271,7 +271,7 @@ void Init::Config()
         LOG_ERROR("config.yml error on Materials folder key --> %s...", key.data());
         return;
     } else {
-        strcpy(C::MaterialsFolder, MaterialsFolder.data());
+        strcpy(C::MaterialsFolder, std::string(MaterialsFolder).data());
         LOG_INFO("%s: %s",key.data(), C::MaterialsFolder);                                                                        
     }       
 
@@ -280,7 +280,7 @@ void Init::Config()
         LOG_ERROR("config.yml error on models folder  key --> %s...", key.data());
         return;
     } else {
-        strcpy(C::ModelsFolder, ModelsFolder.data());
+        strcpy(C::ModelsFolder, std::string(ModelsFolder).data());
         LOG_INFO("%s: %s",key.data(), C::ModelsFolder);                                                                                
     }       
 
@@ -289,7 +289,7 @@ void Init::Config()
         LOG_ERROR("config.yml error on scenes folder key --> %s...", key.data());
         return;
     } else {
-        strcpy(C::ScenesFolder, ScenesFolder.data());
+        strcpy(C::ScenesFolder, std::string(ScenesFolder).data());
         LOG_INFO("%s: %s",key.data(), C::ScenesFolder);                                                                                        
     }       
  

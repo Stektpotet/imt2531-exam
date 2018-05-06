@@ -97,12 +97,13 @@ auto ModelSystem::makeModel(const C::Tag& tag, const std::string& modelString, M
     vertices.reserve(vertexCount);
     LOG_DEBUG("vertexcount: %d", vertexCount);
 
-    for(int i = 0; i < vertexCount; ++i) 
+    for(int i = 1; i <= vertexCount; ++i) 
     {
         auto[vertexKey, vertex, err2] = p.nextKeyVertex();
         if(err2) {
             return 1;
         }
+        //if (i %200000 == 0)LOG_ERROR("%d: %f %f %f", i, vertex.x, vertex.y, vertex.z);
         vertices.push_back(vertex);
     }
 
@@ -176,13 +177,13 @@ auto ModelSystem::makeModel(const C::Tag& tag, const std::string& modelString, M
         auto meshID = newModel.m_meshes.size();
         auto newMesh = newModel.m_meshes.emplace_back(
             Mesh{
-                meshtag,
+                std::string(meshtag),
                 ElementBuffer(indices.data(), indices.size()),
-                MaterialSystem::getIdByTag(materialtag),
-                ShaderSystem::copyByTag(shadertag)
+                MaterialSystem::getIdByTag(std::string(materialtag)),
+                ShaderSystem::copyByTag(std::string(shadertag))
             }
         );
-        newMesh.m_shaderProgram.setMaterial(MaterialSystem::getByTag(materialtag));
+        newMesh.m_shaderProgram.setMaterial(MaterialSystem::getByTag(std::string(materialtag)));
 
     }
 

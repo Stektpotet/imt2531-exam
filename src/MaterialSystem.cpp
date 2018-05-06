@@ -119,8 +119,8 @@ auto MaterialSystem::makeMaterial(const std::string& materialString, Material* o
 
         material.m_unimaps.emplace_back(
             UniformTexture {
-                uniformtag,
-                TextureSystem::copyByTag(maptag)
+                std::string(uniformtag),
+                TextureSystem::copyByTag(std::string(maptag))
             }
         );
     }
@@ -137,7 +137,7 @@ auto MaterialSystem::makeMaterial(const std::string& materialString, Material* o
             return 1;
 
         material.m_univalues.emplace_back(
-            UniformFloat{ uniformtag, value }
+            UniformFloat{ std::string(uniformtag), value }
         );
     }
 

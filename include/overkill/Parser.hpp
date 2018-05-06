@@ -14,13 +14,13 @@ namespace overkill
 {
 
 
-struct KeyColor     { std::string key; glm::vec4 color;     int parseerror; };
-struct KeyInteger   { std::string key; int i;               int parseerror; };
-struct KeyFloat     { std::string key; float fp;            int parseerror; };
-struct KeyString    { std::string key; std::string str;     int parseerror; };
-struct KeyVertex    { std::string key; Vertex vertex;       int parseerror; };
-struct KeyTriangle  { std::string key; Triangle triangle;   int parseerror; };
-struct KeyVec3      { std::string key; glm::vec3 vector;    int parseerror; };
+struct KeyColor     { std::string_view key; glm::vec4 color;     int parseerror; };
+struct KeyInteger   { std::string_view key; int i;               int parseerror; };
+struct KeyFloat     { std::string_view key; float fp;            int parseerror; };
+struct KeyString    { std::string_view key; std::string_view str; int parseerror; };
+struct KeyVertex    { std::string_view key; Vertex vertex;       int parseerror; };
+struct KeyTriangle  { std::string_view key; Triangle triangle;   int parseerror; };
+struct KeyVec3      { std::string_view key; glm::vec3 vector;    int parseerror; };
 
 
 constexpr int PARSE_SUCCESS          = 0;
@@ -37,28 +37,31 @@ class Parser
 {
 
     std::string_view strview;
-    int startofline =  0;
-    int endofline = 9999999;
-    int linecount = 0;
-    std::string currentLine = "<top>";
-    const std::string whitelistedCharacters = "0123456789abcdefghijklmnopqrstuvwxyzæøåABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅ-:";
+    int startofLine =  0;
+    int endofLine = -1;
+    int lineCount = 0;
+    std::string_view currentLine;
+    const char whitelistedCharacters[80] = "abcdefghijklmnopqrstuvwxyzæøåABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅ0123456789-:";
 
 public:
     Parser(std::string_view _strview);
-    auto nextLine()         -> std::string;
-    auto nextKeyString()    -> KeyString;
-    auto nextKeyInteger()   -> KeyInteger;
-    auto nextKeyFloat()     -> KeyFloat;
-    auto nextKeyVertex()    -> KeyVertex;
-    auto nextKeyTriangle()  -> KeyTriangle;
-    auto nextKeyColor()     -> KeyColor;
-    auto nextKeyVec3()      -> KeyVec3;
+    auto nextLine()         -> std::string_view;
+
+    auto keyString()->KeyString;
+    auto keyString(const std::string_view wantedKey)->KeyString;
+    auto keyInteger(const std::string_view wantedKey) -> KeyInteger;
+    auto keyVec3(const std::string_view wantedKey) -> KeyVec3;
+    auto keyFloat(const std::string_view wantedKey) -> KeyFloat;
 
 
-    auto keyInteger(const std::string& wantedKey) -> KeyInteger;
-    auto keyString(const std::string& wantedKey) -> KeyString;
-    auto keyVec3(const std::string& wantedKey) -> KeyVec3;
-    auto keyFloat(const std::string& wantedKey) -> KeyFloat;
+    // DEPRECATED FUNCTIONS
+    auto nextKeyString()->KeyString;
+    auto nextKeyInteger()->KeyInteger;
+    auto nextKeyFloat()->KeyFloat;
+    auto nextKeyVertex()->KeyVertex;
+    auto nextKeyTriangle()->KeyTriangle;
+    auto nextKeyColor()->KeyColor;
+    auto nextKeyVec3()->KeyVec3;
 };
 
 

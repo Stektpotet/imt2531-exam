@@ -31,6 +31,8 @@ glm::mat4 EntityPointLight::getModelMatrix(glm::mat4 parentModelMatrix)
     return model;
 }
 
+#define DEBUG 0
+
 void EntityPointLight::update(float dt, glm::mat4 parentMatrix)
 {
     m_transformMatrix = getModelMatrix(parentMatrix);
@@ -39,16 +41,19 @@ void EntityPointLight::update(float dt, glm::mat4 parentMatrix)
 
     m_position = glm::vec3(parentMatrix[3]);
 
-    
+
+#if DEBUG
     LOG_DEBUG("Update()\n\nentityID %d, entiryTag %s, \nm_position %f, %f, %f\nm_rotation %f, %f, %f\nm_angVel %f, %f, %f\ndeltatime %f\n",
     m_entityID,  m_entityTag.data(),
     m_position.x, m_position.y, m_position.z,
     glm::degrees(m_rotation.x), glm::degrees(m_rotation.y), glm::degrees(m_rotation.z),
     glm::degrees(m_angularVelocity.x), glm::degrees(m_angularVelocity.y), glm::degrees(m_angularVelocity.z),
     dt);
+
     Util::printMatrix(parentMatrix, "ParentMatrix:");
     Util::printMatrix(m_transformMatrix, "TransormMatrix:");
     printf("\n\n");
+#endif
     
 
     if (m_childIDs.size() > 0)                  // If we actually have kids.

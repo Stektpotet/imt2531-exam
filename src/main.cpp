@@ -68,15 +68,16 @@ int main(int argc, char** args)
 
     if (argc == 1)
     {
-        Scene::load("assets/scenes/_default.yml");
+        Scene::load("assets/scenes/demo1.yml");
     }
     else if (argc == 2)
     {
         Scene::load(std::string(args[1]));
     }
 
+   // exit(0);
 
-    //exit(0); // for performance analysis
+    exit(0); // for performance analysis
     float oldT = 0, t = 0, dt = 0;
 
     for(;;)

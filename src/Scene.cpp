@@ -39,7 +39,7 @@ int Scene::m_lightsCount;
         auto filestring = Util::fileToString(sceneFile);
         Parser p(filestring);
 
-        LOG_INFO("Loading \n%s", filestring.c_str());
+        LOG_INFO("Loading \n%s", sceneFile.c_str());
 
         //
         //  EntityCameras:
@@ -130,11 +130,11 @@ int Scene::m_lightsCount;
             }
             else
             {
-                if (!strcmp("freelook", mode.data()))
+                if ("freelook" == mode)
                 {
                     camMode = FREELOOK;
                 }
-                else if (!strcmp("orbital", mode.data()))
+                else if ("orbital" == mode )
                 {
                     camMode = ORBITAL;
                 }
@@ -547,7 +547,7 @@ int Scene::m_lightsCount;
                 auto childTag = p.nextLine();
                 Scene::setChild(
                     Scene::getEntityByTag(parentTag)->getEntityID(),
-                    Scene::getEntityByTag(childTag)->getEntityID());
+                    Scene::getEntityByTag(std::string(childTag))->getEntityID());
             }
         }
 
