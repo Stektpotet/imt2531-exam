@@ -92,7 +92,7 @@ void Init::Config()
         return;
     } else {
         C::GLVersionMajor = GLVersionMajor;
-        LOG_INFO("%s: %d", std::string(key), C::GLVersionMajor);
+        LOG_INFO("%s: %d", std::string(key).data(), C::GLVersionMajor);
     }
 
     // int   C::GLVersionMinor

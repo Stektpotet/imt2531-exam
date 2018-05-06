@@ -25,7 +25,7 @@ auto Parser::nextLine() -> std::string_view
         lineCount += 1;
         // After every iteration startofLine is set to the current value of endofLine +1.
         startofLine = endofLine + 1;
-        if (startofLine >= strview.size()) {
+        if (startofLine >= (int)strview.size()) {
             LOG_ERROR("Trying to read a line which begins after the end of the file. Check your that your file has the correct amount of lines.");
         }
 
