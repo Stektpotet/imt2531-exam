@@ -303,6 +303,7 @@ auto Parser::nextKeyVertex() -> KeyVertex {
     float nx, ny, nz;
     //   1.351676 0.301667  0.100000    0.000  0.000  1.000    0.000  0.000   255 255 255 255
 
+    /*
     strncpy(globalScanfTempStorage, vertexString.data(), vertexString.size());
     globalScanfTempStorage[vertexString.size()] = '\0';
     auto changecount = sscanf(globalScanfTempStorage, "%f  %f  %f    %f  %f  %f    %f  %f   %c %c %c %c",
@@ -315,10 +316,45 @@ auto Parser::nextKeyVertex() -> KeyVertex {
         LOG_WARN("A vertex should have 12 values. %d found", changecount);
         return KeyVertex{ {}, {}, PARSE_ERROR };
     }
+    */
 
+    const char* it = vertexString.data();
+    char* end;
+    
+    // Position
+    vert.x = strtof(it, &end);
+    it = end;
+    vert.y = strtof(it, &end);
+    it = end;
+    vert.z = strtof(it, &end);
+    it = end;
+
+    // Normal
+    nx = strtof(it, &end);
+    it = end;
+    ny = strtof(it, &end);
+    it = end;
+    nz = strtof(it, &end);
+    it = end;
+
+    // uv
+    u = strtof(it, &end);
+    it = end;
+    v = strtof(it, &end);
+    it = end;
+
+    // Colors
+    vert.r = (GLubyte)strtoul(it, &end, 10);
+    it = end;
+    vert.g = (GLubyte)strtoul(it, &end, 10);
+    it = end;
+    vert.b = (GLubyte)strtoul(it, &end, 10);
+    it = end;
+    vert.a = (GLubyte)strtoul(it, &end, 10);
+    it = end;
+
+    // Packing and normalizing
     vert.n = Util::packNormal(nx, ny, nz);
-
-
     vert.u = 65535U * u;//vert.uv = Util::packUV(u, v);
     vert.v = 65535U * v;
 
@@ -333,12 +369,15 @@ auto Parser::nextKeyTriangle() -> KeyTriangle
 
     Triangle tri{};
 
-    strncpy(globalScanfTempStorageSmall, triangleString.data(), triangleString.size());
-    globalScanfTempStorageSmall[triangleString.size()] = '\0';
-    auto changecount = sscanf(globalScanfTempStorageSmall, "%u %u %u", &tri.a, &tri.b, &tri.c);
-    if (changecount != 3) {
-        return KeyTriangle{ key,{}, PARSE_ERROR };
-    }
+    const char* it = triangleString.data();
+    char* end;
+    
+    tri.a = strtol(it, &end, 10);
+    it = end;
+    tri.b = strtol(it, &end, 10);
+    it = end;
+    tri.c = strtol(it, &end, 10);
+
     return KeyTriangle{ key, tri, PARSE_SUCCESS };
 }
 
