@@ -56,7 +56,7 @@ int main(int argc, char** args)
     Init::OpenGL(C::ClearColor);
     Watcher::pollEvents();
 
-    // Load resource subsystem
+    // Load asset subsystems
     TextureSystem::load();
     ShaderSystem::createUniformBuffers();
     ShaderSystem::load();
@@ -101,7 +101,7 @@ int main(int argc, char** args)
 
         oldT = t;
 
-        //break;
+       // break;
     }
 
     Scene::clean(); 

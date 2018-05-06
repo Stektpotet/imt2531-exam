@@ -30,7 +30,7 @@ auto Parser::nextLine() -> std::string_view
         }
 
         endofLine = strview.find('\n', startofLine);
-        if (size_t(endofLine) == std::string::npos) {
+        if (std::size_t(endofLine) == std::string::npos) {
             LOG_ERROR("End of line character (\n) not found. Are you missing an end of line character at the end of file?");
         }
 
