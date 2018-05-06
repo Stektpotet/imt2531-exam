@@ -6,5 +6,5 @@ values: 7
   bumpiness: 1
   specularity: 1
   distortion: 0.3
-  scatterPower: z
+  scatterPower: 1.0
   scatterScale: 0.2
