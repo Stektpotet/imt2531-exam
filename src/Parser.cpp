@@ -324,7 +324,15 @@ auto Parser::onlyVertex() -> Vertex
             res = (res*10.0f) + (*p - '0');
             ++p;
         }
+     
+
+        // @NOTE I tried to comment out this if-check, making it an assumption that all floats
+        //       has to be formatted with a '.' separating the two parts of the float.
+        //       This has no noticable affect on performance so I decided it was not worth
+        //       using it for the reduced flexibility. IMHO you have to gain quite huge performance
+        //       improvements to justify reductions in flexibility and robustness/safety - JSolsvik 07.05.2018
         if (*p == '.') {
+     
             float f = 0.0f;
             int n = 0;
             ++p;
@@ -333,17 +341,23 @@ auto Parser::onlyVertex() -> Vertex
                 ++p;
                 ++n;
             }
-            // Trying to optimize pow below
-            //res += f / std::pow(10.0, n);
-            
-            // This is 10-20x faster, than above
+
+            // @note Trying to optimize pow below 
+            //          
+            //        res += f / std::pow(10.0, n);
+            //
+            //       Results: The following is 10-20x faster compared to using the std::pow function
+            //                Totally worth throwing it away. It seems that the pow function is too general.
+            //                x * x * x * x .... beats it any day - JSolsvik 07.05.2018
             float tenToThePowerOfN = 1.0;
             while (n) {
                 tenToThePowerOfN *= 10.0;
                 --n;
             }
             res += f / tenToThePowerOfN;
+       
         }
+       
         if (neg) {
             res = -res;
         }

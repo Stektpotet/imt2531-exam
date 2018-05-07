@@ -101,7 +101,7 @@ int main(int argc, char** args)
 
         oldT = t;
 
- //       break; // For testing load performance
+        // break; // For testing load performance
     }
 
     Scene::clean();
