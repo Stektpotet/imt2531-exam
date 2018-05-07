@@ -28,6 +28,7 @@ public:
     //           Keep model metadata on CPU </summary>
     static void load();
     static void reload();
+    static void clean();
     static auto getIdByTag(const C::Tag& modeltag) -> C::ID;
     static auto getByTag(const C::Tag& tag) -> Model&;
     static auto getById(const C::ID modelID) -> Model&;

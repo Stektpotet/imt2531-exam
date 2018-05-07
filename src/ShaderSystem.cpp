@@ -235,16 +235,22 @@ void ShaderSystem::load()
     }
 }
 
+
+void ShaderSystem::clean() 
+{
+    // Delete from GPU
+    for (auto shaderprog : ShaderSystem::m_shaderPrograms)
+    {
+        shaderprog.clean();
+    }
+    // Remove all shaders
+    ShaderSystem::m_shaderPrograms.clear();
+
+}
+
 void ShaderSystem::reload() 
 {
-
-    // Delete from GPU
-    for (auto shaderprog : ShaderSystem::m_shaderPrograms) 
-    {
-        shaderprog.clean();         
-    }
-	// Remove all shaders
-	ShaderSystem::m_shaderPrograms.clear();
+    ShaderSystem::clean();
 
 	//// Delete from GPU
 	//for (auto uBuffer : ShaderSystem::m_uniformBuffers)

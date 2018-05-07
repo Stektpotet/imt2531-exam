@@ -25,6 +25,7 @@ public:
     // <summary> Load all texture data onto GPU memory. 
     //           Keep model metadata on CPU </summary>
     static void load();
+    static void clean();
     static auto getIdByTag(const C::Tag& textureTag) -> C::ID;
     static auto getByTag(const C::Tag& textureTag) -> const Texture&;
     static auto getById(const C::ID textureID) -> const Texture&;

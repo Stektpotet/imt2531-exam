@@ -54,12 +54,12 @@ auto packNormal(float x, float y, float z) -> GLint
 	return r;
 }
 
-void ModelSystem::reload() 
-{   
+void ModelSystem::clean() 
+{
     // Clean out all buffers from GPU
-    for(auto model : ModelSystem::m_models)
+    for (auto model : ModelSystem::m_models)
     {
-        for(auto mesh : model.m_meshes) 
+        for (auto mesh : model.m_meshes)
         {
             mesh.m_ebo.clean();
         }
@@ -69,6 +69,11 @@ void ModelSystem::reload()
 
     // Clear the models on CPU
     ModelSystem::m_models.clear();
+}
+
+void ModelSystem::reload() 
+{   
+    ModelSystem::clean();
 
     // Unbind callbacks
     MaterialSystem::unbindAll();

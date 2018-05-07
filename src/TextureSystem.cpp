@@ -61,6 +61,14 @@ void TextureSystem::load()
     }
 }
 
+void TextureSystem::clean() 
+{
+    for (auto texture : m_textures) 
+    {
+        texture.clean();
+    }
+    m_textures.clear();
+}
 
 auto TextureSystem::makeTexture(const std::string& filepath, Texture* outTexture) -> C::Err
 {

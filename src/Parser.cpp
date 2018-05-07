@@ -21,7 +21,8 @@ auto Parser::nextLine() -> std::string_view
     //               After every strview.find() there is a chance that the result is string::npos,
     //               which means "not found".
 
-    for (;;) {
+    for (;;) 
+    {
         lineCount += 1;
         // After every iteration startofLine is set to the current value of endofLine +1.
         startofLine = endofLine + 1;

@@ -101,10 +101,14 @@ int main(int argc, char** args)
 
         oldT = t;
 
-       // break;
+ //       break; // For testing load performance
     }
 
-    Scene::clean(); 
+    Scene::clean();
+    ModelSystem::clean();
+    ShaderSystem::clean();
+    TextureSystem::clean();
+
     glfwDestroyWindow(C::window);
     glfwTerminate();
 	return 0;

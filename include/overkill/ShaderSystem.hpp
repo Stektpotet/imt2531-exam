@@ -64,6 +64,7 @@ public:
     static void createUniformBuffers();
     static void load();
     static void reload();
+    static void clean();
     static auto getIdByTag(const C::Tag& shaderTag) -> C::ID;
     static auto getByTag(const C::Tag& shaderTag) -> const ShaderProgram&;
     static auto getById(const C::ID shaderProgramID ) -> const ShaderProgram&;
