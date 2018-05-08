@@ -27,6 +27,7 @@ char C::ShadersFolder[C::StrSize]   = "assets/shaders";
 char C::MaterialsFolder[C::StrSize] = "assets/materials";
 char C::ModelsFolder[C::StrSize]    = "assets/models";
 char C::ScenesFolder[C::StrSize]    = "assets/scenes";
+char C::ObjsFolder[C::StrSize]    = "assets/objs";
 
 std::string C::PythonPath = "python3";
 

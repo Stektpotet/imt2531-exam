@@ -272,6 +272,15 @@ void Init::Config()
         LOG_INFO("%s: %s",std::string(key).data(), C::ScenesFolder);
     }       
  
+    // char C::ObjsFolder[MaxString]    
+    if (auto[key, ObjsFolder, err] = p.keyString("ObjsFolder"); err) {
+        return;
+    } else {
+        strcpy(C::ObjsFolder, std::string(ObjsFolder).data());
+        LOG_INFO("%s: %s",std::string(key).data(), C::ObjsFolder);
+    }       
+ 
+
 
     //
     // SHADERS CONFIG

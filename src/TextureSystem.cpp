@@ -117,4 +117,14 @@ auto TextureSystem::makeTexture(const std::string& filepath, Texture* outTexture
     return 0;
 }
 
+
+auto TextureSystem::loadOBJ(const std::vector<tinyobj::material_t>& /*materials*/) -> C::Err
+{
+
+
+
+    return 0;
+}
+
+
 }

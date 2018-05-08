@@ -45,6 +45,7 @@ public:
     static char MaterialsFolder[StrSize];
     static char ModelsFolder[StrSize];
     static char ScenesFolder[StrSize];
+    static char ObjsFolder[StrSize];
 
     static unsigned int MAX_LIGHTS; //inject it into shaders
     static GLFWwindow* window;

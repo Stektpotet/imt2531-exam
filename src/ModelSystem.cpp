@@ -273,4 +273,15 @@ void ModelSystem::load()
 
 }
 
+
+auto ModelSystem::loadOBJ(const tinyobj::attrib_t&                /*attributes*/,
+                          const std::vector<tinyobj::shape_t>&    /*shapes*/, 
+                          const std::vector<tinyobj::material_t>& /*materials*/) -> C::Err
+{
+
+
+
+    return 0;
+}
+
 } // ::overkill

@@ -153,4 +153,14 @@ auto MaterialSystem::makeMaterial(const std::string& materialString, Material* o
     return 0;
 }
 
+
+auto MaterialSystem::loadOBJ(const std::vector<tinyobj::material_t>& /*materials*/) -> C::Err
+{
+
+
+
+    return 0;
+}
+
+
 }
