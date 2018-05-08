@@ -23,12 +23,19 @@ struct UniformFloat
 	float  value;
 };
 
+struct UniformVec3
+{
+    std::string tag;
+    glm::vec3 vector;
+};
+
 class Material
 {
 public:
     C::Tag                      m_tag;
 	std::vector<UniformTexture>	m_unimaps;
 	std::vector<UniformFloat>	m_univalues;
+    std::vector<UniformVec3>    m_univectors;
     Material()=default;
 };
 

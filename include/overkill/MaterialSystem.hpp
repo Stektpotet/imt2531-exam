@@ -45,7 +45,8 @@ public:
     // <summary> Load all model data onto GPU memory. 
     //           Keep model metadata on CPU </summary>
     static void load();
-    static auto loadOBJ(const std::vector<tinyobj::material_t>& materials) -> C::Err;
+    static auto loadOBJ(const std::vector<tinyobj::material_t>& materials,
+                        const C::Tag& baseTag) -> C::Err;
     static void reload();
     static auto getIdByTag(const C::Tag& materialTag) -> C::ID;
     static auto getByTag(const C::Tag& materialTag) -> const Material&;

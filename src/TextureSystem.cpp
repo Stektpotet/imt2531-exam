@@ -29,11 +29,12 @@ auto TextureSystem::copyByTag(const C::Tag& tag) -> Texture
 
 void TextureSystem::push(const C::Tag tag, const std::string& filepath) 
 {
+    LOG_DEBUG("Texture from file: %s", filepath.data());
 
     Texture texture;
     auto err = TextureSystem::makeTexture(filepath, &texture);
     if (err) {
-        LOG_WARN("TextureSystem::makeTexture: failed, using default texture....");
+        LOG_ERROR("TextureSystem::makeTexture: failed, using default texture....");
         TextureSystem::m_mapTextureID[tag] = 0;
         return;
     }
@@ -55,7 +56,6 @@ void TextureSystem::load()
         if (e.tag == "_default") continue;
 
         const auto filepath = C::TexturesFolder + ("/" + e.tag) + "." + e.extension;
-        LOG_DEBUG("Texture from file: %s", filepath.data());
         TextureSystem::push(e.tag, filepath);
 
     }
@@ -118,10 +118,42 @@ auto TextureSystem::makeTexture(const std::string& filepath, Texture* outTexture
 }
 
 
-auto TextureSystem::loadOBJ(const std::vector<tinyobj::material_t>& /*materials*/) -> C::Err
+auto TextureSystem::loadOBJ(const std::vector<tinyobj::material_t>& materials,
+                            const std::string& objBasedir,
+                            const C::Tag& objTag) -> C::Err
 {
 
+    auto loadTextureOnlyIfShouldLoad = [](const std::string& baseDir,
+                                          const std::string& filename,
+                                          const C::Tag& objTag,
+                                          const std::string& type)
+    {
+        if ( !(filename.empty() ))
+        {
+            auto path = baseDir + filename;
+            auto filenameOnly = filename.substr(0, filename.find('.'));
+            auto textureTag = "obj/" + objTag + "/" + filenameOnly + "." + type;
 
+            if (TextureSystem::getIdByTag(textureTag) == 0)
+            {
+                TextureSystem::push(textureTag, path);
+            }
+        }
+    };
+
+
+
+
+    for(const auto& mat: materials) 
+    {
+        loadTextureOnlyIfShouldLoad(objBasedir, mat.ambient_texname, objTag, "ambient");
+        loadTextureOnlyIfShouldLoad(objBasedir, mat.diffuse_texname, objTag, "diffuse");
+        loadTextureOnlyIfShouldLoad(objBasedir, mat.specular_texname, objTag, "specular");
+        loadTextureOnlyIfShouldLoad(objBasedir, mat.specular_highlight_texname , objTag,  "specular_highlight");
+        loadTextureOnlyIfShouldLoad(objBasedir, mat.bump_texname, objTag,  "bump");
+        loadTextureOnlyIfShouldLoad(objBasedir, mat.alpha_texname, objTag, "alpha");
+        loadTextureOnlyIfShouldLoad(objBasedir, mat.displacement_texname, objTag, "displacement");
+    }
 
     return 0;
 }

@@ -118,6 +118,8 @@ int main(int argc, char** args)
 	return 0;
 }
 
+
+
 void loadOBJFiles() 
 {
     auto getBaseDir = [](const std::string& filepath) -> std::string 
@@ -161,20 +163,19 @@ void loadOBJFiles()
             LOG_ERROR("!success");
         }
 
-
         
-        if (auto err = TextureSystem::loadOBJ(materials); err) {
-            LOG_ERROR("TextureSystem failed to load OBJ");
+        if (auto err = TextureSystem::loadOBJ(materials, objBasedir, e.tag); err) {
+            LOG_ERROR("TextureSystem failed to load OBJ: %s", objFilepath.data());
         }
         
         
-        if (auto err = MaterialSystem::loadOBJ(materials); err) {
-            LOG_ERROR("MaterialSystem failed to load OBJ");
+        if (auto err = MaterialSystem::loadOBJ(materials, e.tag); err) {
+            LOG_ERROR("MaterialSystem failed to load OBJ: %s", objFilepath.data());
         }
 
         
         if (auto err = ModelSystem::loadOBJ(attributes, shapes, materials); err) {
-            LOG_ERROR("ModelSystem failed to load OBJ");
+            LOG_ERROR("ModelSystem failed to load OBJ: %s", objFilepath.data());
         }
 
     }

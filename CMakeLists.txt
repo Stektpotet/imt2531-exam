@@ -1,9 +1,6 @@
 project(cube)
 cmake_minimum_required (VERSION 3.8 FATAL_ERROR)
 
-# Set global variables
-set(CMAKE_BUILD_TYPE RelWithDebInfo)
-
 # Aliases
 set(SRCDIR ${CMAKE_SOURCE_DIR}) 
 set(BINDIR ${CMAKE_BINARY_DIR})

@@ -154,10 +154,86 @@ auto MaterialSystem::makeMaterial(const std::string& materialString, Material* o
 }
 
 
-auto MaterialSystem::loadOBJ(const std::vector<tinyobj::material_t>& /*materials*/) -> C::Err
+auto MaterialSystem::loadOBJ(const std::vector<tinyobj::material_t>& materials, 
+                             const C::Tag& objTag) -> C::Err
 {
 
 
+    for(const auto& objMaterial: materials) 
+    {
+        Material overkillMaterial; 
+
+        overkillMaterial.m_univectors.push_back(UniformVec3{ "ambient", glm::vec3{
+              objMaterial.ambient[0],
+              objMaterial.ambient[1],
+              objMaterial.ambient[2]
+        }});
+
+        overkillMaterial.m_univectors.push_back(UniformVec3{ "diffuse", glm::vec3{
+              objMaterial.diffuse[0],
+              objMaterial.diffuse[1],
+              objMaterial.diffuse[2]
+        }});
+
+        overkillMaterial.m_univectors.push_back(UniformVec3{ "specular", glm::vec3{
+              objMaterial.specular[0],
+              objMaterial.specular[1],
+              objMaterial.specular[2]
+        }});
+
+        overkillMaterial.m_univectors.push_back(UniformVec3{ "transmittance", glm::vec3{
+              objMaterial.transmittance[0],
+              objMaterial.transmittance[1],
+              objMaterial.transmittance[2]
+        }});
+
+        overkillMaterial.m_univectors.push_back(UniformVec3{ "emission", glm::vec3{
+              objMaterial.emission[0],
+              objMaterial.emission[1],
+              objMaterial.emission[2]
+        }});
+
+        overkillMaterial.m_univalues.push_back(UniformFloat {"shininess", objMaterial.shininess});
+        overkillMaterial.m_univalues.push_back(UniformFloat {"ior", objMaterial.ior});  // Dunno what this is suppposed to be
+        overkillMaterial.m_univalues.push_back(UniformFloat {"dissolve", objMaterial.dissolve});
+        overkillMaterial.m_univalues.push_back(UniformFloat {"illuminosity", static_cast<float>(objMaterial.illum) });
+
+
+        auto resolveTexture = [](Material& overkillMaterial, 
+                                const C::Tag& objTag,
+                                 const std::string filename,
+                                 const std::string type)
+        {
+            if (!filename.empty()) 
+            {
+                auto filenameOnly = filename.substr(0, filename.find('.'));
+                auto textureTag = "obj/" + objTag + "/" + filenameOnly + "." + type;
+
+                if (TextureSystem::getIdByTag(textureTag) != 0)
+                {
+                    overkillMaterial.m_unimaps.push_back(
+                        UniformTexture{
+                            "map_" + type,
+                            TextureSystem::copyByTag(textureTag)
+                        });
+                }
+            }
+        };
+
+        resolveTexture(overkillMaterial, objTag, objMaterial.ambient_texname, "ambient");
+        resolveTexture(overkillMaterial, objTag, objMaterial.diffuse_texname, "diffuse");
+        resolveTexture(overkillMaterial, objTag, objMaterial.specular_texname, "specular");
+        resolveTexture(overkillMaterial, objTag, objMaterial.specular_highlight_texname, "specular_highlight");
+        resolveTexture(overkillMaterial, objTag, objMaterial.bump_texname, "bump");
+        resolveTexture(overkillMaterial, objTag, objMaterial.alpha_texname, "alpha");
+        resolveTexture(overkillMaterial, objTag, objMaterial.displacement_texname, "displacement");
+
+
+        overkillMaterial.m_tag = "obj/" + objTag + "/" + objMaterial.name;
+
+        MaterialSystem::m_mapMaterialID[overkillMaterial.m_tag] = MaterialSystem::m_materials.size();
+        MaterialSystem::m_materials.emplace_back(overkillMaterial);
+    }
 
     return 0;
 }
