@@ -174,7 +174,7 @@ void loadOBJFiles()
         }
 
         
-        if (auto err = ModelSystem::loadOBJ(attributes, shapes, materials); err) {
+        if (auto err = ModelSystem::loadOBJ(attributes, shapes, materials, e.tag); err) {
             LOG_ERROR("ModelSystem failed to load OBJ: %s", objFilepath.data());
         }
 

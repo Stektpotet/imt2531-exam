@@ -17,7 +17,7 @@ public:
     
     void clean();
 
-    void update(GLintptr start, GLuint size, const void * data);
+    void update(GLintptr start, GLsizeiptr size, const GLvoid *);
     void bind() const;
     void unbind() const;
 };

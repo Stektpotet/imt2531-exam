@@ -13,10 +13,11 @@ VertexBuffer::VertexBuffer(const void * data, GLuint size)
 
 void VertexBuffer::clean()
 {
+    unbind();
     GLCall(glDeleteBuffers(1, &m_rendererID));
 }
 
-void VertexBuffer::update(GLintptr start, GLuint size, const void * data)
+void VertexBuffer::update(GLintptr start, GLsizeiptr size, const GLvoid * data)
 {
     bind();
     GLCall(glBufferSubData(GL_ARRAY_BUFFER, start, size, data));

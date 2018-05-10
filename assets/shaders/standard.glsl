@@ -131,7 +131,7 @@ vec3 OK_PointLight(in vec3 position, in vec3 intensities, in float constant, in 
 
 vec3 OK_DirectionalLight(in vec3 lightDir, in vec3 intensities) {
 	//Ambience
-	float ambientStrength = 0.2;
+	float ambientStrength = 0.6;
 	vec3 ambient = ambientStrength * intensities;
 
 	//Diffuse

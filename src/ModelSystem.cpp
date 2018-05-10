@@ -22,38 +22,6 @@ auto ModelSystem::getById(C::ID modelID) -> Model&
     return ModelSystem::m_models[modelID];
 }
 
-auto packUV(float u, float v) -> GLshort
-{
-    const auto MAX = 127;
-    //const auto MIN = -128;
-    const auto CLAMPER = 255;
-   
-    return (GLint(v * MAX) & CLAMPER) << 8 | (GLint(u * MAX) & CLAMPER);
-}
-
-//TODO move it
-auto packNormal(float x, float y, float z) -> GLint
-{
-    
-	float magnitude = sqrt(x * x + y * y + z * z);
-	x /= magnitude;
-	y /= magnitude;
-	z /= magnitude;
-
-
-	const auto MAX = 511;		//01 1111 1111
-	// -1 * 511 = -511
-	GLint ix = (GLint(x * MAX) & 1023);
-	GLint iy = (GLint(y * MAX) & 1023);
-	GLint iz = (GLint(z * MAX) & 1023);
-	//1*511 =	511
-	//			01 0000 0000
-	//-1*511 = -511
-	//			10 0000 0001
-	GLint r = (iz << 20) | (iy << 10) | ix;
-	return r;
-}
-
 void ModelSystem::clean() 
 {
     // Clean out all buffers from GPU
@@ -112,7 +80,7 @@ auto ModelSystem::makeModel(const C::Tag& tag, const std::string& modelString, M
 
     vbufLayout.push<GL_FLOAT>(3);                       //position -> 0  -> 12 -> 12
     vbufLayout.pushPacked<GL_INT_2_10_10_10_REV>(4);    //normal   -> 12 -> 16 -> 16
-    vbufLayout.push<GL_UNSIGNED_SHORT>(2, GL_TRUE);              //uv       -> 16 -> 20 -> 24 ?
+    vbufLayout.push<GL_UNSIGNED_SHORT>(2, GL_TRUE);                         //uv       -> 16 -> 20 -> 24 ?
     vbufLayout.push<GL_UNSIGNED_BYTE>(4, GL_TRUE);      //color    -> 18 -> 22 -> 20
 
 
@@ -165,18 +133,18 @@ auto ModelSystem::makeModel(const C::Tag& tag, const std::string& modelString, M
         //
         // TRIANGLES 
         //
-        std::vector<Triangle> indices;
+        std::vector<Triangle> triangles;
 
         // Triangle count
         if (auto[key, triCount, err] = p.keyInteger("triangles"); err){
             return err;
         } else {
 
-            indices.resize(triCount);
+            triangles.resize(triCount);
             LOG_DEBUG("tricount: %d", triCount);
             for(int j = 0; j < triCount; ++j) 
             {
-                indices[j] = p.onlyTriangle();
+                triangles[j] = p.onlyTriangle();
             } 
         }
 
@@ -185,7 +153,7 @@ auto ModelSystem::makeModel(const C::Tag& tag, const std::string& modelString, M
         auto newMesh = newModel.m_meshes.emplace_back(
             Mesh{
                 meshTag,
-                ElementBuffer((unsigned int*)indices.data(), indices.size() * 3),
+                ElementBuffer((unsigned int*)triangles.data(), triangles.size() * 3),
                 MaterialSystem::getIdByTag(materialTag),
                 ShaderSystem::copyByTag(shaderTag)
             }
@@ -274,12 +242,180 @@ void ModelSystem::load()
 }
 
 
-auto ModelSystem::loadOBJ(const tinyobj::attrib_t&                /*attributes*/,
-                          const std::vector<tinyobj::shape_t>&    /*shapes*/, 
-                          const std::vector<tinyobj::material_t>& /*materials*/) -> C::Err
+#include <set>
+
+
+
+
+auto ModelSystem::loadOBJ(const tinyobj::attrib_t&                attributes,
+                          const std::vector<tinyobj::shape_t>&    shapes, 
+                          const std::vector<tinyobj::material_t>& materials,
+                          const C::Tag&                           objTag) -> C::Err
 {
 
 
+    using u8 = std::uint8_t;
+    using u64 = std::uint64_t;
+    using s64 = std::int64_t;
+
+
+    std::vector<Vertex> overkillVertices;
+    std::vector<std::vector<Triangle>> overkillTrianglesArray;
+    overkillVertices.reserve(1024);
+
+    //
+    // 1. Go through meshes and fetch indicies + indexcombos
+    //
+    for (const auto& shape: shapes) 
+    {
+        auto& objMesh           = shape.mesh;
+        auto overkillTriangles = std::vector<Triangle>{};
+
+        const u8 TriangleStride = 3;
+        for (u64 triangleIndex = 0; triangleIndex < objMesh.num_face_vertices.size(); triangleIndex++)
+        {
+            // @note
+            // This is a safety guard. We might turn this off if we can be certain that
+            // the .obj files has been triangulated. - JSolsvik 2018-05-09
+
+            if (objMesh.num_face_vertices[triangleIndex] != TriangleStride) {
+                LOG_ERROR("\nobjMesh.num_face_vertices != 3. TRIANGULATE YOUR objMesh'es\n"
+                          "Expected: 3"
+                          "Got: %lu", static_cast<u64>( objMesh.num_face_vertices[triangleIndex]));
+            }
+
+
+            // Temp variables so we don't have to write dot ('.') so many times later.
+            auto& objIndices   = objMesh.indices;
+
+            // A triangle has 3 corners -> A, B and C
+            auto& indexA = objIndices[triangleIndex * TriangleStride + 0];
+            auto& indexB = objIndices[triangleIndex * TriangleStride + 1];
+            auto& indexC = objIndices[triangleIndex * TriangleStride + 2];
+            
+            auto makeVertexReturnIndex = [&overkillVertices, &attributes](const tinyobj::index_t& indexSet) -> GLuint
+            {
+                using s8 = std::uint8_t;
+
+                const s8 VertexStride = 3;
+                const s8 NormalStride = 3;
+                const s8 TextureStride = 2;
+
+                auto v = Vertex{
+                    attributes.vertices[indexSet.vertex_index * VertexStride + 0],
+                    attributes.vertices[indexSet.vertex_index * VertexStride + 1],
+                    attributes.vertices[indexSet.vertex_index * VertexStride + 2],
+
+                    Util::packNormal(attributes.normals[indexSet.normal_index * NormalStride + 0],
+                                     attributes.normals[indexSet.normal_index * NormalStride + 1],
+                                     attributes.normals[indexSet.normal_index * NormalStride + 2]),
+                };
+
+                if (indexSet.texcoord_index != -1)
+                {
+                    v.u =  static_cast<GLushort>(65535U * attributes.texcoords[indexSet.texcoord_index * TextureStride + 0]);
+                    v.v =  static_cast<GLushort>(65535U * attributes.texcoords[indexSet.texcoord_index * TextureStride + 1]);
+                }
+
+                overkillVertices.push_back(v);
+                return overkillVertices.size() - 1;
+            };
+
+            overkillTriangles.emplace_back( Triangle {
+                makeVertexReturnIndex(indexA),
+                makeVertexReturnIndex(indexB),
+                makeVertexReturnIndex(indexC),
+                });
+
+        } // END FOR TRIANGLES
+
+        overkillTrianglesArray.push_back(overkillTriangles);
+    } // END FOR SHAPES(MESHES)
+
+
+ 
+    //
+    // 3. Create model with tag
+    //
+    auto overkillModel = Model{};
+    overkillModel.m_tag = "obj/" + objTag;
+
+    //
+    // 4. Buffer vertexdata to the GPU
+    //
+    auto vbufLayout = VertexBufferAttribLayout();
+    {
+        vbufLayout.push<GL_FLOAT>(3);                       //position -> 0  -> 12 -> 12
+        vbufLayout.pushPacked<GL_INT_2_10_10_10_REV>(4);    //normal   -> 12 -> 16 -> 16
+        vbufLayout.push<GL_UNSIGNED_SHORT>(2, GL_TRUE);                 //uv       -> 16 -> 20 -> 24 ?
+        vbufLayout.push<GL_UNSIGNED_BYTE>(4, GL_TRUE);      //color    -> 18 -> 22 -> 20
+
+        overkillModel.m_vbo = VertexBuffer(overkillVertices.data(), 
+                                           overkillVertices.size() * vbufLayout.getStride());
+        overkillModel.m_vao.addBuffer(overkillModel.m_vbo, vbufLayout);
+    }
+
+
+    int i = 0;
+    for (const auto& overkillTriangles: overkillTrianglesArray)
+    {
+        //
+        // 5. Create overkillmesh and buffer indexdata to GPU
+        //
+        auto& shape = shapes[i++];
+        C::Tag objMaterialTag = materials[shape.mesh.material_ids[0]].name;
+
+        auto indiciesCount = overkillTriangles.size() * 3;
+
+        auto meshID = overkillModel.m_meshes.size();
+        auto overkillMesh = overkillModel.m_meshes.emplace_back(
+            Mesh
+            {
+                "obj/" + objTag + "/" + shape.name,
+                ElementBuffer( (unsigned int*)overkillTriangles.data(), indiciesCount),
+                MaterialSystem::getIdByTag("obj/"+ objTag + "/" + objMaterialTag),
+                ShaderSystem::copyByTag("objshader")
+            }
+        );
+
+        overkillMesh.m_shaderProgram.setMaterial(MaterialSystem::getByTag(objMaterialTag));
+
+        //
+        // 6. Bind to MaterialSystem update event
+        //
+        MaterialSystem::bindOnUpdate(
+            MaterialSystem::getById(overkillMesh.m_materialID).m_tag,
+            m_mapModelID[overkillModel.m_tag],
+            i,
+            [](C::ID materialID, C::ID modelID, C::ID meshID) {
+                auto& model = ModelSystem::getById(modelID);
+                auto& mesh = model.m_meshes[meshID];
+                mesh.m_materialID = materialID;
+                mesh.m_shaderProgram.setMaterial(MaterialSystem::getById(materialID));
+            }
+        );
+
+        //
+        // 7. Bind to ShaderSystem update event
+        //
+        ShaderSystem::bindOnUpdate(
+            overkillMesh.m_shaderProgram.m_tag,
+            m_mapModelID[overkillModel.m_tag],
+            i,
+            [](C::ID shaderID, C::ID modelID, C::ID meshID) {
+                auto& model = ModelSystem::getById(modelID);
+                auto& mesh = model.m_meshes[meshID];
+                mesh.m_shaderProgram = ShaderSystem::copyById(shaderID);
+                mesh.m_shaderProgram.setMaterial(MaterialSystem::getById(mesh.m_materialID));
+            }
+        );
+    }
+
+    //
+    // 8. Push back model
+    //
+    ModelSystem::m_mapModelID[overkillModel.m_tag] = ModelSystem::m_models.size();
+    ModelSystem::m_models.push_back(overkillModel);
 
     return 0;
 }

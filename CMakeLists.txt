@@ -97,6 +97,7 @@ configure_directory(${SRCDIR}/assets/textures ${BINDIR}/assets/textures)
 configure_directory(${SRCDIR}/assets/objs/cube ${BINDIR}/assets/objs/cube)
 configure_directory(${SRCDIR}/assets/objs/house ${BINDIR}/assets/objs/house)
 configure_directory(${SRCDIR}/assets/objs/moriknob ${BINDIR}/assets/objs/moriknob)
+configure_directory(${SRCDIR}/assets/objs/rungholt ${BINDIR}/assets/objs/rungholt)
 
 
 configure_file(${SRCDIR}/tool/discover.py ${BINDIR}/tool/discover.py COPYONLY)
@@ -146,7 +147,6 @@ target_compile_options(
     cube
     PRIVATE "-Wall"
     PRIVATE "-Wextra"
-    PRIVATE "-g"
     PRIVATE "-std=c++17"
 )
 
