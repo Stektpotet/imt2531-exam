@@ -19,7 +19,7 @@ struct Vertex
 {
     GLfloat  x,y,z;
     GLint    n;
-    GLushort u,v;
+    GLushort u=0,v=0;
     GLubyte  r=255,g=255,b=255,a=255;
 };
 

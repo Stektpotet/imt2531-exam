@@ -149,7 +149,6 @@ auto ModelSystem::makeModel(const C::Tag& tag, const std::string& modelString, M
         }
 
         // Construct mesh, buffer ElementBuffer data to GPU
-        auto meshID = newModel.m_meshes.size();
         auto newMesh = newModel.m_meshes.emplace_back(
             Mesh{
                 meshTag,
@@ -256,7 +255,6 @@ auto ModelSystem::loadOBJ(const tinyobj::attrib_t&                attributes,
 
     using u8 = std::uint8_t;
     using u64 = std::uint64_t;
-    using s64 = std::int64_t;
 
 
     std::vector<Vertex> overkillVertices;
@@ -301,7 +299,7 @@ auto ModelSystem::loadOBJ(const tinyobj::attrib_t&                attributes,
                 const s8 NormalStride = 3;
                 const s8 TextureStride = 2;
 
-                auto v = Vertex{
+                auto vert = Vertex{
                     attributes.vertices[indexSet.vertex_index * VertexStride + 0],
                     attributes.vertices[indexSet.vertex_index * VertexStride + 1],
                     attributes.vertices[indexSet.vertex_index * VertexStride + 2],
@@ -313,11 +311,11 @@ auto ModelSystem::loadOBJ(const tinyobj::attrib_t&                attributes,
 
                 if (indexSet.texcoord_index != -1)
                 {
-                    v.u =  static_cast<GLushort>(65535U * attributes.texcoords[indexSet.texcoord_index * TextureStride + 0]);
-                    v.v =  static_cast<GLushort>(65535U * attributes.texcoords[indexSet.texcoord_index * TextureStride + 1]);
+                    vert.u =  static_cast<GLushort>(65535U * attributes.texcoords[indexSet.texcoord_index * TextureStride + 0]);
+                    vert.v =  static_cast<GLushort>(65535U * attributes.texcoords[indexSet.texcoord_index * TextureStride + 1]);
                 }
 
-                overkillVertices.push_back(v);
+                overkillVertices.push_back(vert);
                 return overkillVertices.size() - 1;
             };
 
@@ -367,7 +365,6 @@ auto ModelSystem::loadOBJ(const tinyobj::attrib_t&                attributes,
 
         auto indiciesCount = overkillTriangles.size() * 3;
 
-        auto meshID = overkillModel.m_meshes.size();
         auto overkillMesh = overkillModel.m_meshes.emplace_back(
             Mesh
             {

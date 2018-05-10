@@ -23,7 +23,7 @@ ShadersFolder: assets/shaders
 MaterialsFolder: assets/materials
 ModelsFolder: assets/models
 ScenesFolder: assets/scenes
-ObjsFolder: assets/docs
+ObjsFolder: assets/objs
 
 MAX_LIGHTS: 8
 

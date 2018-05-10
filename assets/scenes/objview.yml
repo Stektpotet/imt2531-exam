@@ -1,0 +1,55 @@
+cameras: 1
+
+camera: mainCam
+  position: 0 0 -20
+  rotation: 0 0 0
+  velocity: 0 0 0
+  angleVelocity: 0 0 0
+  mode: orbital
+  fov: 90
+  nearClip: 0.1
+  farClip: 800
+
+
+entities: 1
+
+entity: skybox
+    model: obj/house
+    position: 0 0 0
+    rotation: 0 0 0
+    scale: 1 1 1
+    velocity: 0 0 0
+    angleVelocity: 0 0 0
+
+
+pointlights: 3
+
+pointlight: sunLight
+  position: 0 0 0
+  velocity: 0 0 0
+  intensities: 0.98 0.58 0
+  falloff: 1.0 0.00025 0.0012
+
+pointlight: moonLight
+  position: 0 0 0
+  velocity: 0 0 0
+  intensities: 1 0 0
+  falloff: 1.0 0.03125 0.0625
+
+pointlight: moonMoonLight
+  position: 0 0 0
+  velocity: 0 0 0
+  intensities: 0 1 0
+  falloff: 1.0 0.03125 0.0625
+
+
+
+
+hasSun: 1
+
+dirlight: distantSunLight
+  rotation: 0 0 0
+  angleVelocity: 0 0 0
+  intensities: 0.222 0.432 0.534
+
+relations: 0

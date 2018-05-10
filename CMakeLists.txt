@@ -94,10 +94,7 @@ configure_directory(${SRCDIR}/assets/shaders ${BINDIR}/assets/shaders)
 configure_directory(${SRCDIR}/assets/models ${BINDIR}/assets/models)
 configure_directory(${SRCDIR}/assets/textures ${BINDIR}/assets/textures)
 
-configure_directory(${SRCDIR}/assets/objs/cube ${BINDIR}/assets/objs/cube)
 configure_directory(${SRCDIR}/assets/objs/house ${BINDIR}/assets/objs/house)
-configure_directory(${SRCDIR}/assets/objs/moriknob ${BINDIR}/assets/objs/moriknob)
-configure_directory(${SRCDIR}/assets/objs/rungholt ${BINDIR}/assets/objs/rungholt)
 
 
 configure_file(${SRCDIR}/tool/discover.py ${BINDIR}/tool/discover.py COPYONLY)
