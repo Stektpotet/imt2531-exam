@@ -92,7 +92,7 @@ if __name__ == "__main__":
 
     outfile = open(workdir+active_object.name+".yml", "w")
 
-    writeVertices(outfile, vertices)
+    writeVertices(outfile, vertices, uvDict)
     outfile.write("\n")
 
     outfile.write("meshes: 1\n");

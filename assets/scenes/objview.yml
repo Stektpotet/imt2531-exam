@@ -14,7 +14,7 @@ camera: mainCam
 entities: 1
 
 entity: skybox
-    model: obj/house
+    model: HOUSE
     position: 0 0 0
     rotation: 0 0 0
     scale: 1 1 1
