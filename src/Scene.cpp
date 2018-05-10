@@ -124,17 +124,17 @@ void Scene::load(std::string sceneFile)
         }
 
         // char  CameraMode.
-        if (auto[key, mode, err] = p.keyString("mode"); err)
+        if (auto[key, modes, err] = p.keyEnums("mode", {"freelook", "orbital"}); err)
         {
             LOG_ERROR("%s error on camera mode key --> %s...", filestring.c_str(), key.data());
         }
         else
         {
-            if ("freelook" == mode)
+            if ("freelook" == modes[0])
             {
                 camMode = FREELOOK;
             }
-            else if ("orbital" == mode )
+            else if ("orbital" == modes[0])
             {
                 camMode = ORBITAL;
             }
@@ -142,7 +142,7 @@ void Scene::load(std::string sceneFile)
             {
                 LOG_ERROR("%s error on key --> %s... expected freelook or orbital.", filestring.c_str(), key.data());
             }
-            LOG_INFO("%s: %s", std::string(key).data(), std::string(mode).data());
+            LOG_INFO("%s: %s", std::string(key).data(), std::string(modes[0]).data());
         }
 
         // float fov.

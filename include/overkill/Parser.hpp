@@ -21,7 +21,7 @@ struct KeyVec3      { std::string_view key; glm::vec3 value;        int err; };
 struct KeyVec4      { std::string_view key; glm::vec4 value;        int err; };
 struct KeyTriangle  { std::string_view key; Triangle value;         int err; };
 struct KeyVertex    { std::string_view key; Vertex value;           int err; };
-
+struct KeyEnums     { std::string_view key; std::vector<std::string> values; int err; };
 
 constexpr int ParserSuccess          = 0;
 constexpr int ParserErr              = 1;
@@ -60,6 +60,10 @@ public:
 
     auto keyVec4() -> KeyVec4;
     auto keyVec4(const std::string_view wantedKey) -> KeyVec4;
+
+    auto keyEnums(const std::string_view expectedKey,
+                  const std::vector<std::string_view> expectedArguments,
+                  const std::size_t argumentCount = 1) -> KeyEnums;
 
     auto onlyVertex() -> Vertex;
     auto onlyTriangle() -> Triangle;
