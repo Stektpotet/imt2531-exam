@@ -296,6 +296,121 @@ auto Parser::keyVec4(const std::string_view wantedKey) -> KeyVec4
 
 
 
+
+auto Parser::keyEnums(const std::string_view expectedKey,
+                      const std::vector<std::string_view> expectedArguments,
+                      const std::size_t argumentCount) -> KeyEnums
+{
+
+    auto toUpperString = [](const std::string_view str) -> std::string
+    {
+        std::string res;
+        res.resize(str.size()); 
+        for (std::size_t i = 0; i < str.size(); i++) 
+        {
+            res[i] = std::toupper(str[i]);
+        }
+        return res;
+    };
+
+
+    //
+    // 0. Parse next key-value strings
+    //
+    auto[parsedKey, parsedString, err] = keyString();
+
+    if (err)
+        return KeyEnums{ parsedKey, {}, err };
+
+
+    //
+    // 1. Parse the input string argument by argument
+    //
+    std::stringstream wordEater;
+    std::vector<std::string> parsedArguments;
+    
+    wordEater << parsedString;
+    std::string arg;
+    wordEater >> arg;
+    
+    while(!wordEater.fail()) {
+        parsedArguments.push_back(arg);
+        wordEater >> arg;
+    }
+
+    //
+    // 2. Check that number of parsedArguments match expected
+    //
+    if (parsedArguments.size() < argumentCount) {
+        LOG_WARN("ERROR:     Too few arguments.");
+        LOG_WARN("Expected:  %lu", argumentCount);
+        LOG_WARN("Got:       %lu", parsedArguments.size());  
+        return KeyEnums{ parsedKey, parsedArguments, ParserErr};
+    }
+
+
+    if (parsedArguments.size() > argumentCount) {
+        LOG_WARN("ERROR:     Too many arguments.");
+        LOG_WARN("Expected:  %lu",   argumentCount);
+        LOG_WARN("Got:       %lu", parsedArguments.size());
+        return KeyEnums{ parsedKey, parsedArguments, ParserErr};
+    }
+
+
+    //
+    // 3. Check if expected key equals parsed key
+    //
+    if (toUpperString(expectedKey) != toUpperString(parsedKey)) 
+    {
+        LOG_WARN("\nERROR:  Parsedkey not equal expected key");
+        LOG_WARN("Expected: %s\\n", expectedKey.data());
+        LOG_WARN("Got:      %s\\n", parsedKey.data());
+        return KeyEnums{parsedKey, parsedArguments, ParserErr};
+    }
+
+    //
+    // 4. Validate n arguments
+    //
+    for (const auto& arg: parsedArguments) 
+    {
+        bool found = false;        
+        for(auto& expectedarg: expectedArguments) 
+        {
+            if (toUpperString(arg) == toUpperString(expectedarg)) {
+                found = true;
+                break;
+            }
+        }
+
+        //
+        // 5. If parsedArgument was not in expectedArguments
+        //
+        if (!found) 
+        {
+            LOG_WARN("\nERROR: Invalid enum argument\n");
+            LOG_WARN("Expected one of:\n  [");
+            int count = 0;
+            for(auto& expectedArg: expectedArguments) {
+
+                LOG_WARN("  %s", expectedArg.data());
+                if (count < expectedArguments.size() - 1) {
+                    LOG_WARN("   ,");
+                }
+
+                count++;
+            }
+            LOG_WARN("\n  ];");
+            LOG_WARN("Got: %s", arg.data());
+            return KeyEnums{ parsedKey, parsedArguments, ParserErr};
+        }
+    }
+
+    return KeyEnums{ parsedKey, parsedArguments, ParserSuccess };
+}
+
+
+
+
 //
 //  v: <float> <float> <float>  <float> <float> <float>  <float> <float>  <byte> <byte> <byte> <byte>
 //
