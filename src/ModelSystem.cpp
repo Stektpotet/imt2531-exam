@@ -353,14 +353,19 @@ auto ModelSystem::loadOBJ(const tinyobj::attrib_t&                attributes,
         overkillModel.m_vao.addBuffer(overkillModel.m_vbo, vbufLayout);
     }
 
+    //
+    // 8. Push back model
+    //
+    ModelSystem::m_mapModelID[overkillModel.m_tag] = ModelSystem::m_models.size();
 
-    int i = 0;
-    for (const auto& overkillTriangles: overkillTrianglesArray)
+
+    for (auto i = 0; i < overkillTrianglesArray.size(); ++i)
     {
         //
         // 5. Create overkillmesh and buffer indexdata to GPU
         //
-        auto& shape = shapes[i++];
+        auto& overkillTriangles = overkillTrianglesArray[i];
+        auto& shape = shapes[i];
         C::Tag objMaterialTag = materials[shape.mesh.material_ids[0]].name;
 
         auto indiciesCount = overkillTriangles.size() * 3;
@@ -408,11 +413,8 @@ auto ModelSystem::loadOBJ(const tinyobj::attrib_t&                attributes,
         );
     }
 
-    //
-    // 8. Push back model
-    //
-    ModelSystem::m_mapModelID[overkillModel.m_tag] = ModelSystem::m_models.size();
     ModelSystem::m_models.push_back(overkillModel);
+
 
     return 0;
 }
