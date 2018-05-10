@@ -509,9 +509,9 @@ auto Parser::onlyVertex() -> Vertex
 
 
     // uv
-    const GLushort u = static_cast<GLushort>( 65535U * __OPTMIZED__StringToFloat(it, &end));
+    const GLushort u =  static_cast<GLushort>(65535U * __OPTMIZED__StringToFloat(it, &end));
     it = end;
-    const GLushort v = static_cast<GLushort>( 65535U * __OPTMIZED__StringToFloat(it, &end));
+    const GLushort v = static_cast<GLushort>(65535U *  __OPTMIZED__StringToFloat(it, &end));
     it = end;
 
 

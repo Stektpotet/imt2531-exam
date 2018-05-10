@@ -1,11 +1,11 @@
 cameras: 1
 
 camera: mainCam
-  position: 0 0 -20
+  position: 0 20 -100
   rotation: 0 0 0
   velocity: 0 0 0
   angleVelocity: 0 0 0
-  mode: orbital
+  mode: freelook
   fov: 90
   nearClip: 0.1
   farClip: 800

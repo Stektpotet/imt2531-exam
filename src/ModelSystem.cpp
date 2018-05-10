@@ -312,7 +312,9 @@ auto ModelSystem::loadOBJ(const tinyobj::attrib_t&                attributes,
                 if (indexSet.texcoord_index != -1)
                 {
                     vert.u =  static_cast<GLushort>(65535U * attributes.texcoords[indexSet.texcoord_index * TextureStride + 0]);
-                    vert.v =  static_cast<GLushort>(65535U * attributes.texcoords[indexSet.texcoord_index * TextureStride + 1]);
+
+                    // FLIP coordinates on Y axis
+                    vert.v =  static_cast<GLushort>(65535U * (1 - attributes.texcoords[indexSet.texcoord_index * TextureStride + 1]));
                 }
 
                 overkillVertices.push_back(vert);
