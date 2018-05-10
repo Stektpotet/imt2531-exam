@@ -35,7 +35,6 @@
 using namespace overkill;
 
 
-void loadOBJFiles();
 
 int main(int argc, char** args)
 {
@@ -65,7 +64,7 @@ int main(int argc, char** args)
     MaterialSystem::load();
     ModelSystem::load();
     
-    loadOBJFiles();
+    Init::loadOBJFiles();
 
     
     LOG_DEBUG("Argc %d, args[1] %s", argc, args[1]);
@@ -117,68 +116,3 @@ int main(int argc, char** args)
     glfwTerminate();
 	return 0;
 }
-
-
-
-void loadOBJFiles() 
-{
-    auto getBaseDir = [](const std::string& filepath) -> std::string 
-    {
-        if (filepath.find_last_of("/\\") != std::string::npos) {
-            return filepath.substr(0, filepath.find_last_of("/\\")+1);
-        }
-        return ".";
-    };
-
-
-    std::vector<FileEvent> fevents = Watcher::popEvents("discovered", "objs");
-
-    LOG_DEBUG("Loading objs! count: %lu", static_cast<unsigned long>(fevents.size()));
-    for (auto e: fevents)
-    {   
-        std::string objFilepath = C::ObjsFolder + ("/" + e.tag + "/" + e.tag + "." + e.extension);
-        std::string objBasedir  = getBaseDir(objFilepath);
-        LOG_DEBUG("Obj from file: %s", objFilepath.data());
-
-
-        auto attributes = tinyobj::attrib_t{};
-        auto shapes       = std::vector<tinyobj::shape_t>{};
-        auto materials    = std::vector<tinyobj::material_t>{};
-        auto err          = std::string{};
-
-
-        auto success = tinyobj::LoadObj(
-            &attributes,
-            &shapes, 
-            &materials, 
-            &err, 
-            objFilepath.c_str(), 
-            objBasedir.c_str() );
-
-        if (!err.empty()) {
-            LOG_ERROR("ERR: %s\n", err.c_str());
-        }
-
-        if (!success) {
-            LOG_ERROR("!success");
-        }
-
-        
-        if (auto err = TextureSystem::loadOBJ(materials, objBasedir, e.tag); err) {
-            LOG_ERROR("TextureSystem failed to load OBJ: %s", objFilepath.data());
-        }
-        
-        
-        if (auto err = MaterialSystem::loadOBJ(materials, e.tag); err) {
-            LOG_ERROR("MaterialSystem failed to load OBJ: %s", objFilepath.data());
-        }
-
-        
-        if (auto err = ModelSystem::loadOBJ(attributes, shapes, materials, e.tag); err) {
-            LOG_ERROR("ModelSystem failed to load OBJ: %s", objFilepath.data());
-        }
-
-    }
-
-}
-

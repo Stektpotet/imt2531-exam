@@ -354,36 +354,38 @@ auto ModelSystem::loadOBJ(const tinyobj::attrib_t&                attributes,
     }
 
     //
-    // 8. Push back model
+    // 5. Push back model
     //
     ModelSystem::m_mapModelID[overkillModel.m_tag] = ModelSystem::m_models.size();
 
 
-    for (auto i = 0; i < overkillTrianglesArray.size(); ++i)
+    for (std::size_t i = 0; i < overkillTrianglesArray.size(); ++i)
     {
         //
-        // 5. Create overkillmesh and buffer indexdata to GPU
+        // 6. Create overkillmesh and buffer indexdata to GPU
         //
         auto& overkillTriangles = overkillTrianglesArray[i];
         auto& shape = shapes[i];
         C::Tag objMaterialTag = materials[shape.mesh.material_ids[0]].name;
+        
+        C::Tag overkillMeshtag     = "obj/" + objTag + "/" + shape.name;
+        C::Tag overkillMaterialTag = "obj/"+ objTag + "/" + objMaterialTag;
+
 
         auto indiciesCount = overkillTriangles.size() * 3;
 
         auto overkillMesh = overkillModel.m_meshes.emplace_back(
             Mesh
             {
-                "obj/" + objTag + "/" + shape.name,
+                overkillMeshtag,
                 ElementBuffer( (unsigned int*)overkillTriangles.data(), indiciesCount),
-                MaterialSystem::getIdByTag("obj/"+ objTag + "/" + objMaterialTag),
+                MaterialSystem::getIdByTag(overkillMaterialTag),
                 ShaderSystem::copyByTag("objshader")
             }
         );
 
-        overkillMesh.m_shaderProgram.setMaterial(MaterialSystem::getByTag(objMaterialTag));
-
         //
-        // 6. Bind to MaterialSystem update event
+        // 7. Bind to MaterialSystem update event
         //
         MaterialSystem::bindOnUpdate(
             MaterialSystem::getById(overkillMesh.m_materialID).m_tag,
@@ -398,7 +400,7 @@ auto ModelSystem::loadOBJ(const tinyobj::attrib_t&                attributes,
         );
 
         //
-        // 7. Bind to ShaderSystem update event
+        // 8. Bind to ShaderSystem update event
         //
         ShaderSystem::bindOnUpdate(
             overkillMesh.m_shaderProgram.m_tag,
@@ -414,7 +416,6 @@ auto ModelSystem::loadOBJ(const tinyobj::attrib_t&                attributes,
     }
 
     ModelSystem::m_models.push_back(overkillModel);
-
 
     return 0;
 }

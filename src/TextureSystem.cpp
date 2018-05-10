@@ -152,8 +152,10 @@ auto TextureSystem::loadOBJ(const std::vector<tinyobj::material_t>& materials,
             auto filenameOnly = filename.substr(0, filename.find('.'));
             auto textureTag = "obj/" + objTag + "/" + filenameOnly + "." + type;
 
+
+
             if (TextureSystem::getIdByTag(textureTag) == 0)
-            {
+            {            
                 TextureSystem::push(textureTag, path);
             }
         }

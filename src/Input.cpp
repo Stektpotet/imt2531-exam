@@ -30,10 +30,13 @@ namespace overkill
         // PRESS 2 TO RELOAD MaterialSystem
         else if(keyCode == GLFW_KEY_2) {
             MaterialSystem::reload();
+            Init::loadOBJFiles(false, true, false);
         }
         // PRESS 3 TO RELOAD ModelSystem
         else if(keyCode == GLFW_KEY_3) {
             ModelSystem::reload();
+            Init::loadOBJFiles(false, false, true);
+
         }
         // PRESS 4 TO RELOAD Scene
         else if(keyCode == GLFW_KEY_4) {

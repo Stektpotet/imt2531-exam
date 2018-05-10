@@ -15,6 +15,10 @@
 #include <overkill/Parser.hpp>
 #include <overkill/Input.hpp>
 
+#include <overkill/ModelSystem.hpp>
+#include <overkill/MaterialSystem.hpp>
+#include <overkill/TextureSystem.hpp>
+
 
 namespace overkill::Init
 {
@@ -29,5 +33,6 @@ void GLEW();
 void OpenGL(const glm::vec4 background);
 
 void Config();
+void loadOBJFiles(bool loadTextures=true, bool loadMaterials=true, bool loadModels=true);
 
 } // ::Init::overkill

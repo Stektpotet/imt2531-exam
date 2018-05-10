@@ -230,6 +230,7 @@ auto MaterialSystem::loadOBJ(const std::vector<tinyobj::material_t>& materials,
 
 
         overkillMaterial.m_tag = "obj/" + objTag + "/" + objMaterial.name;
+        LOG_DEBUG("loading material: %s",overkillMaterial.m_tag.data());
 
         MaterialSystem::m_mapMaterialID[overkillMaterial.m_tag] = MaterialSystem::m_materials.size();
         MaterialSystem::m_materials.emplace_back(overkillMaterial);
