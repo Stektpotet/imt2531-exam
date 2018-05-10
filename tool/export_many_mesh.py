@@ -42,6 +42,7 @@ def write_vertices_header(outfile, meshes):
 
         vertex_count += len(mesh.data.vertices)
 
+
     outfile.write("vertices: {}\n".format(str(vertex_count)))
 
 
@@ -58,18 +59,44 @@ def write_mesh_vertices(outfile, mesh):
     # Get UV coordinates
     uv_dict = {}
     loops = mesh.data.loops
-
-    active_layer = False
     if len(mesh.data.uv_layers):
         active_layer = mesh.data.uv_layers[0]
+        if active_layer:
+            uv_layer = mesh.data.uv_layers.active.data
 
-    if active_layer:
-        uv_layer = mesh.data.uv_layers.active.data
+            for poly in mesh.data.polygons:
+                for li in poly.loop_indices:             
+                    vi = loops[li].vertex_index
+                    uv_dict[vi] = uv_layer[li].uv
 
-        for poly in mesh.data.polygons:
-            for li in poly.loop_indices:
-                vi = loops[li].vertex_index
-                uv_dict[vi] = uv_layer[li].uv
+
+   
+    # @doc https://blender.stackexchange.com/q/4820 - 2018-05-10
+#    for poly in mesh.data.polygons:
+ #       for vert, loop in zip(poly.vertices, poly.loop_indices):
+            
+#            outfile.write("v: {:9.6f} {:9.6f} {:9.6f}   {:6.3f} {:6.3f} {:6.3f} ".format(
+ #               mesh.data.vertices[vert].co[0]*scale,
+  #              mesh.data.vertices[vert].co[1]*scale,
+   #             mesh.data.vertices[vert].co[2]*scale,
+#
+ #               mesh.data.vertices[vert].normal[0],
+  #              mesh.data.vertices[vert].normal[1],
+   #             mesh.data.vertices[vert].normal[2]))
+
+
+    #        active_layer = False
+     #       if len(mesh.data.uv_layers):
+      #          active_layer = mesh.data.uv_layers[0]
+       #         if active_layer:
+        #            uv_layer = mesh.data.uv_layers.active.data
+#
+ #                   outfile.write("{:6.3f} {:6.3f}   ".format(
+  #                      mesh.data.uv_layers.active.data[loop].uv[0], #U
+#                     mesh.data.uv_layers.active.data[loop].uv[1])) #V
+
+
+  #          outfile.write("{:3} {:3} {:3} {:3}\n".format(255,255,255,255))
 
 
     # write vertices
