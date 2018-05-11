@@ -66,6 +66,8 @@ int main(int argc, char** args)
     
     Init::loadOBJFiles();
 
+    auto heightMap = TextureSystem::getByTag("heightmap");
+
     
     LOG_DEBUG("Argc %d, args[1] %s", argc, args[1]);
 

@@ -241,6 +241,94 @@ void ModelSystem::load()
 }
 
 
+//Pass a heightmap
+auto ModelSystem::makeTerrain(const std::string& filepath, Model* outModel) -> C::Err
+{
+    int widht, height, channels;
+    GLubyte* pixels;
+
+    pixels = SOIL_load_image(filepath.c_str(), &width, &height, &channels, SOIL_LOAD_AUTO);
+    if (!pixels)
+    {
+        LOG_WARN("failed to load \"%s\"\n", filepath.c_str());
+        return 1;
+    }
+    if (channels > 1) {
+        LOG_WARN("Texture has more than one channel. Is it actually a heightmap?")
+    }
+    
+
+    std::vector<Vertex> vertices;
+    vertices.reserve(width*height);
+    LOG_DEBUG("vertexcount: %d", vertices.size());
+
+    auto vbufLayout = VertexBufferAttribLayout();
+    vbufLayout.push<GL_FLOAT>(3);                       //position -> 0  -> 12 -> 12
+    vbufLayout.pushPacked<GL_INT_2_10_10_10_REV>(4);    //normal   -> 12 -> 16 -> 16
+    vbufLayout.push<GL_UNSIGNED_SHORT>(2, GL_TRUE);     //uv       -> 16 -> 20 -> 24 ?
+    vbufLayout.push<GL_UNSIGNED_BYTE>(4, GL_TRUE);      //color    -> 18 -> 22 -> 20
+
+    // Buffer vertex data to GPU VAO and VBO
+    Model newModel;
+    newModel.m_tag = tag;
+    newModel.m_vbo = VertexBuffer(vertices.data(), vertices.size() * vbufLayout.getStride()); //@NOTE: if there are exploding mesh issues this probably has to do with alignment issues, your GPU preffers data packed 4 by 4 bytes
+    newModel.m_vao.addBuffer(newModel.m_vbo, vbufLayout);
+
+
+    std::vector<Triangle> triangles;
+    triangles.reserve((width-1) * (height-1) * 2);
+
+    auto makeVertex = [pixels](int index) -> Vertex {
+        auto height = GLfloat(pixels[index]/255);
+
+        //TODO evaluate normal
+
+        return Vertex{
+            x, GLfloat(height), y,      //position
+            Util::packNormal(0,1,0),    //normal - //TODO - heightDiff = glm::abs(a-b);
+            x / width, y / height       //uv
+        };
+    };
+
+    /*auto makeQuad[](int index)->Vertex[4]{
+
+    };*/
+
+
+    //loop through "quad by quad"
+    for (int x = 0; x < width - 1; x++) 
+    {
+        for (int y = 0; y < height - 1; y++)
+        {
+            auto baseIndex = i + j * width;
+            auto height = pixels[baseIndex];
+
+            auto index = baseIndex;
+            vertices[index] = makeVertex(index); //upper left
+            index = baseIndex + width;
+            vertices[index] = makeVertex(index); //lower left
+            index = baseIndex + 1;
+            vertices[index] = makeVertex(index); //upper right
+            
+            index = baseIndex + 1;
+            vertices[index] = makeVertex(index); //upper right
+            index = baseIndex + width;
+            vertices[index] = makeVertex(index); //lower left
+            index = baseIndex + width + 1;
+            vertices[index] = makeVertex(index); //lower right
+
+        }
+    }
+    
+
+
+    SOIL_free_image_data(localBuffer);
+
+    *outTexture = texture;
+    return 0;
+}
+
+
 #include <set>
 
 
