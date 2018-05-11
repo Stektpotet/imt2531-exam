@@ -4,148 +4,171 @@ import bmesh
 
 
 # INPUT
-scale      = 1
-output_path = "assets/models/HOUSE.yml"
-model = "HOUSE"
-material = "HOUSE"
-shader = "objshader"
+in_scale      = 1
+in_output_path = "assets/models/HOUSE.yml"
+in_model = "HOUSE"
+in_material = "HOUSE"
+in_shader = "objshader"
 
 
-def triangulate(obj):
-    """@doc https://blender.stackexchange.com/questions/45698/triangulate-mesh-in-python - 21.04.2018"""
+def hasUV(mesh):
+    if len(mesh.data.tessface_uv_textures) == 0:
+        return False
+
+    if mesh.data.tessface_uv_textures.active is None:
+        return False
+
+    return True
+
+def unpackVec3(vec3):
+    return (vec3[0], vec3[1], vec3[2])
+
+def unpackVec2(vec2):
+    return (vec2[0], vec2[1])
+
+class Vertex:
+    __slot__ = ['position', 'normal', 'uv']
+
+    def __init__(self, position, normal, uv):
+        self.position = position
+        self.normal = normal
+        self.uv = uv
+
+
+
+g_vertices            = []
+g_vertex_dict         = {}
+g_vertex_count        = 0
+
+def resolve_mesh_triangles(mesh):
+    global g_vertices
+    global g_vertex_dict
+    global g_vertex_count
+
+    mesh_triangles = []
+
+    # @doc https://docs.blender.org/api/blender_python_api_2_67_release/info_gotcha.html#upgrading-exporters-from-2-62 2018-05-09
+    mesh.data.update(calc_tessface=True)
+
+    vertexDict = {}
     
-    me = obj.data
-    # Get a BMesh representation
-    bm = bmesh.new()
-    bm.from_mesh(me)
+    if hasUV(mesh):
+        activeUV = mesh.data.tessface_uv_textures.active.data
 
-    bmesh.ops.triangulate(bm, faces=bm.faces[:], quad_method=0, ngon_method=0)
+    for i, face in enumerate(mesh.data.tessfaces):
+        is_smooth = face.use_smooth
 
-    # Finish up, write the bmesh back to the mesh
-    bm.to_mesh(me)
-    bm.free()
+        temp_face = []
+        for j, vertIndex in enumerate(face.vertices):
+
+            position = mesh.data.vertices[vertIndex].co
+            position = unpackVec3(position)
+
+            if is_smooth:
+                normal = mesh.data.vertices[vertIndex].normal
+            else:
+                normal = face.normal
+            normal = unpackVec3(normal)
+
+            if hasUV(mesh):
+                uv = activeUV[i].uv[j]
+                uv = unpackVec2(uv)
+            else:
+                uv = (0.0, 0.0)
+
+            key = position, normal, uv
+            vertex_index = g_vertex_dict.get(key)
+
+            if vertex_index is None:
+                g_vertex_dict[key] = g_vertex_count
+                g_vertices.append(Vertex(position=position, normal=normal, uv=uv))
+                temp_face.append(g_vertex_count)
+                g_vertex_count += 1
+            else:
+                temp_face.append(g_vertex_dict[key])
+
+        # If triangle
+        if len(temp_face) == 3:
+            mesh_triangles.append(temp_face)
+        # If Quad, split it up into two triangles
+        else:
+            mesh_triangles.append((temp_face[0], temp_face[1], temp_face[2]))
+            mesh_triangles.append((temp_face[0], temp_face[2], temp_face[3]))
+
+    return mesh_triangles
 
 
 
 # Example:
 # """
-# vertices: 28
-# """
-def write_vertices_header(outfile, meshes):
-
-    vertex_count = 0
-    for mesh in meshes:
-
-        if len(mesh.data.polygons[0].vertices) != 3:
-            print("Triangulating", mesh.name)
-            triangulate(mesh)
-
-        vertex_count += len(mesh.data.vertices)
-
-
-    outfile.write("vertices: {}\n".format(str(vertex_count)))
-
-
-# Example:
-# """
+# vertices: 2334455
 # v: -0.5 -0.5  0.5  -0.577 -0.577  0.577  0.0 0.0   150 150  150 255
 # v:  0.5 -0.5  0.5   0.577 -0.577  0.577  1.0 0.0   150 150  150 255
 # v:  0.5  0.5  0.5   0.577  0.577  0.577  1.0 1.0   150 150  150 255
 # v: -0.5  0.5  0.5  -0.577  0.577  0.577  0.0 1.0   150 150  150 255
+# ..........
 # """
-def write_mesh_vertices(outfile, mesh):
-    global scale
-    
-    # Get UV coordinates
-    uv_dict = {}
-    loops = mesh.data.loops
-    if len(mesh.data.uv_layers):
-        active_layer = mesh.data.uv_layers[0]
-        if active_layer:
-            uv_layer = mesh.data.uv_layers.active.data
-
-            for poly in mesh.data.polygons:
-                for li in poly.loop_indices:             
-                    vi = loops[li].vertex_index
-                    uv_dict[vi] = uv_layer[li].uv
-
-
-   
-    # @doc https://blender.stackexchange.com/q/4820 - 2018-05-10
-#    for poly in mesh.data.polygons:
- #       for vert, loop in zip(poly.vertices, poly.loop_indices):
-            
-#            outfile.write("v: {:9.6f} {:9.6f} {:9.6f}   {:6.3f} {:6.3f} {:6.3f} ".format(
- #               mesh.data.vertices[vert].co[0]*scale,
-  #              mesh.data.vertices[vert].co[1]*scale,
-   #             mesh.data.vertices[vert].co[2]*scale,
-#
- #               mesh.data.vertices[vert].normal[0],
-  #              mesh.data.vertices[vert].normal[1],
-   #             mesh.data.vertices[vert].normal[2]))
-
-
-    #        active_layer = False
-     #       if len(mesh.data.uv_layers):
-      #          active_layer = mesh.data.uv_layers[0]
-       #         if active_layer:
-        #            uv_layer = mesh.data.uv_layers.active.data
-#
- #                   outfile.write("{:6.3f} {:6.3f}   ".format(
-  #                      mesh.data.uv_layers.active.data[loop].uv[0], #U
-#                     mesh.data.uv_layers.active.data[loop].uv[1])) #V
-
-
-  #          outfile.write("{:3} {:3} {:3} {:3}\n".format(255,255,255,255))
-
-
+def write_vertices(outfile, vertices):
+    global in_scale
     # write vertices
-    for vc in mesh.data.vertices:
+    outfile.write("vertices: {}\n".format(len(vertices)))
+    for vert in vertices:
         outfile.write("v: {:9.6f} {:9.6f} {:9.6f}   {:6.3f} {:6.3f} {:6.3f}   {:6.3f} {:6.3f}   {:3} {:3} {:3} {:3}\n".format(
-                        vc.co[0]*scale,
-                        vc.co[1]*scale,
-                        vc.co[2]*scale,
-                        vc.normal[0],
-                        vc.normal[1],
-                        vc.normal[2],
-                        (uv_dict.get(vc.index, [0,0])[0]),
-                        (1-uv_dict.get(vc.index, [0,0])[1]),
-                        255, 255, 255, 255))
+                        vert.position[0]*in_scale,
+                        vert.position[1]*in_scale,
+                        vert.position[2]*in_scale,
+                        vert.normal[0],
+                        vert.normal[1],
+                        vert.normal[2],
+                        vert.uv[0],
+                        (1 - vert.uv[1]), # flip y axis
+                        255, 255, 255, 255)) # colors
+
+
+# Example:
+"""
+meshes: 40
+"""
+def write_meshes_header(outfile, meshes):
+    outfile.write("\nmeshes: {}\n".format(len(meshes)));
+
 
 
 # Example:
 """
 mesh: innercube
-    material: _default
-    shader: _default
-    triangles: 12
+material: _default
+shader: _default
 """
-def write_meshes_header(outfile, meshes):
-    outfile.write("\nmeshes: "+str(len(meshes))+"\n");
-
-
 def write_mesh_header(outfile, mesh):
-    global material
-    global shader
+    global in_material
+    global in_shader
 
     # 1. Count number of meshes
-    outfile.write("\nmesh: "+ mesh.name + "\n")
-    outfile.write("material: " + material + "\n")
-    outfile.write("shader: " + shader +"\n")
-    outfile.write("triangles: {}\n".format(len(mesh.data.polygons)))
+    outfile.write("\nmesh: {}\n".format(mesh.name))
+    outfile.write("material: {}\n".format(in_material))
+    outfile.write("shader: {}\n".format(in_shader))
 
 
-def write_mesh_triangles(outfile, mesh, offset):
 
-    for p in mesh.data.polygons:
-
+# Example:
+"""
+triangles: 5566
+t: 1 2 3
+t: 2 3 1
+t: 6 5 4
+.......
+"""
+def write_mesh_triangles(outfile, triangles):
+    outfile.write("triangles: {}\n".format(len(triangles)))
+    
+    for tri in triangles:
         outfile.write("t: {} {} {}\n".format(
-            p.vertices[0]+offset,
-            p.vertices[1]+offset,
-            p.vertices[2]+offset
+            tri[0],
+            tri[1],
+            tri[2]
         ))
 
-    return len(mesh.data.vertices)
 
 
 if __name__ == "__main__":
@@ -160,26 +183,25 @@ if __name__ == "__main__":
     [print(m) for m in meshes]
 
     # Open two files, one for vertices and one for triangles
-    with open(output_path+".temp_vertices", "w") as out_vertices:
-        with open(output_path+".temp_meshes", "w") as out_meshes:
+    with open(in_output_path+".temp_meshes", "w") as out_meshes:
 
-            write_vertices_header(out_vertices, meshes)
-            write_meshes_header(out_meshes, meshes)
+        write_meshes_header(out_meshes, meshes)
 
-            offset = 0
-            step = 0
-            for mesh in meshes:
-                offset += step
-                write_mesh_vertices(out_vertices, mesh)
+        for mesh in meshes:
+            triangles = resolve_mesh_triangles(mesh)
 
-                write_mesh_header(out_meshes, mesh)
-                step = write_mesh_triangles(out_meshes, mesh, offset)
+            write_mesh_header(out_meshes, mesh)
+            write_mesh_triangles(out_meshes, triangles)
+
+    # Write vertices
+    with open(in_output_path+".temp_vertices", "w") as out_vertices:
+        write_vertices(out_vertices, g_vertices)
 
 
     # COMBINE FILES
-    with open(output_path+".temp_vertices", "r") as in_vertices:
-        with open(output_path+".temp_meshes", "r") as in_meshes:
-            with open(output_path, "w") as out_model:
+    with open(in_output_path+".temp_vertices", "r") as in_vertices:
+        with open(in_output_path+".temp_meshes", "r") as in_meshes:
+            with open(in_output_path, "w") as out_model:
 
                 out_model.write(in_vertices.read())
                 out_model.write(in_meshes.read())
