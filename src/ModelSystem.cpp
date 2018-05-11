@@ -302,8 +302,24 @@ auto ModelSystem::makeTerrain(const C::Tag& tag, const C::Tag& materialTag, cons
 
     auto appendVertex = [&vertices, pixels, height, width](int index, int x, int y) {
         auto pixelHeight = GLfloat(pixels[index]) / 255;
+        
+        //REF: https://stackoverflow.com/questions/33736199/calculating-normals-for-a-height-map
 
-        //TODO evaluate normal
+        const auto Ti = (index - width >= 0) ? index - width : index + width;
+        const auto Bi = (index + width < vertices.size()) ? index + width : index - width;
+        const auto Li = (index - 1 >= 0) ? index - 1 : index + 1;
+        const auto Ri = (index + 1 < vertices.size()) ? index + 1 : index - 1;
+
+        const auto T = GLfloat(pixels[Ti]) / 255;
+        const auto B = GLfloat(pixels[Bi]) / 255;
+        const auto L = GLfloat(pixels[Li]) / 255;
+        const auto R = GLfloat(pixels[Ri]) / 255;
+
+        float xUnit = 1.0f / width;
+        float yUnit = 1.0f / height;
+
+
+        auto nrm = glm::normalize(glm::cross(glm::vec3(2 * xUnit, R-L, 0), glm::vec3(0, B-T, 2 * yUnit)));
 
         //vertices[index].x = x;
         //vertices[index].y = pixelHeight;
@@ -318,7 +334,7 @@ auto ModelSystem::makeTerrain(const C::Tag& tag, const C::Tag& materialTag, cons
 
         vertices[index] = Vertex{
                 xNormalized, pixelHeight, yNormalized,          //position
-                Util::packNormal(0, 1, 0),                                      //normal - //TODO - heightDiff = glm::abs(a-b);
+                Util::packNormal(nrm.x, nrm.y, nrm.z),                                      //normal - //TODO - heightDiff = glm::abs(a-b);
                 GLushort(65535U * xNormalized), GLushort(65535U * yNormalized),      //uv
                 255,255,255,255
         };
