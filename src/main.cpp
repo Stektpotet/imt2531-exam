@@ -66,7 +66,9 @@ int main(int argc, char** args)
     
     Init::loadOBJFiles();
 
-    auto heightMap = TextureSystem::getByTag("heightmap");
+    //auto heightMap = TextureSystem::getByTag("heightmap");
+    Model terrain;
+    ModelSystem::makeTerrain("test", "_default", "_default","assets/other/heightmap.png", &terrain);
 
     
     LOG_DEBUG("Argc %d, args[1] %s", argc, args[1]);
@@ -93,7 +95,7 @@ int main(int argc, char** args)
         Renderer::clear();
         Scene::update(dt);
         
-
+        Renderer::draw(terrain, glm::mat4(1), t);
         // Draws all the models in the scene.
         Scene::draw(t);     
 

@@ -166,6 +166,40 @@ auto ModelSystem::makeModel(const C::Tag& tag, const std::string& modelString, M
     return 0;
 }
 
+void ModelSystem::push(const C::Tag& tag, const Model model) {
+
+    ModelSystem::m_mapModelID[tag] = ModelSystem::m_models.size();
+    ModelSystem::m_models.push_back(model);
+
+    for (std::size_t i = 0; i < model.m_meshes.size(); i++)
+    {
+        // Bind to MaterialSystem update event
+        MaterialSystem::bindOnUpdate(
+            MaterialSystem::getById(model.m_meshes[i].m_materialID).m_tag,
+            m_mapModelID[model.m_tag],
+            i,
+            [](C::ID materialID, C::ID modelID, C::ID meshID) {
+            auto& model = ModelSystem::getById(modelID);
+            auto& mesh = model.m_meshes[meshID];
+            mesh.m_materialID = materialID;
+            mesh.m_shaderProgram.setMaterial(MaterialSystem::getById(materialID));
+        }
+        );
+
+        // Bind to ShaderSystem update event
+        ShaderSystem::bindOnUpdate(
+            model.m_meshes[i].m_shaderProgram.m_tag,
+            m_mapModelID[model.m_tag],
+            i,
+            [](C::ID shaderID, C::ID modelID, C::ID meshID) {
+            auto& model = ModelSystem::getById(modelID);
+            auto& mesh = model.m_meshes[meshID];
+            mesh.m_shaderProgram = ShaderSystem::copyById(shaderID);
+            mesh.m_shaderProgram.setMaterial(MaterialSystem::getById(mesh.m_materialID));
+        }
+        );
+    }
+}
 
 void ModelSystem::push(const C::Tag& tag, const std::string& filepath)  
 {
@@ -242,9 +276,9 @@ void ModelSystem::load()
 
 
 //Pass a heightmap
-auto ModelSystem::makeTerrain(const std::string& filepath, Model* outModel) -> C::Err
+auto ModelSystem::makeTerrain(const C::Tag& tag, const C::Tag& materialTag, const C::Tag& shaderTag, const std::string& filepath, Model* outModel) -> C::Err
 {
-    int widht, height, channels;
+    int width=1, height=1, channels=1;
     GLubyte* pixels;
 
     pixels = SOIL_load_image(filepath.c_str(), &width, &height, &channels, SOIL_LOAD_AUTO);
@@ -259,7 +293,7 @@ auto ModelSystem::makeTerrain(const std::string& filepath, Model* outModel) -> C
     
 
     std::vector<Vertex> vertices;
-    vertices.reserve(width*height);
+    vertices.resize(width*height);
     LOG_DEBUG("vertexcount: %d", vertices.size());
 
     auto vbufLayout = VertexBufferAttribLayout();
@@ -278,15 +312,27 @@ auto ModelSystem::makeTerrain(const std::string& filepath, Model* outModel) -> C
     std::vector<Triangle> triangles;
     triangles.reserve((width-1) * (height-1) * 2);
 
-    auto makeVertex = [pixels](int index) -> Vertex {
-        auto height = GLfloat(pixels[index]/255);
+    auto appendVertex = [&vertices, pixels, height, width](int index, int x, int y) {
+        auto pixelHeight = GLfloat(pixels[index] / 255);
 
         //TODO evaluate normal
 
-        return Vertex{
-            x, GLfloat(height), y,      //position
-            Util::packNormal(0,1,0),    //normal - //TODO - heightDiff = glm::abs(a-b);
-            x / width, y / height       //uv
+        //vertices[index].x = x;
+        //vertices[index].y = pixelHeight;
+        //vertices[index].z = y;
+        //
+        //vertices[index].n = Util::packNormal(0, 1, 0);
+        //vertices[index].u = GLushort(65535U * (x / width));
+        //vertices[index].v = GLushort(65535U * (y / width));
+
+        float xNormalized = (float(x) / width);
+        float yNormalized = (float(y) / height);
+
+        vertices[index] = Vertex{
+                xNormalized, pixelHeight, yNormalized,          //position
+                Util::packNormal(0, 1, 0),                                      //normal - //TODO - heightDiff = glm::abs(a-b);
+                GLushort(65535U * xNormalized), GLushort(65535U * yNormalized),      //uv
+                255,255,255,255
         };
     };
 
@@ -300,31 +346,40 @@ auto ModelSystem::makeTerrain(const std::string& filepath, Model* outModel) -> C
     {
         for (int y = 0; y < height - 1; y++)
         {
-            auto baseIndex = i + j * width;
+            auto baseIndex = x + y * width;
             auto height = pixels[baseIndex];
 
-            auto index = baseIndex;
-            vertices[index] = makeVertex(index); //upper left
-            index = baseIndex + width;
-            vertices[index] = makeVertex(index); //lower left
-            index = baseIndex + 1;
-            vertices[index] = makeVertex(index); //upper right
-            
-            index = baseIndex + 1;
-            vertices[index] = makeVertex(index); //upper right
-            index = baseIndex + width;
-            vertices[index] = makeVertex(index); //lower left
-            index = baseIndex + width + 1;
-            vertices[index] = makeVertex(index); //lower right
+            appendVertex(baseIndex,             x, y);  //upper left
+            appendVertex(baseIndex + width,     x, y);  //lower left
+            appendVertex(baseIndex + 1,         x, y);  //upper right
+            appendVertex(baseIndex + width + 1, x, y);  //lower right
 
+            //upper left triangle
+            triangles.push_back(Triangle{
+                GLuint(baseIndex), 
+                GLuint(baseIndex + width), 
+                GLuint(baseIndex + 1) 
+            });
+            //lower right triangle
+            triangles.push_back(Triangle{
+                GLuint(baseIndex + 1),
+                GLuint(baseIndex + width),
+                GLuint(baseIndex + width + 1)
+            });
         }
     }
-    
+    auto newMesh = newModel.m_meshes.emplace_back(
+        Mesh{
+            tag,
+            ElementBuffer((unsigned int*)triangles.data(), triangles.size() * 3),
+            MaterialSystem::getIdByTag(materialTag),
+            ShaderSystem::copyByTag(shaderTag)
+        }
+    );
 
 
-    SOIL_free_image_data(localBuffer);
-
-    *outTexture = texture;
+    SOIL_free_image_data(pixels);
+    *outModel = newModel;
     return 0;
 }
 

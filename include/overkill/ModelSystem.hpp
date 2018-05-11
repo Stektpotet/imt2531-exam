@@ -29,6 +29,9 @@ public:
     // <summary> Load all model data onto GPU memory. 
     //           Keep model metadata on CPU </summary>
     static void load();
+
+    
+    
     static auto loadOBJ(const tinyobj::attrib_t&                attributes,
                         const std::vector<tinyobj::shape_t>&    shapes,
                         const std::vector<tinyobj::material_t>& materials,
@@ -41,7 +44,10 @@ public:
     static auto getById(const C::ID modelID) -> Model&;
 
     static auto makeModel(const C::Tag& tag, const std::string& modelString, Model* outModel) -> C::Err;
+    void push(const C::Tag & tag, const Model model);
     static void push(const std::string& tag, const std::string& filepath);
+
+    static auto makeTerrain(const C::Tag & tag, const C::Tag & materialTag, const C::Tag & shaderTag, const std::string & filepath, Model * outModel)->C::Err;
 
 };
 
