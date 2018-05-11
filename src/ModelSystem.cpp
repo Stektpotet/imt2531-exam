@@ -296,24 +296,12 @@ auto ModelSystem::makeTerrain(const C::Tag& tag, const C::Tag& materialTag, cons
     vertices.resize(width*height);
     LOG_DEBUG("vertexcount: %d", vertices.size());
 
-    auto vbufLayout = VertexBufferAttribLayout();
-    vbufLayout.push<GL_FLOAT>(3);                       //position -> 0  -> 12 -> 12
-    vbufLayout.pushPacked<GL_INT_2_10_10_10_REV>(4);    //normal   -> 12 -> 16 -> 16
-    vbufLayout.push<GL_UNSIGNED_SHORT>(2, GL_TRUE);     //uv       -> 16 -> 20 -> 24 ?
-    vbufLayout.push<GL_UNSIGNED_BYTE>(4, GL_TRUE);      //color    -> 18 -> 22 -> 20
-
-    // Buffer vertex data to GPU VAO and VBO
-    Model newModel;
-    newModel.m_tag = tag;
-    newModel.m_vbo = VertexBuffer(vertices.data(), vertices.size() * vbufLayout.getStride()); //@NOTE: if there are exploding mesh issues this probably has to do with alignment issues, your GPU preffers data packed 4 by 4 bytes
-    newModel.m_vao.addBuffer(newModel.m_vbo, vbufLayout);
-
 
     std::vector<Triangle> triangles;
     triangles.reserve((width-1) * (height-1) * 2);
 
     auto appendVertex = [&vertices, pixels, height, width](int index, int x, int y) {
-        auto pixelHeight = GLfloat(pixels[index] / 255);
+        auto pixelHeight = GLfloat(pixels[index]) / 255;
 
         //TODO evaluate normal
 
@@ -368,6 +356,20 @@ auto ModelSystem::makeTerrain(const C::Tag& tag, const C::Tag& materialTag, cons
             });
         }
     }
+
+    auto vbufLayout = VertexBufferAttribLayout();
+    vbufLayout.push<GL_FLOAT>(3);                       //position -> 0  -> 12 -> 12
+    vbufLayout.pushPacked<GL_INT_2_10_10_10_REV>(4);    //normal   -> 12 -> 16 -> 16
+    vbufLayout.push<GL_UNSIGNED_SHORT>(2, GL_TRUE);     //uv       -> 16 -> 20 -> 24 ?
+    vbufLayout.push<GL_UNSIGNED_BYTE>(4, GL_TRUE);      //color    -> 18 -> 22 -> 20
+
+                                                        // Buffer vertex data to GPU VAO and VBO
+    Model newModel;
+    newModel.m_tag = tag;
+    newModel.m_vbo = VertexBuffer(vertices.data(), vertices.size() * vbufLayout.getStride()); //@NOTE: if there are exploding mesh issues this probably has to do with alignment issues, your GPU preffers data packed 4 by 4 bytes
+    newModel.m_vao.addBuffer(newModel.m_vbo, vbufLayout);
+
+
     auto newMesh = newModel.m_meshes.emplace_back(
         Mesh{
             tag,

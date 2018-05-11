@@ -68,8 +68,8 @@ int main(int argc, char** args)
 
     //auto heightMap = TextureSystem::getByTag("heightmap");
     Model terrain;
-    ModelSystem::makeTerrain("test", "_default", "_default","assets/other/heightmap.png", &terrain);
-
+    ModelSystem::makeTerrain("test", "terrain", "terrain","assets/other/height20.png", &terrain);
+    auto terrainScale = glm::scale(glm::mat4(1), glm::vec3(100, 35, 200));
     
     LOG_DEBUG("Argc %d, args[1] %s", argc, args[1]);
 
@@ -84,7 +84,7 @@ int main(int argc, char** args)
 
 
     float oldT = 0, t = 0, dt = 0;
-
+    
     for(;;)
     {
         t = (float)glfwGetTime();
@@ -94,8 +94,8 @@ int main(int argc, char** args)
 
         Renderer::clear();
         Scene::update(dt);
-        
-        Renderer::draw(terrain, glm::mat4(1), t);
+       
+        Renderer::draw(terrain, terrainScale, t);
         // Draws all the models in the scene.
         Scene::draw(t);     
 

@@ -93,6 +93,7 @@ configure_directory(${SRCDIR}/assets/materials ${BINDIR}/assets/materials)
 configure_directory(${SRCDIR}/assets/shaders ${BINDIR}/assets/shaders)
 configure_directory(${SRCDIR}/assets/models ${BINDIR}/assets/models)
 configure_directory(${SRCDIR}/assets/textures ${BINDIR}/assets/textures)
+configure_directory(${SRCDIR}/assets/other ${BINDIR}/assets/other)
 
 configure_directory(${SRCDIR}/assets/objs/house ${BINDIR}/assets/objs/house)
 configure_directory(${SRCDIR}/assets/objs/cube ${BINDIR}/assets/objs/cube)

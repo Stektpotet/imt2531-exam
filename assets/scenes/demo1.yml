@@ -10,19 +10,11 @@ camera: mainCam
   nearClip: 0.1
   farClip: 800
 
-entities: 2
+entities: 1
 
 entity: sphere
     model: Icosphere
-    position: 0 0 0
-    rotation: 0 0 0
-    scale: 1 1 1
-    velocity: 0 0 0
-    angleVelocity: 0 0 0
-
-entity: skybox
-    model: spaceSkybox
-    position: 0 0 0
+    position: 0 4 0
     rotation: 0 0 0
     scale: 1 1 1
     velocity: 0 0 0
@@ -33,16 +25,22 @@ pointlights: 0
 
 
 
-hasSun: 0
-
-
-relations: 0
-
+hasSun: 1
 
 dirlight: distantSunLight
   rotation: 0 0 0
   angleVelocity: 0 0 0
   intensities: 0.222 0.432 0.534
+
+relations: 0
+
+entity: skybox
+    model: spaceSkybox
+    position: 0 0 0
+    rotation: 0 0 0
+    scale: 1 1 1
+    velocity: 0 0 0
+    angleVelocity: 0 0 0
   
 pointlight: sunLight
   position: 0 0 0
