@@ -1,4 +1,4 @@
-project(cube)
+project(exam)
 cmake_minimum_required (VERSION 3.8 FATAL_ERROR)
 
 # Aliases
@@ -29,10 +29,10 @@ add_subdirectory("${SRCDIR}/lib/tiny_obj_loader")
 
 
 # Configure main executeable
-add_executable(cube "${SRCDIR}/src/main.cpp")
+add_executable(exam "${SRCDIR}/src/main.cpp")
 
 set_target_properties(
-    cube
+    exam
     PROPERTIES
     CXX_STANDARD 17
     CXX_STANDARD_REQUIRED ON
@@ -41,7 +41,7 @@ set_target_properties(
 )
 
 target_sources(
-    cube
+    exam
     PRIVATE ${SRCDIR}/src/Config.cpp
     PRIVATE ${SRCDIR}/src/ElementBuffer.cpp
 	PRIVATE ${SRCDIR}/src/gl_caller.cpp
@@ -108,7 +108,7 @@ configure_file(${SRCDIR}/config.yml ${BINDIR}/config.yml COPYONLY)
 if(MSVC)
 
 target_include_directories(
-    cube
+    exam
     PRIVATE ${SRCDIR}
     PRIVATE ${SRCDIR}/include
     PRIVATE ${SRCDIR}/lib/
@@ -128,7 +128,7 @@ file(
 )
 
 target_link_libraries(
-    cube
+    exam
     PRIVATE ${OPENGL_LIBRARIES}
     PRIVATE glfw ${glfw_LIBRARIES}
     PRIVATE glew32
@@ -142,14 +142,14 @@ target_link_libraries(
 else()
 
 target_compile_options(
-    cube
+    exam
     PRIVATE "-Wall"
     PRIVATE "-Wextra"
     PRIVATE "-std=c++17"
 )
 
 target_include_directories(
-    cube
+    exam
     PRIVATE ${SRCDIR}
     PRIVATE ${SRCDIR}/include
     PRIVATE ${SRCDIR}/lib/
@@ -159,7 +159,7 @@ target_include_directories(
 )
 
 target_link_libraries(
-    cube
+    exam
     PRIVATE ${OPENGL_LIBRARIES}
     PRIVATE ${GLEW_LIBRARY}
     PRIVATE glfw

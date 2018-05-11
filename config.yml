@@ -3,8 +3,8 @@ GLVersionMinor: 1
 
 WinWidth: 800
 WinHeight: 600
-WinName: Assignment 2 - Cube
-ClearColor: 0.4   0.4   0.5   1.0
+WinName: Exam
+ClearColor: 0.9   0.8   0.8   1.0
 
 FOV: 88.0
 MaxFOV: 88.2
@@ -16,7 +16,7 @@ NearClip: 0.1
 FarClip: 100.0
 CameraOffset: -70
 
-PythonPath: python3
+PythonPath: python
 
 TexturesFolder: assets/textures
 ShadersFolder: assets/shaders
@@ -26,5 +26,3 @@ ScenesFolder: assets/scenes
 ObjsFolder: assets/objs
 
 MAX_LIGHTS: 8
-
-
