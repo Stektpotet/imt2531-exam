@@ -71,16 +71,7 @@ int main(int argc, char** args)
     ModelSystem::makeTerrain("terrain", "terrain", "terrain","assets/other/height100.png", &terrain);
     ModelSystem::push("terrain", terrain);
 
-    const int SEASONS = 1;
-    glm::vec2 seasonalRegions[SEASONS][5]{
-        {
-            glm::vec2{0.0f, 0.1f},      //water
-            glm::vec2{0.11f, 0.12f},    //sand
-            glm::vec2{0.13f, 0.5f},     //grass
-            glm::vec2{0.7f, 0.9f},      //dirt
-            glm::vec2{0.94f, 0.96f}     //snow
-        }
-    };
+    float season = 0; //0-4.999999
 
 
     auto terrainScale = glm::scale(glm::mat4(1), glm::vec3(100, 35, 200));

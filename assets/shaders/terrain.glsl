@@ -144,11 +144,13 @@ vec3 OK_DirectionalLight(in vec3 lightDir, in vec3 intensities) {
 
 in float terrainHeight;
 uniform sampler2D seasonsRamp;
+uniform sampler2D seasonsContourRampMix;
+uniform sampler2D seasonsContourRamp;
 
 void main() {
 
-	vec3 seasonColor = texture(seasonsRamp, vec2(1.55 * terrainHeight-0.06, 0.5*sin(time*0.1)+0.5)).rgb;
-	
+    vec3 seasonColor = texture(seasonsContourRampMix, vec2(1.55 * terrainHeight-0.05, mod(time*0.1,0.95))).rgb;
+
 	float flatness = min(1, 0.25 + abs(dot(fragNormal, fragUp)));
 
     vec3 tex = texture(mainTex, texCoord).rgb;
@@ -164,12 +166,11 @@ void main() {
 						light[i].quadratic
 					);
 	}
-	vec3 heightLine = vec3((0.5*sin(terrainHeight*5)+0.5)*(0.125*sin(terrainHeight*2.5)+0.125), 0, 0);
 
     // out_color = vec4(heightLine, 1);
     // out_color = vec4(fragNormal, 1);
     // out_color = vec4(lights + tex, 1);
-	out_color = vec4(seasonColor * flatness + lights, 1);
-    // out_color = vec4(lights + tex + heightLine, 1);
+	out_color = vec4(seasonColor * flatness + lights * flatness , 1);
+    // out_color = vec4(lights + tex, 1);
 
 }
