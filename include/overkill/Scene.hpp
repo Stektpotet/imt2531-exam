@@ -38,11 +38,24 @@ private:
     static int m_cameraCount;                   // The amount of cameras in the scene.s
     
     static DirectionalLight m_sun;
+
+    //Scene Time
+    static float seasonTime;
+    static float dayTime;
+    static float tideTime;
+
     static UniformBuffer m_matrixBuffer;
     static UniformBuffer m_lightBuffer;
+    static UniformBuffer m_timeBuffer;
+
     static GLuint m_projectionGLindex;
     static GLuint m_pointLightGLindex;
     static GLuint m_sunGLindex;
+
+    static GLuint m_timeGLIndex;
+    static GLuint m_seasonTimeGLIndex;
+    static GLuint m_dayTimeGLIndex;
+    static GLuint m_tideTimeGLIndex;
 
     // OFFSETS
     constexpr static int m_cameraOffset = 0;

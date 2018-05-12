@@ -31,7 +31,7 @@ entity: gizmo
 
 entity: terrain
     model: terrain
-    position: 0 4 0
+    position: -50 -20 -100
     rotation: 0 0 0
     scale: 100 35 200
     velocity: 0 0 0

@@ -151,6 +151,14 @@ void ShaderSystem::push(const C::Tag tag, const std::string& filepath)
 
 void ShaderSystem::createUniformBuffers()
 {
+    auto timeBufferLayout = BlockLayout();
+    timeBufferLayout.push("time", 4);
+    timeBufferLayout.push("seasonTime", 4);
+    timeBufferLayout.push("dayTime", 4);
+    timeBufferLayout.push("tideTime", 4);
+
+    ShaderSystem::m_mapUniformBuffersID["OK_Times"] = ShaderSystem::m_uniformBuffers.size(); //assign ID/index
+    ShaderSystem::m_uniformBuffers.emplace_back(UniformBuffer("OK_Times", timeBufferLayout, GL_DYNAMIC_DRAW));
 
     auto matBufferLayout = BlockLayout();
     matBufferLayout.push("projection", 64);
@@ -458,6 +466,7 @@ auto ShaderSystem::parseProgram(const std::string& fileString,
                 i = 0;
                 for (const auto& str : blendParam)
                 {
+                    //std::transform(line.begin(), line.end(), line.begin(), toupper);
                     const auto& it = std::search(line.begin() + start, line.end(),
                         str.begin(), str.end(),
                         [](char ch1, char ch2) { return ::toupper(ch1) == ::toupper(ch2); }

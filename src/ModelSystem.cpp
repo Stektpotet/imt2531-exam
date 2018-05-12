@@ -272,6 +272,9 @@ void ModelSystem::load()
         ModelSystem::push(e.tag, filepath);
     }
 
+    Model terrain;
+    ModelSystem::makeTerrain("terrain", "terrain_regular", "terrain", "assets/other/height100.png", &terrain);
+    ModelSystem::push("terrain", terrain);
 }
 
 

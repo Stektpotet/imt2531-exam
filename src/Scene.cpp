@@ -17,9 +17,16 @@ DirectionalLight Scene::m_sun;
 
 UniformBuffer Scene::m_matrixBuffer;
 UniformBuffer Scene::m_lightBuffer;
+UniformBuffer Scene::m_timeBuffer;
+
 GLuint Scene::m_projectionGLindex;
 GLuint Scene::m_pointLightGLindex;
 GLuint Scene::m_sunGLindex;
+
+GLuint Scene::m_timeGLIndex;
+GLuint Scene::m_seasonTimeGLIndex;
+GLuint Scene::m_dayTimeGLIndex;
+GLuint Scene::m_tideTimeGLIndex;
 
 int Scene::m_entitiesOffset;
 int Scene::m_lightsOffset;
@@ -505,9 +512,18 @@ void Scene::load(std::string sceneFile)
 
     m_matrixBuffer      = ShaderSystem::getUniformBuffer("OK_Matrices");
     m_lightBuffer       = ShaderSystem::getUniformBuffer("OK_Lights");
+    m_timeBuffer        = ShaderSystem::getUniformBuffer("OK_Times");
+
     m_projectionGLindex = m_matrixBuffer.getUniformIndex("projection");
     m_pointLightGLindex = m_lightBuffer.getUniformIndex("light[0].position");
     m_sunGLindex        = m_lightBuffer.getUniformIndex("sun.direction");
+
+    m_timeGLIndex       = m_timeBuffer.getUniformIndex("time");
+    m_seasonTimeGLIndex = m_timeBuffer.getUniformIndex("seasonTime");
+    m_dayTimeGLIndex    = m_timeBuffer.getUniformIndex("dayTime");
+    m_tideTimeGLIndex   = m_timeBuffer.getUniformIndex("tideTime");
+
+
 /*
     m_sun = DirectionalLight {
             -glm::vec4{ 10, 9, 8, 7 },
@@ -671,6 +687,18 @@ void Scene::load(std::string sceneFile)
     }
 
 
+    //===================================================================================================================
+    //===================================================================================================================
+    //===================================================================================================================
+    //===================================================================================================================
+    //===================================================================================================================
+    //===================================================================================================================
+    //===================================================================================================================
+
+    float Scene::seasonTime = 0; //0-4.999999
+    float Scene::dayTime = 0;
+    float Scene::tideTime = 0;
+
     void Scene::update(float dt)
     {
 
@@ -691,10 +719,13 @@ void Scene::load(std::string sceneFile)
                               sizeof(CameraTransform),
                               &(m_activeCamera -> m_cameraTransform));
 
+        //m_timeBuffer.update(m_timeGLIndex, )
+
+
         // Buffer light data
         Scene::bufferPointLights();
-        auto pointLight = (((EntityDirectionalLight*)m_entities[m_lightsOffset + m_lightsCount])->pack());
-        m_lightBuffer.update(m_sunGLindex, sizeof(DirectionalLightBO), &pointLight);
+        auto dirLight = (((EntityDirectionalLight*)m_entities[m_lightsOffset + m_lightsCount])->pack());
+        m_lightBuffer.update(m_sunGLindex, sizeof(DirectionalLightBO), &dirLight);
 
 
         for (Entity* entity : m_entities)

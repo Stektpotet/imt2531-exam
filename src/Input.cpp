@@ -13,77 +13,86 @@ namespace overkill
     float Input::m_camRotY = 0;
     float Input::m_camPanX = 0;
     float Input::m_camPanY = 0;
-    bool Input::m_navKeyPressed[] = {false, false, false, false, false, false}; // Which navigation keys are pressed. WASD-QE keys.
+    bool  Input::m_navKeyPressed[] = {false, false, false, false, false, false, false, false}; // Which navigation keys are pressed. WASD-QE keys.
+    bool  Input::m_shift{ false };
 
-    void Input::OnInputKeyPress(GLFWwindow* window, int keyCode, int /*scanCode*/, int /*mods*/)
+    void Input::OnInputKeyPress(GLFWwindow* window, int keyCode, int /*scanCode*/, int mods)
     {
         // LOG_DEBUG("Pressing %i, as char: %c\n", keyCode, char(keyCode));
-        if (keyCode == GLFW_KEY_ESCAPE)
-        {
-            glfwSetWindowShouldClose(window, 1);
-        }
-
-        // PRESS 1 TO RELOAD ShaderSystem
-        else if(keyCode == GLFW_KEY_1) {
-            ShaderSystem::reload();
-        }
-        // PRESS 2 TO RELOAD MaterialSystem
-        else if(keyCode == GLFW_KEY_2) {
-            MaterialSystem::reload();
-            Init::loadOBJFiles(false, true, false);
-        }
-        // PRESS 3 TO RELOAD ModelSystem
-        else if(keyCode == GLFW_KEY_3) {
-            ModelSystem::reload();
-            Init::loadOBJFiles(false, false, true);
-
-        }
-        // PRESS 4 TO RELOAD Scene
-        else if(keyCode == GLFW_KEY_4) {
-            Scene::reload();
-        }
-        // PRESS SPACE to toggle camera mode
-        else if(keyCode == GLFW_KEY_SPACE) {
-            EntityCamera* cam = (EntityCamera*) Scene::getActiveCamera();
-            if (cam != nullptr)
-            {
-                cam-> cycleMode();
-                LOG_INFO("Cycled camera mode.");
-            }
-            else 
-            {
-                LOG_WARN("Main camera not set. The scene most likely loaded incorrectly.")
-            }
-
-        }
-        // PRESS TAB to cycle through camera
-        else if(keyCode == GLFW_KEY_TAB) {
-            Scene::cycleCameras();
-            LOG_INFO("Cycled cameras.");
-        }
-
-
+        
         switch (keyCode)
         {
-            case GLFW_KEY_W:        
-                m_navKeyPressed[W] = true;
+            case GLFW_KEY_ESCAPE:
+                glfwSetWindowShouldClose(window, 1);
                 break;
-            case GLFW_KEY_S:        
-                m_navKeyPressed[S] = true;
+            case GLFW_KEY_F1:
+                ShaderSystem::reload();
                 break;
-            case GLFW_KEY_D:        
-                m_navKeyPressed[D] = true;    
+            case GLFW_KEY_F2:
+                MaterialSystem::reload();
+                Init::loadOBJFiles(false, true, false);
                 break;
-            case GLFW_KEY_A:        
-                m_navKeyPressed[A] = true;
+            case GLFW_KEY_F3:
+                ModelSystem::reload();
+                Init::loadOBJFiles(false, false, true);
                 break;
-            case GLFW_KEY_Q:        
-                m_navKeyPressed[Q] = true;
+            case GLFW_KEY_F4:
+                Scene::reload();
                 break;
-            case GLFW_KEY_E:        
-                m_navKeyPressed[E] = true;
-                break;      
+            case GLFW_KEY_SPACE:
+            {
+                EntityCamera * cam = (EntityCamera*)Scene::getActiveCamera();
+                if (cam != nullptr)
+                {
+                    cam->cycleMode();
+                    LOG_INFO("Cycled camera mode.");
+                }
+                else
+                {
+                    LOG_WARN("Main camera not set. The scene most likely loaded incorrectly.")
+                }
+                break;
+            }
+            case GLFW_KEY_TAB:
+                Scene::cycleCameras();
+                LOG_INFO("Cycled cameras.");
+                break;
+            case GLFW_KEY_O:
+            {
+                LOG_INFO("Switching Terrain display mode!");
+                GLuint matID = SeasonSystem::nextDisplayMode();
+                for (auto& mesh : ModelSystem::getByTag("terrain").m_meshes)
+                {
+                    mesh.m_materialID = matID;
+                }
+                break;
+            }
+            case GLFW_KEY_I:        
+                m_navKeyPressed[I] = true;
+                break;
+            case GLFW_KEY_K:        
+                m_navKeyPressed[K] = true;
+                break;
+            case GLFW_KEY_L:        
+                m_navKeyPressed[L] = true;    
+                break;
+            case GLFW_KEY_J:        
+                m_navKeyPressed[J] = true;
+                break;
+            case GLFW_KEY_H:        
+                m_navKeyPressed[H] = true;
+                break;
+            case GLFW_KEY_Y:        
+                m_navKeyPressed[Y] = true;
+                break;
+            case GLFW_KEY_N:
+                m_navKeyPressed[N] = true;
+                break;
+            case GLFW_KEY_M:
+                m_navKeyPressed[M] = true;
+                break;
         }
+        
     }
 
     void Input::OnInputKeyHold(GLFWwindow* /*window*/, int /*keyCode*/, int /*scanCode*/, int /*mods*/)
@@ -91,30 +100,36 @@ namespace overkill
         // LOG_DEBUG("Holding %i, as char: %c\n", keyCode, char(keyCode));
     }
 
-    void Input::OnInputKeyUnpress(GLFWwindow* /*window*/, int keyCode, int /*scanCode*/, int /*mods*/)
+    void Input::OnInputKeyUnpress(GLFWwindow* /*window*/, int keyCode, int /*scanCode*/, int mods)
     {
         // LOG_DEBUG("Unpressed %i, as char: %c\n", keyCode, char(keyCode));
 
         switch (keyCode)
         {
-            case GLFW_KEY_W:
-                m_navKeyPressed[W] = false;
-                break;
-            case GLFW_KEY_S:
-                m_navKeyPressed[S] = false;
-                break;
-            case GLFW_KEY_D:
-                m_navKeyPressed[D] = false;    
-                break;
-            case GLFW_KEY_A:
-                m_navKeyPressed[A] = false;
-                break;
-            case GLFW_KEY_Q:
-                m_navKeyPressed[Q] = false;
-                break;
-            case GLFW_KEY_E:
-                m_navKeyPressed[E] = false;
-                break;
+        case GLFW_KEY_I:
+            m_navKeyPressed[I] = false;
+            break;
+        case GLFW_KEY_K:
+            m_navKeyPressed[K] = false;
+            break;
+        case GLFW_KEY_L:
+            m_navKeyPressed[L] = false;
+            break;
+        case GLFW_KEY_J:
+            m_navKeyPressed[J] = false;
+            break;
+        case GLFW_KEY_H:
+            m_navKeyPressed[H] = false;
+            break;
+        case GLFW_KEY_Y:
+            m_navKeyPressed[Y] = false;
+            break;
+        case GLFW_KEY_N:
+            m_navKeyPressed[N] = false;
+            break;
+        case GLFW_KEY_M:
+            m_navKeyPressed[M] = false;
+            break;
         }
     }
 

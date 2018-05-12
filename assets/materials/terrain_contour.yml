@@ -1,0 +1,7 @@
+maps: 3
+  mainTex: heightmap_rgb
+  aoTex: heightmap_ao
+  seasonsRamp: seasons_contour_only_ramp_hhq
+
+values: 1
+  specularity: 1

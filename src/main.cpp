@@ -66,16 +66,8 @@ int main(int argc, char** args)
     
     Init::loadOBJFiles();
 
-    //Load terrain and add it to the modelSystem
-    Model terrain;
-    ModelSystem::makeTerrain("terrain", "terrain", "terrain","assets/other/height100.png", &terrain);
-    ModelSystem::push("terrain", terrain);
+    SeasonSystem::Init();
 
-    float season = 0; //0-4.999999
-
-
-    auto terrainScale = glm::scale(glm::mat4(1), glm::vec3(100, 35, 200));
-    
     LOG_DEBUG("Argc %d, args[1] %s", argc, args[1]);
 
     if (argc == 1)

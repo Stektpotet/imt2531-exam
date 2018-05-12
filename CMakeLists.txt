@@ -72,6 +72,9 @@ target_sources(
 
 	PRIVATE ${SRCDIR}/src/UniformBuffer.cpp
 	PRIVATE ${SRCDIR}/src/ShaderIntrospector.cpp
+
+
+	PRIVATE ${SRCDIR}/src/SeasonSystem.cpp
 )
 
 #
