@@ -15,6 +15,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <imgui/imgui.h>
+
 #include <overkill/Config.hpp>
 #include <overkill/Init.hpp>
 #include <overkill/Input.hpp>
@@ -55,6 +57,7 @@ int main(int argc, char** args)
 
     Init::GLEW();
     Init::OpenGL(C::ClearColor);
+    Init::ImGui(C::window);
     Watcher::pollEvents();
 
     // Load asset subsystems
@@ -88,7 +91,18 @@ int main(int argc, char** args)
         dt = t - oldT;
         if ((glfwGetKey(C::window, GLFW_KEY_ESCAPE) == GLFW_PRESS || glfwWindowShouldClose(C::window) != 0))
             break;
+
+        glfwPollEvents();
+
+        ImGui_ImplGlfwGL3_NewFrame();
+
+        ImGui::Text("Season: %f", SeasonSystem::getSeasonTime());
+        ImGui::Text("Day: %f", SeasonSystem::getDayTime());
+
+
         Renderer::clear();
+
+
 
         //Update
         SeasonSystem::Update(dt); 
@@ -102,8 +116,11 @@ int main(int argc, char** args)
         //Renderer::draw(ModelSystem::getById(0), camPosDebugM2W, t);
 
         Input::clearMap();
+
+        ImGui::Render();
+        ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
+
         glfwSwapBuffers(C::window);
-        glfwPollEvents();
         oldT = t;
 
         // break; // For testing load performance

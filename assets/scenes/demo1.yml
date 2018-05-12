@@ -21,10 +21,10 @@ entity: skybox
     angleVelocity: 0 0 0
 
 entity: gizmo
-    model: axes-gizmo
-    position: 0 0 0
+    model: none
+    position: -0.8 -0.8 -10
     rotation: 0 0 0
-    scale: 2 2 2
+    scale: 4 2 2
     velocity: 0 0 0
     angleVelocity: 0 0 0
 

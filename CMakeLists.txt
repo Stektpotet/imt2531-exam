@@ -42,6 +42,15 @@ set_target_properties(
 
 target_sources(
     exam
+	
+	# IMGUI STUFF
+
+	PRIVATE ${SRCDIR}/lib/imgui/imgui.cpp
+	PRIVATE ${SRCDIR}/lib/imgui/imgui_draw.cpp
+	PRIVATE ${SRCDIR}/lib/imgui/imgui_impl_glfw_gl3.cpp
+
+	# END IMGUI STUFF
+
     PRIVATE ${SRCDIR}/src/Config.cpp
     PRIVATE ${SRCDIR}/src/ElementBuffer.cpp
 	PRIVATE ${SRCDIR}/src/gl_caller.cpp

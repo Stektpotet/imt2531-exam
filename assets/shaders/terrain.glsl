@@ -152,7 +152,7 @@ layout(std140) uniform OK_Times{
 #define PI 3.1415926535897932384626433832795
 void main() {
 
-    vec3 seasonColor = texture(seasonsRamp, vec2(1.5 * terrainHeight-0.05, mod(seasonTime,1))).rgb;
+    vec3 seasonColor = texture(seasonsRamp, vec2(1.5 * terrainHeight-0.05, seasonTime)).rgb;
 
 	// float flatness = min(1, 0.25 + abs(dot(fragNormal, fragUp)));
 
@@ -177,7 +177,7 @@ void main() {
     // out_color = vec4(lights + tex, 1);
 	// out_color = vec4(seasonColor * flatness + lights * flatness , 1);
     // out_color = vec4(lights + tex, 1);
-    out_color = vec4(seasonColor + lights, 1);
+    out_color = vec4((seasonColor + lights) * (tex * 0.5 + 0.5) , 1);
 
 
 }

@@ -9,7 +9,10 @@
 #include <glm/gtc/constants.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <imgui/imgui.h>
+#include <imgui/imgui_impl_glfw_gl3.h>
 #include <PMS/logger.h>
+
 
 #include <overkill/gl_caller.hpp>
 #include <overkill/Parser.hpp>
@@ -35,4 +38,5 @@ void OpenGL(const glm::vec4 background);
 void Config();
 void loadOBJFiles(bool loadTextures=true, bool loadMaterials=true, bool loadModels=true);
 
+void ImGui(GLFWwindow* window);
 } // ::Init::overkill

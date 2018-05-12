@@ -1,8 +1,8 @@
 GLVersionMajor: 4
 GLVersionMinor: 1
 
-WinWidth: 800
-WinHeight: 600
+WinWidth: 1600
+WinHeight: 1000
 WinName: Exam
 ClearColor: 0.9   0.8   0.8   1.0
 
