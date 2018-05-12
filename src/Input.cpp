@@ -13,13 +13,28 @@ namespace overkill
     float Input::m_camRotY = 0;
     float Input::m_camPanX = 0;
     float Input::m_camPanY = 0;
-    bool  Input::m_navKeyPressed[] = {false, false, false, false, false, false, false, false}; // Which navigation keys are pressed. WASD-QE keys.
+    bool  Input::m_navKeyPressed[] = {false, false, false, false, false, false, false, false}; // Which navigation keys are pressed. WASD-QE keys. -> but now IJKL-YH
     bool  Input::m_shift{ false };
+
+    bool  Input::m_asciiMap[Input::ASCII_MAP_SIZE]; //keyboard map from ascii value 32 -> 90
+
+    void Input::clearMap()
+    {
+        for (int i = 0; i < Input::ASCII_MAP_SIZE; i++)
+        {
+            m_asciiMap[i] = false; //reset previous input state
+        }
+    }
 
     void Input::OnInputKeyPress(GLFWwindow* window, int keyCode, int /*scanCode*/, int mods)
     {
         // LOG_DEBUG("Pressing %i, as char: %c\n", keyCode, char(keyCode));
-        
+        int index = keyCode - Input::ASCII_MAP_OFFSET;
+        if ((index < Input::ASCII_MAP_SIZE))
+        {
+            m_asciiMap[index] = true;
+        }
+
         switch (keyCode)
         {
             case GLFW_KEY_ESCAPE:
@@ -57,16 +72,7 @@ namespace overkill
                 Scene::cycleCameras();
                 LOG_INFO("Cycled cameras.");
                 break;
-            case GLFW_KEY_O:
-            {
-                LOG_INFO("Switching Terrain display mode!");
-                GLuint matID = SeasonSystem::nextDisplayMode();
-                for (auto& mesh : ModelSystem::getByTag("terrain").m_meshes)
-                {
-                    mesh.m_materialID = matID;
-                }
-                break;
-            }
+           
             case GLFW_KEY_I:        
                 m_navKeyPressed[I] = true;
                 break;
@@ -213,4 +219,14 @@ namespace overkill
             }
         }
     }
+    bool Input::getKey(const int glfw_key)
+    {
+        int index = glfw_key - Input::ASCII_MAP_OFFSET;
+        if (index > Input::ASCII_MAP_MAX)
+        {
+            return false;
+        }
+        return Input::m_asciiMap[index];
+    }
+ 
 }

@@ -88,11 +88,12 @@ int main(int argc, char** args)
         dt = t - oldT;
         if ((glfwGetKey(C::window, GLFW_KEY_ESCAPE) == GLFW_PRESS || glfwWindowShouldClose(C::window) != 0))
             break;
-
         Renderer::clear();
+
+        //Update
+        SeasonSystem::Update(dt); 
+
         Scene::update(dt);
-       
-        //Renderer::draw(terrain, terrainScale, t);
         // Draws all the models in the scene.
         Scene::draw(t);     
 
@@ -100,9 +101,9 @@ int main(int argc, char** args)
         //glm::mat4 camPosDebugM2W = glm::translate(glm::mat4(1), glm::vec3(cameraTransform.position));
         //Renderer::draw(ModelSystem::getById(0), camPosDebugM2W, t);
 
+        Input::clearMap();
         glfwSwapBuffers(C::window);
         glfwPollEvents();
-
         oldT = t;
 
         // break; // For testing load performance

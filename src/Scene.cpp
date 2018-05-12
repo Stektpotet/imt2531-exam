@@ -695,10 +695,6 @@ void Scene::load(std::string sceneFile)
     //===================================================================================================================
     //===================================================================================================================
 
-    float Scene::seasonTime = 0; //0-4.999999
-    float Scene::dayTime = 0;
-    float Scene::tideTime = 0;
-
     void Scene::update(float dt)
     {
 
@@ -719,7 +715,14 @@ void Scene::load(std::string sceneFile)
                               sizeof(CameraTransform),
                               &(m_activeCamera -> m_cameraTransform));
 
-        //m_timeBuffer.update(m_timeGLIndex, )
+        /*
+        float time;
+        float seasonTime;
+        float dayTime;
+        float tideTime;
+        */
+        float ok_times[4] = { t, SeasonSystem::getSeasonTime(), SeasonSystem::getDayTime(), 0 };
+        m_timeBuffer.update(m_timeGLIndex, 16, &ok_times);
 
 
         // Buffer light data

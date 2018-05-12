@@ -54,8 +54,6 @@ in vec3 fragVert;
 
 out vec4 out_color;
 
-uniform float time = 0;
-
 uniform float opacity = 1;
 uniform float specularity = 1;
 uniform float intensity = 1;
@@ -145,15 +143,24 @@ vec3 OK_DirectionalLight(in vec3 lightDir, in vec3 intensities) {
 in float terrainHeight;
 uniform sampler2D seasonsRamp;
 
+layout(std140) uniform OK_Times{
+	float time;
+	float seasonTime;
+	float dayTime;
+	float tideTime;
+};
+#define PI 3.1415926535897932384626433832795
 void main() {
 
-    vec3 seasonColor = texture(seasonsRamp, vec2(1.5 * terrainHeight+0.05, mod(time*0.1,0.95))).rgb;
+    vec3 seasonColor = texture(seasonsRamp, vec2(1.5 * terrainHeight-0.05, mod(seasonTime,1))).rgb;
 
-	float flatness = min(1, 0.25 + abs(dot(fragNormal, fragUp)));
+	// float flatness = min(1, 0.25 + abs(dot(fragNormal, fragUp)));
 
     vec3 tex = texture(mainTex, texCoord).rgb;
 
-	vec3 lights = OK_DirectionalLight(sun.direction.xyz, sun.intensities.rgb);
+    vec3 sunDirection = vec3(cos(PI+dayTime*PI*2),sin(PI+dayTime*PI*2), 0);
+
+	vec3 lights = OK_DirectionalLight(sunDirection, sun.intensities.rgb);
 	for(int i = 0; i < MAX_LIGHTS; i++)
 	{
 		lights += OK_PointLight(
@@ -168,8 +175,9 @@ void main() {
     // out_color = vec4(heightLine, 1);
     // out_color = vec4(fragNormal, 1);
     // out_color = vec4(lights + tex, 1);
-	out_color = vec4(seasonColor * flatness + lights * flatness , 1);
+	// out_color = vec4(seasonColor * flatness + lights * flatness , 1);
     // out_color = vec4(lights + tex, 1);
+    out_color = vec4(seasonColor + lights, 1);
+
 
 }
-	

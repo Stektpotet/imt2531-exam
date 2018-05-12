@@ -28,6 +28,12 @@ enum NavigationKey
 class Input
 {
 private:
+    static const int ASCII_MAP_OFFSET = GLFW_KEY_SPACE;
+    static const int ASCII_MAP_MAX = GLFW_KEY_Z;
+    static const int ASCII_MAP_SIZE = ASCII_MAP_MAX - ASCII_MAP_OFFSET;
+
+    static bool m_asciiMap[ASCII_MAP_SIZE];
+
     static bool m_leftButtonDown;
     static bool m_rightButtonDown;
 
@@ -50,6 +56,9 @@ public:
     static void OnCursorHover(GLFWwindow* window, double x, double y);
     static void OnScrollChange(GLFWwindow* window, double x, double y);
     static void OnMouseClick(GLFWwindow* window, int button, int action, int mods);
+
+    static void clearMap();
+    static bool getKey(int glfw_key);
 };
 
 }

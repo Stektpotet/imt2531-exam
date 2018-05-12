@@ -43,8 +43,8 @@ pointlights: 0
 
 hasSun: 1
 
-dirlight: distantSunLight
-  rotation: -40 90 0
+dirlight: sun
+  rotation: 0 0 0
   angleVelocity: 0 0 0
   intensities: 0.222 0.432 0.534
 
