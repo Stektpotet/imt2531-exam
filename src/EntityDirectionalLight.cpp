@@ -8,9 +8,9 @@ namespace overkill
         {
             //euler angles to vector conversion
             glm::vec4{
-                cos(m_rotation.y)*cos(m_rotation.x),
-                sin(m_rotation.y)*cos(m_rotation.x),
-                sin(m_rotation.z),
+                cos(m_rotation.y + C::PI*0.5f)*cos(m_rotation.x),
+                sin(m_rotation.x),
+                -sin(m_rotation.y + C::PI*0.5f)*cos(m_rotation.x),
                 0
             },
             glm::vec4{ m_intensities.r, m_intensities.g, m_intensities.b, 0 },

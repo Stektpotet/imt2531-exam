@@ -6,17 +6,34 @@ camera: mainCam
   velocity: 0 0 0
   angleVelocity: 0 0 0
   mode: freelook
-  fov: 90
+  fov: 60
   nearClip: 0.1
   farClip: 800
 
-entities: 1
+entities: 3
+
+entity: skybox
+    model: skybox
+    position: 0 0 0
+    rotation: 0 0 0
+    scale: 3 3 3
+    velocity: 0 0 0
+    angleVelocity: 0 0 0
+
+entity: gizmo
+    model: axes-gizmo
+    position: 0 0 0
+    rotation: 0 0 0
+    scale: 2 2 2
+    velocity: 0 0 0
+    angleVelocity: 0 0 0
+
 
 entity: terrain
     model: terrain
     position: 0 4 0
     rotation: 0 0 0
-    scale: 100 40 200
+    scale: 100 35 200
     velocity: 0 0 0
     angleVelocity: 0 0 0
 
@@ -24,16 +41,26 @@ pointlights: 0
 
 
 
-
 hasSun: 1
 
 dirlight: distantSunLight
-  rotation: 0 0 0
+  rotation: -40 90 0
   angleVelocity: 0 0 0
   intensities: 0.222 0.432 0.534
 
-relations: 0
+relations: 2
+  gizmo: 0
+  mainCam: 1
+    gizmo
 
+
+pointlight: sunLight
+position: 40 90 0
+velocity: 0 0 0
+intensities: 0.98 0.58 0
+falloff: 1.0 0.00025 0.0012
+
+##UNUSED:
 entity: skybox
     model: spaceSkybox
     position: 0 0 0
@@ -41,7 +68,7 @@ entity: skybox
     scale: 1 1 1
     velocity: 0 0 0
     angleVelocity: 0 0 0
-  
+
 pointlight: sunLight
   position: 0 0 0
   velocity: 0 0 0

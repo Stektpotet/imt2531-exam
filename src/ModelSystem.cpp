@@ -319,7 +319,7 @@ auto ModelSystem::makeTerrain(const C::Tag& tag, const C::Tag& materialTag, cons
         float yUnit = 1.0f / height;
 
 
-        auto nrm = glm::normalize(glm::cross(glm::vec3(2 * xUnit, R-L, 0), glm::vec3(0, B-T, 2 * yUnit)));
+        auto nrm = glm::normalize(glm::cross(glm::vec3(0, B-T, 2 * yUnit), glm::vec3(2 * xUnit, R - L, 0)));
 
         //vertices[index].x = x;
         //vertices[index].y = pixelHeight;
@@ -357,7 +357,8 @@ auto ModelSystem::makeTerrain(const C::Tag& tag, const C::Tag& materialTag, cons
             appendVertex(baseIndex + width,     x, y);  //lower left
             appendVertex(baseIndex + 1,         x, y);  //upper right
             appendVertex(baseIndex + width + 1, x, y);  //lower right
-
+            
+            // 1
             //upper left triangle
             triangles.push_back(Triangle{
                 GLuint(baseIndex), 
@@ -370,6 +371,7 @@ auto ModelSystem::makeTerrain(const C::Tag& tag, const C::Tag& materialTag, cons
                 GLuint(baseIndex + width),
                 GLuint(baseIndex + width + 1)
             });
+
         }
     }
 

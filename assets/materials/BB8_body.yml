@@ -1,0 +1,8 @@
+maps: 1
+  mainTex: example
+
+values: 4
+  opacity: 1
+  intensity: 1
+  bumpiness: 1
+  specularity: 1

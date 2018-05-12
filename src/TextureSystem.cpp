@@ -98,14 +98,14 @@ auto TextureSystem::makeTexture(const std::string& filepath, Texture* outTexture
         if (filepath.find("RGBA") != std::string::npos) 
         {
             glTexImage2D(GL_TEXTURE_2D,  
-                         0, 
-                         GL_RGBA, 
-                         texture.width, 
-                         texture.height, 
-                         0, 
-                         GL_RGBA, 
-                         GL_UNSIGNED_BYTE, 
-                         localBuffer);
+                0, 
+                GL_RGBA, 
+                texture.width, 
+                texture.height, 
+                0, 
+                GL_RGBA, 
+                GL_UNSIGNED_BYTE, 
+                localBuffer);
         }
         else {
     
