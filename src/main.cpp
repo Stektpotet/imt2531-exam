@@ -95,10 +95,15 @@ int main(int argc, char** args)
         glfwPollEvents();
 
         ImGui_ImplGlfwGL3_NewFrame();
-
+        ImGui::Begin("Season Data"); 
         ImGui::Text("Season: %f", SeasonSystem::getSeasonTime());
-        ImGui::Text("Day: %f", SeasonSystem::getDayTime());
+        ImGui::Text("Season: %s", SeasonSystem::getSeasonName().c_str());
+        ImGui::Text("Month: %s", SeasonSystem::getMonthName().c_str());
 
+        //ImGui::SliderFloat("Season")
+        ImGui::Text("Day: %f", SeasonSystem::getDayTime());
+        ImGui::Text("Day Phase: %s", SeasonSystem::getDayPhaseName().c_str());
+        ImGui::End();
 
         Renderer::clear();
 

@@ -3,6 +3,8 @@
 
 namespace overkill
 {
+    bool Input::m_isCursorCaptured = false;
+
     bool Input::m_leftButtonDown = false;
     bool Input::m_rightButtonDown = false;
     
@@ -160,12 +162,9 @@ namespace overkill
         float deltaX = x - m_cursorX;
         float deltaY= y - m_cursorY;
 
-        ////Camera rotation:
-        
-#ifdef __APPLE__
-        if (m_leftButtonDown) //Click and drag to rotate.
+        ////Camera rotation:  
+        if(m_isCursorCaptured)
         {
-#endif
             EntityCamera* camera = (EntityCamera*) Scene::getActiveCamera();
             if (camera != nullptr)
             {
@@ -176,9 +175,7 @@ namespace overkill
             {
                 LOG_WARN("Main camera not set. The scene most likely loaded incorrectly.")
             }
-#ifdef __APPLE__
         }
-#endif
 
 
         m_cursorX = x;  // Save current cursor pos.
@@ -190,17 +187,24 @@ namespace overkill
     //    printf("Scroll: x: %f,\ty:%f\t\tfovy:%f\n", x, y, m_fovy);
     }
 
-    void Input::OnMouseClick(GLFWwindow* /*window*/, int button, int action, int /*mods*/)
+    void Input::OnMouseClick(GLFWwindow* window, int button, int action, int /*mods*/)
     {
         if (button == GLFW_MOUSE_BUTTON_LEFT)
         {
             if (action == GLFW_PRESS)
             {
+#ifdef __APPLE__
+                m_isCursorCaptured = true;
+#endif
                 // printf("Left button pressed.\n");
                 m_leftButtonDown = true;
             }
             else if (action == GLFW_RELEASE)
             {
+
+#ifdef __APPLE__
+                m_isCursorCaptured = false;
+#endif
                 // printf("Left button released.\n");       
                 m_leftButtonDown = false;
             }
@@ -209,6 +213,18 @@ namespace overkill
         {
             if (action == GLFW_PRESS)
             {
+#ifndef __APPLE__
+                if (m_isCursorCaptured)
+                {
+                    m_isCursorCaptured = false;
+                    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+                } 
+                else
+                {
+                    m_isCursorCaptured = true;
+                    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+                }
+#endif
                 // printf("Right button pressed.\n");
                 m_rightButtonDown = true;
             }

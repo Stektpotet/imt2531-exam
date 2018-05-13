@@ -4,4 +4,4 @@ maps: 3
   seasonsRamp: seasons_ramp_hhq
 
 values: 1
-  specularity: 1
+  specularity: 0

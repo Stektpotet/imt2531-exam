@@ -10,6 +10,9 @@ namespace overkill
     float SeasonSystem::m_dayTime;
 
 
+    int SeasonSystem::m_currentSeason;
+    int SeasonSystem::m_currentMonth;
+    int SeasonSystem::m_currentDayPhase;
 
 void SeasonSystem::Init()
 {
@@ -29,6 +32,21 @@ float SeasonSystem::getSeasonTime()
     return m_seasonTime;
 }
 
+const C::Tag & SeasonSystem::getSeasonName()
+{
+    return SEASON_NAME[m_currentSeason];
+}
+
+const C::Tag & SeasonSystem::getMonthName()
+{
+    return MONTH_NAME[m_currentMonth];
+}
+
+const C::Tag & SeasonSystem::getDayPhaseName()
+{
+    return DAY_PHASE_NAME[m_currentDayPhase];
+}
+
 float SeasonSystem::getDayTime()
 {
     return m_dayTime;
@@ -45,10 +63,13 @@ void SeasonSystem::Update(const float deltaTime)
     if (!m_season_paused)
     {
         m_seasonTime += deltaTime * SeasonSystem::SEASON_SPEED;
+        m_currentSeason = int(fmod(m_seasonTime, 1.0f) * 4);
+        m_currentMonth = int(fmod(m_seasonTime, 1.0f) * 12);
     }
     if (!m_day_night_paused)
     {
         m_dayTime += deltaTime * SeasonSystem::DAY_NIGHT_SPEED;
+        m_currentDayPhase = int(fmod(m_dayTime, 1.0f) * 7);
     }
     HandleInput();
 }
@@ -75,23 +96,30 @@ void SeasonSystem::HandleInput()
      else if (Input::getKey(SeasonSystem::SWITCH_TO_WINTER))
      {
          LOG_INFO("SEASON SET: WINTER");
-
          m_seasonTime = 0.0f;
+         m_currentSeason = 0;
+         m_currentMonth = 0;
      }
      else if (Input::getKey(SeasonSystem::SWITCH_TO_SPRING))
      {
          LOG_INFO("SEASON SET: SPRING");
          m_seasonTime = 0.25f;
+         m_currentSeason = 1;
+         m_currentMonth = 3;
      }
      else if (Input::getKey(SeasonSystem::SWITCH_TO_SUMMER))
      {
          LOG_INFO("SEASON SET: SUMMER");
          m_seasonTime = 0.5f;
+         m_currentSeason = 2;
+         m_currentMonth = 6;
      }
      else if (Input::getKey(SeasonSystem::SWITCH_TO_AUTUMN))
      {
          LOG_INFO("SEASON SET: AUTUMN");
          m_seasonTime = 0.75f;
+         m_currentSeason = 3;
+         m_currentMonth = 9;
      }
 
      //DAY NIGHT CYCLE
@@ -104,21 +132,29 @@ void SeasonSystem::HandleInput()
      {
          LOG_INFO("TIME SET: MORNING");
          m_dayTime = 0.0f;
+         m_currentDayPhase = 0;
+
      }
      else if (Input::getKey(SeasonSystem::SWITCH_TO_NOON))
      {
          LOG_INFO("TIME SET: NOON");
          m_dayTime = 0.125f;
+         m_currentDayPhase = 1;
+
      }
      else if (Input::getKey(SeasonSystem::SWITCH_TO_AFTERNOON))
      {
          LOG_INFO("TIME SET: AFTERNOON");
          m_dayTime = 0.25f;
+         m_currentDayPhase = 2;
+
      }
      else if (Input::getKey(SeasonSystem::SWITCH_TO_NIGHT))
      {
-         LOG_INFO("TIME SET: NIGHT");
+         LOG_INFO("TIME SET: EVENING");
          m_dayTime = 0.375f;
+         m_currentDayPhase = 3;
+
      }
 }
 

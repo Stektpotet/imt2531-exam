@@ -1,6 +1,7 @@
 #pragma once
 #include <overkill/MaterialSystem.hpp>
 #include <overkill/Input.hpp>
+#include <math.h>       /* fmod */
 
 namespace overkill
 {
@@ -32,9 +33,19 @@ private:
     static inline const float SEASON_SPEED     = 0.025f;
     static inline const float DAY_NIGHT_SPEED  = 0.5f;
 
-    //SeasonSystem States
+    static inline const C::Tag SEASON_NAME[4] = {
+        "Winter","Spring","Summer","Autumn"
+    };
 
+    static inline const C::Tag MONTH_NAME[12] = {
+        "December", "January", "February", "March", 
+        "April", "May", "June", "July", "August",
+        "September", "October", "November", 
+    };
 
+    static inline const C::Tag DAY_PHASE_NAME[7] = {
+        "Morning", "Noon", "Afternoon", "Evening", "Night", "Midnight", "Too Early For Me"
+    };
 
 public:
 
@@ -65,6 +76,8 @@ public:
     };
 private:
 
+    //SeasonSystem States
+
     static GLuint m_terrainDisplayMaterials[3];
     static DisplayMode m_displayMode;
     static bool m_season_paused;
@@ -73,11 +86,19 @@ private:
     static float m_seasonTime;
     static float m_dayTime;
 
+    static int m_currentSeason;
+    static int m_currentMonth;
+    static int m_currentDayPhase;
+
 public:
     //Must be called after other system inits.
     static void Init();
 
     static float getSeasonTime();
+    static const C::Tag& getSeasonName();
+    static const C::Tag& getMonthName();
+    static const C::Tag& getDayPhaseName();
+
     static float getDayTime();
 
     static GLuint nextDisplayMode();

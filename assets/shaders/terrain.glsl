@@ -22,6 +22,9 @@ out vec3 fragVert;
 out vec3 fragNormal;
 out vec3 fragUp;
 out float terrainHeight;
+out float steepness;
+
+const vec3 UP = vec3(0,1,0);
 
 vec4 MVP(in vec4 position) {
     return projection * view * m2w * position;
@@ -141,7 +144,9 @@ vec3 OK_DirectionalLight(in vec3 lightDir, in vec3 intensities) {
 }
 
 in float terrainHeight;
+in float steepness;
 uniform sampler2D seasonsRamp;
+const vec3 gray = vec3(0.35, 0.35, 0.35);
 
 layout(std140) uniform OK_Times{
 	float time;
@@ -151,12 +156,15 @@ layout(std140) uniform OK_Times{
 };
 #define PI 3.1415926535897932384626433832795
 void main() {
+    vec3 ao = texture(aoTex, texCoord).rgb;
+    vec3 tex = texture(mainTex, texCoord).rgb;
 
-    vec3 seasonColor = texture(seasonsRamp, vec2(1.5 * terrainHeight-0.05, seasonTime)).rgb;
-
+    float s = 0.8-dot(fragNormal, fragUp);
+    // s = s*s*s;
+    vec3 seasonColor = texture(seasonsRamp, vec2(1.5 * terrainHeight-0.065, seasonTime)).rgb;
+    seasonColor =  (s * gray) + seasonColor * (1-s)*0.8;
 	// float flatness = min(1, 0.25 + abs(dot(fragNormal, fragUp)));
 
-    vec3 tex = texture(mainTex, texCoord).rgb;
 
     vec3 sunDirection = vec3(cos(PI+dayTime*PI*2),sin(PI+dayTime*PI*2), 0);
 

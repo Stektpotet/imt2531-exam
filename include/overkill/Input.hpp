@@ -34,6 +34,8 @@ private:
 
     static bool m_asciiMap[ASCII_MAP_SIZE];
 
+    static bool m_isCursorCaptured;
+
     static bool m_leftButtonDown;
     static bool m_rightButtonDown;
 

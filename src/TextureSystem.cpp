@@ -87,12 +87,6 @@ auto TextureSystem::makeTexture(const std::string& filepath, Texture* outTexture
     GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
     GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
 
-
-#ifndef __APPLE__  // @NOTE Not supported on [macos 10.13, openGL 4.1]
-    GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP)); 
-    GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP));
-#endif
-
         // @TODO make a system for knowing when a texture is 
         // RGBA and when it is just RGB
         if (filepath.find("RGBA") != std::string::npos) 
