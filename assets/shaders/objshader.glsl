@@ -73,7 +73,7 @@ out vec4 out_color;
 uniform float time = 0;
 
 
-uniform sampler2D map_ambient;
+uniform sampler2D map_diffuse;
 
 uniform float opacity = 1;
 uniform float specularity = 1;
@@ -166,7 +166,7 @@ void main() {
                     );
     }
 
-    vec3 tex = texture(map_ambient, texCoord).rgb;
+    vec3 tex = texture(map_diffuse, texCoord).rgb;
 
     out_color = vec4(lights * tex , 1);
 }

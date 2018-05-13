@@ -98,10 +98,11 @@ int main(int argc, char** args)
         ImGui::Text("Season: %f", SeasonSystem::getSeasonTime());
         ImGui::Text("Season: %s", SeasonSystem::getSeasonName().c_str());
         ImGui::Text("Month: %s", SeasonSystem::getMonthName().c_str());
-
+        ImGui::BeginGroup();
         //ImGui::SliderFloat("Season")
         ImGui::Text("Day: %f", SeasonSystem::getDayTime());
         ImGui::Text("Day Phase: %s", SeasonSystem::getDayPhaseName().c_str());
+        ImGui::EndGroup();
         ImGui::End();
 
         Renderer::clear();

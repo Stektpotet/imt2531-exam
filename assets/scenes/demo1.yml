@@ -24,15 +24,15 @@ entity: glider
     model: obj/glider
     position: 0 0 0
     rotation: 0 0 0
-    scale: 1 1 1
+    scale: 0.1 0.1 0.1
     velocity: 0 0 0
     angleVelocity: 0 0 0
 
 entity: gizmo
-    model: none
-    position: -0.8 -0.8 -10
+    model: gizmo
+    position:  0 0 0
     rotation: 0 0 0
-    scale: 4 2 2
+    scale: 5 5 5
     velocity: 0 0 0
     angleVelocity: 0 0 0
 
@@ -58,7 +58,7 @@ dirlight: sun
 
 relations: 2
   gizmo: 0
-  mainCam: 1
+  glider: 1
     gizmo
 
 

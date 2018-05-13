@@ -4,6 +4,8 @@
 namespace overkill
 {
 
+EntityGlider*        Scene::m_glider;
+
 
 // EntityCamera* Scene::m_camera;
 std::string Scene::m_sceneLoaded;
@@ -312,12 +314,18 @@ void Scene::load(std::string sceneFile)
             LOG_INFO("%s: (%f, %f, %f)",std::string(key).data(), angVel.x, angVel.y, angVel.z);
         }
 
-        if (modelTag == "glider")
+        if (modelTag == "obj/glider")
         {
             auto glider = new EntityGlider(modelTag,
                 entityTag,
-                count);
+                count,
+                pos,
+                rot,
+                scl,
+                vel,
+                angVel);
             addEntity((Entity*)glider);
+            m_glider = glider;
         }
         else if (modelTag == "NULL" || modelTag == "null" || modelTag == "none" || modelTag == "_")
         {

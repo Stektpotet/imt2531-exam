@@ -34,7 +34,7 @@ class Scene
 {
 private:
 
-    //static EntityGlider* m_glider;
+    static EntityGlider* m_glider;
 
 
     // static EntityCamera* m_camera;

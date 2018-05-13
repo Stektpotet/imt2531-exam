@@ -58,10 +58,12 @@ namespace overkill
 
     void EntityModel::update(float dt, glm::mat4 parentMatrix)
     {
+#if DEBUG
         if (m_modelID == -1)
         {
             LOG_WARN("Model ID is not set due to bad construct params. Model will not be drawn.");
         }
+#endif
         m_position += m_velocity * dt;
         m_rotation += m_angularVelocity * dt;
 

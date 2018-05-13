@@ -15,7 +15,12 @@ namespace overkill
     float Input::m_camRotY = 0;
     float Input::m_camPanX = 0;
     float Input::m_camPanY = 0;
-    bool  Input::m_navKeyPressed[] = {false, false, false, false, false, false, false, false}; // Which navigation keys are pressed. WASD-QE keys. -> but now IJKL-YH
+    bool  Input::m_navKeyPressed[] = {
+        false, false, false, false, false, false, //cam
+        false, false, //zoom
+        false, false, false, false, false, false //glider
+    }; // Which navigation keys are pressed. WASD-QE keys. -> but now IJKL-YH
+
     bool  Input::m_shift{ false };
 
     bool  Input::m_asciiMap[Input::ASCII_MAP_SIZE]; //keyboard map from ascii value 32 -> 90
@@ -75,6 +80,7 @@ namespace overkill
                 LOG_INFO("Cycled cameras.");
                 break;
            
+            // CAM NAVIGATION
             case GLFW_KEY_I:        
                 m_navKeyPressed[I] = true;
                 break;
@@ -93,11 +99,33 @@ namespace overkill
             case GLFW_KEY_Y:        
                 m_navKeyPressed[Y] = true;
                 break;
+
+            //ZOOM
             case GLFW_KEY_N:
                 m_navKeyPressed[N] = true;
                 break;
             case GLFW_KEY_M:
                 m_navKeyPressed[M] = true;
+                break;
+
+            //GLIDER CONTROLS
+            case GLFW_KEY_W:
+                m_navKeyPressed[W] = true;
+                break;
+            case GLFW_KEY_A:
+                m_navKeyPressed[A] = true;
+                break;
+            case GLFW_KEY_S:
+                m_navKeyPressed[S] = true;
+                break;
+            case GLFW_KEY_D:
+                m_navKeyPressed[D] = true;
+                break;
+            case GLFW_KEY_Q:
+                m_navKeyPressed[Q] = true;
+                break;
+            case GLFW_KEY_E:
+                m_navKeyPressed[E] = true;
                 break;
         }
         
@@ -114,6 +142,7 @@ namespace overkill
 
         switch (keyCode)
         {
+            // CAM NAVIGATION
         case GLFW_KEY_I:
             m_navKeyPressed[I] = false;
             break;
@@ -132,11 +161,33 @@ namespace overkill
         case GLFW_KEY_Y:
             m_navKeyPressed[Y] = false;
             break;
+
+            //ZOOM
         case GLFW_KEY_N:
             m_navKeyPressed[N] = false;
             break;
         case GLFW_KEY_M:
             m_navKeyPressed[M] = false;
+            break;
+
+            //GLIDER CONTROLS
+        case GLFW_KEY_W:
+            m_navKeyPressed[W] = false;
+            break;
+        case GLFW_KEY_A:
+            m_navKeyPressed[A] = false;
+            break;
+        case GLFW_KEY_S:
+            m_navKeyPressed[S] = false;
+            break;
+        case GLFW_KEY_D:
+            m_navKeyPressed[D] = false;
+            break;
+        case GLFW_KEY_Q:
+            m_navKeyPressed[Q] = false;
+            break;
+        case GLFW_KEY_E:
+            m_navKeyPressed[E] = false;
             break;
         }
     }

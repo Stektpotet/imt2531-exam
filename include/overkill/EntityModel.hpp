@@ -31,8 +31,8 @@ public:
     void setModelByID(int modelID);
     void setModelByTag(C::Tag tag);
 
-    void update(float dt, glm::mat4 parentMatrix = glm::mat4(1)) override;
-    void draw(float t) override;
+    virtual void update(float dt, glm::mat4 parentMatrix = glm::mat4(1)) override;
+    virtual void draw(float t) override final;
 };
 
 }
