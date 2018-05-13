@@ -94,7 +94,7 @@ int main(int argc, char** args)
 
         ImGui_ImplGlfwGL3_NewFrame();
         ImGui::SetNextWindowBgAlpha(0.3f);
-        ImGui::Begin("Season Data", true, ImGuiWindowFlags_NoCollapse); 
+        ImGui::Begin("Season Data"); 
         ImGui::Text("Season: %f", SeasonSystem::getSeasonTime());
         ImGui::Text("Season: %s", SeasonSystem::getSeasonName().c_str());
         ImGui::Text("Month: %s", SeasonSystem::getMonthName().c_str());
