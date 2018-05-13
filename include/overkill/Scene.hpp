@@ -9,6 +9,7 @@
 #include <overkill/EntityDirectionalLight.hpp>
 #include <overkill/EntityPointLight.hpp>
 #include <overkill/EntityNode.hpp>
+#include <overkill/EntityGlider.hpp>
 #include <overkill/Parser.hpp>
 #include <overkill/Util.hpp>
 #include <overkill/Init.hpp>
@@ -20,6 +21,7 @@ namespace overkill
 class EntityNode;
 class EntityModel;
 class EntityCamera;
+class EntityGlider;
 
 
 struct DirectionalLight 
@@ -31,12 +33,15 @@ struct DirectionalLight
 class Scene
 {
 private:
+
+    //static EntityGlider* m_glider;
+
+
     // static EntityCamera* m_camera;
     static std::vector<Entity*> m_entities;     // All the 3D models in the world.
     static std::vector<int> m_rootEntities;     // All the entityIDs that are root noes in world.
     static EntityCamera* m_activeCamera;          // Pointer to the camera that is currently active.
     static int m_cameraCount;                   // The amount of cameras in the scene.s
-    
     static DirectionalLight m_sun;
 
     //Scene Time

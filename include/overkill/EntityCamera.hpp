@@ -21,7 +21,8 @@ struct CameraTransform      // Not to be confused with the cameras actual transf
 enum CameraMode
 {
     FREELOOK,
-    ORBITAL
+    ORBITAL,
+    LOCKED
 };
 
 class EntityCamera : public Entity

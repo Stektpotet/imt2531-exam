@@ -3,7 +3,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include <overkill/Scene.hpp>
 #include <overkill/Entity.hpp>
 #include <overkill/Material.hpp>
 #include <overkill/ModelSystem.hpp>
@@ -17,7 +16,7 @@ class Renderer;
 
 class EntityModel : public Entity
 {
-private:
+protected:
     int m_modelID;         // What model with id will be used to draw Entity.
 
 public:
@@ -32,8 +31,8 @@ public:
     void setModelByID(int modelID);
     void setModelByTag(C::Tag tag);
 
-    void update(float dt, glm::mat4 parentMatrix = glm::mat4(1)) override final;
-    void draw(float t) override final;
+    void update(float dt, glm::mat4 parentMatrix = glm::mat4(1)) override;
+    void draw(float t) override;
 };
 
 }

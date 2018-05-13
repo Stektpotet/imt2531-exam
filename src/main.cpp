@@ -29,8 +29,6 @@
 #include <overkill/MaterialSystem.hpp>
 #include <overkill/Scene.hpp>
 #include <overkill/ModelSystem.hpp>
-#include <overkill/EntityModel.hpp>
-#include <overkill/EntityCamera.hpp>
 #include <overkill/Watcher.hpp>
 
 
@@ -95,7 +93,8 @@ int main(int argc, char** args)
         glfwPollEvents();
 
         ImGui_ImplGlfwGL3_NewFrame();
-        ImGui::Begin("Season Data"); 
+        ImGui::SetNextWindowBgAlpha(0.3f);
+        ImGui::Begin("Season Data", true, ImGuiWindowFlags_NoCollapse); 
         ImGui::Text("Season: %f", SeasonSystem::getSeasonTime());
         ImGui::Text("Season: %s", SeasonSystem::getSeasonName().c_str());
         ImGui::Text("Month: %s", SeasonSystem::getMonthName().c_str());

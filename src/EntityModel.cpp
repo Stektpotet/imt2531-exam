@@ -1,5 +1,6 @@
 #include <overkill/EntityModel.hpp>
 
+#include <overkill/Scene.hpp>
 namespace overkill
 {
 

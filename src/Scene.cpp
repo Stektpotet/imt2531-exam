@@ -145,6 +145,10 @@ void Scene::load(std::string sceneFile)
             {
                 camMode = ORBITAL;
             }
+            else if ("locked" == modes[0])
+            {
+                camMode = ORBITAL;
+            }
             else
             {
                 LOG_ERROR("%s error on key --> %s... expected freelook or orbital.", filestring.c_str(), key.data());
@@ -308,8 +312,14 @@ void Scene::load(std::string sceneFile)
             LOG_INFO("%s: (%f, %f, %f)",std::string(key).data(), angVel.x, angVel.y, angVel.z);
         }
 
-
-        if (modelTag == "NULL" || modelTag == "null" || modelTag == "none" || modelTag == "_")
+        if (modelTag == "glider")
+        {
+            auto glider = new EntityGlider(modelTag,
+                entityTag,
+                count);
+            addEntity((Entity*)glider);
+        }
+        else if (modelTag == "NULL" || modelTag == "null" || modelTag == "none" || modelTag == "_")
         {
             auto nodeEntity =  new EntityNode(entityTag,
                                 count,

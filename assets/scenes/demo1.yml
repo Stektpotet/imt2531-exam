@@ -10,13 +10,21 @@ camera: mainCam
   nearClip: 0.1
   farClip: 800
 
-entities: 3
+entities: 4
 
 entity: skybox
     model: skybox
     position: 0 0 0
     rotation: 0 0 0
     scale: 3 3 3
+    velocity: 0 0 0
+    angleVelocity: 0 0 0
+
+entity: glider
+    model: obj/glider
+    position: 0 0 0
+    rotation: 0 0 0
+    scale: 1 1 1
     velocity: 0 0 0
     angleVelocity: 0 0 0
 
