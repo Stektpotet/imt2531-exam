@@ -173,13 +173,13 @@ void main() {
     vec3 seasonColor = texture(seasonsRamp, vec2(1.5 * terrainHeight-0.065, seasonTime)).rgb;
     // seasonColor =  (s * gray) + seasonColor * (1-s)*0.8;
 	// float flatness = min(1, 0.25 + abs(dot(fragNormal, fragUp)));
-	
-
-	float seasonSunIntensity = texture(seasonSunIntensityRamp, vec2(dayTime*0.5, seasonTime)).r;
-	vec3 dayTimeSunColor = texture(dayTimeSunColorRamp, vec2(0.5*-cos(dayTime * 4 * PI )+0.5, 0.5)).rgb;
 
 
-    vec3 sunDirection = vec3(cos(PI+dayTime*PI*2),sin(PI+dayTime*PI*2), 0);
+    float seasonSunIntensity = texture(seasonSunIntensityRamp, vec2(0.48*-cos(dayTime)+0.5, seasonTime)).r;
+    vec3 dayTimeSunColor = texture(dayTimeSunColorRamp, vec2(0.5*-sin(PI+dayTime*PI*2)+0.5, 0.5)).rgb;
+
+
+    vec3 sunDirection = vec3(cos(PI+dayTime*PI*2),sin(PI+dayTime*PI *2), 0);
 
     vec3 lights = OK_DirectionalLight(sunDirection, dayTimeSunColor * seasonSunIntensity * max(0,dot(sunDirection, vec3(0,-1,0))));
 	for(int i = 0; i < MAX_LIGHTS; i++)

@@ -119,7 +119,7 @@ layout(std140) uniform OK_Matrices{
 };
 
 uniform sampler2D dayTimeSunColorRamp;
-
+uniform sampler2D seasonSunIntensityRamp;
 uniform float specularity = 1;
 uniform float intensity = 1;
 
@@ -194,8 +194,13 @@ vec3 OK_DirectionalLight(in vec3 lightDir, in vec3 intensities) {
 }
 
 void main() {
+    // seasonColor =  (s * gray) + seasonColor * (1-s)*0.8;
+	// float flatness = min(1, 0.25 + abs(dot(fragNormal, fragUp)));
 
-	vec3 lights = OK_DirectionalLight(sun.direction.xyz, sun.intensities.rgb);
+    float seasonSunIntensity = texture(seasonSunIntensityRamp, vec2(0.45*-cos(dayTime)+0.5, seasonTime)).r;
+    vec3 dayTimeSunColor = texture(dayTimeSunColorRamp, vec2(0.5*-sin(PI+dayTime*PI*2)+0.5, 0.5)).rgb;
+    vec3 sunDirection = vec3(cos(PI+dayTime*PI*2),sin(dayTime*PI*2), 0);
+    vec3 lights = OK_DirectionalLight(sunDirection, dayTimeSunColor * seasonSunIntensity * max(0,dot(sunDirection, vec3(0,-1,0))));
 	for(int i = 0; i < MAX_LIGHTS; i++)
 	{
 		lights += OK_PointLight(
@@ -207,8 +212,6 @@ void main() {
 					);
 	}
 
-    vec3 dayTimeSunColor = texture(dayTimeSunColorRamp, vec2(0.5*-sin(PI+dayTime*PI*2)+0.5, 0.5)).rgb;
-    vec3 sunDirection = vec3(cos(PI+dayTime*PI*2),sin(PI+dayTime*PI*2), 0);
 
     vec3 fragDirection = -frag_Pos;
 
@@ -217,5 +220,5 @@ void main() {
 
 
     vec3 sun = dayTimeSunColor * sunPower;
-    color = vec4(sun, 0.2);
+    color = vec4(sun * (1 - sin(PI+dayTime*PI*4)), cos(dayTime*PI*4)*0.13);
 }

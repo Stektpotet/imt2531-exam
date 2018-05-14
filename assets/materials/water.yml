@@ -1,6 +1,7 @@
-maps: 1
+maps: 3
   dayTimeSunColorRamp: daytime_light_color_ramp
+  heightmap: heightmap_rgb
+  seasonSunIntensityRamp: seasons_light_intensity_ramp
 
 values: 1
   noiseScale: 10
-
