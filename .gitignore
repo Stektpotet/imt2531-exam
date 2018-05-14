@@ -10,28 +10,6 @@ CMakeSettings.json
 # ASSETS WHITELIST
 #
 # * Whitelist assets we want to keep
-# assets/*
-
-# assets/textures/*
-!assets/textures/.gitkeep
-
-# assets/shaders/*
-!assets/shaders/.gitkeep
-
-# assets/materials/*
-!assets/materials/.gitkeep
-
-# assets/objs/*
-!assets/objs/.gitkeep
-!assets/objs/rungholt/.gitkeep
-!assets/objs/cube/.gitkeep
-!assets/objs/moriknob/.gitkeep
-
-# assets/models/*
-!assets/models/.gitkeep
-
-# assets/scenes/*
-!assets/scenes/.gitkeep
 
 tool/*
 !tool/discover.py

@@ -6,4 +6,4 @@ maps: 5
   dayTimeSunColorRamp: white
 
 values: 1
-  specularity: 0
+  specularity: 1
