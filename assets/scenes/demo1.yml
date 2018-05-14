@@ -1,22 +1,43 @@
-cameras: 1
+cameras: 3
+
+camera: thirdPersonCam
+  position: 0 0.3 1
+  rotation: 0 180 0
+  velocity: 0 0 0
+  angleVelocity: 0 0 0
+  mode: locked
+  fov: 70
+  nearClip: 0.1
+  farClip: 4000
 
 camera: mainCam
-  position: 0 0 -20
+  position: 0 0 -10
   rotation: 0 0 0
   velocity: 0 0 0
   angleVelocity: 0 0 0
   mode: freelook
-  fov: 60
+  fov: 90
   nearClip: 0.1
-  farClip: 800
+  farClip: 4000
 
-entities: 4
+camera: cockpitCam
+  position: 0 -0.035 -0.17
+  rotation: 0 180 0
+  velocity: 0 0 0
+  angleVelocity: 0 0 0
+  mode: locked
+  fov: 40
+  nearClip: 0.1
+  farClip: 4000
+
+
+entities: 6
 
 entity: skybox
     model: skybox
     position: 0 0 0
     rotation: 0 0 0
-    scale: 3 3 3
+    scale: 15 15 15
     velocity: 0 0 0
     angleVelocity: 0 0 0
 
@@ -24,24 +45,40 @@ entity: glider
     model: obj/glider
     position: 0 0 0
     rotation: 0 0 0
-    scale: 0.1 0.1 0.1
+    scale: 1 1 1
     velocity: 0 0 0
     angleVelocity: 0 0 0
 
 entity: gizmo
-    model: gizmo
+    model: axes-gizmo
     position:  0 0 0
     rotation: 0 0 0
-    scale: 5 5 5
+    scale: 1 1 1
     velocity: 0 0 0
     angleVelocity: 0 0 0
 
-
 entity: terrain
     model: terrain
-    position: -50 -20 -100
+    position: -250 -100 -500
     rotation: 0 0 0
-    scale: 100 35 200
+    scale: 500 175 1000
+    velocity: 0 0 0
+    angleVelocity: 0 0 0
+
+#SPAWN POSITIONS
+entity: gliderSpawn0
+    model: axes-gizmo
+    position:  225 -75.0 400
+    rotation: 0 180 0
+    scale: 1 1 1
+    velocity: 0 0 0
+    angleVelocity: 0 0 0
+
+entity: gliderSpawn1
+    model: axes-gizmo
+    position:   225 10.5 -400
+    rotation: 0 40 0
+	scale: 1 1 1
     velocity: 0 0 0
     angleVelocity: 0 0 0
 
@@ -54,18 +91,27 @@ hasSun: 1
 dirlight: sun
   rotation: 0 0 0
   angleVelocity: 0 0 0
-  intensities: 0.222 0.432 0.534
+  intensities: 0.98 0.58 0.22
 
-relations: 2
+relations: 4
   gizmo: 0
-  glider: 1
+  thirdPersonCam: 0
+  cockpitCam: 0
+  glider: 3
     gizmo
+	thirdPersonCam
+	cockpitCam
 
+  gliderSpawn0: 0
+  gliderSpawn1: 0
+  terrain: 2
+    gliderSpawn0
+	gliderSpawn1
 
 pointlight: sunLight
 position: 40 90 0
 velocity: 0 0 0
-intensities: 0.98 0.58 0
+intensities: 0.98 0.58 0.22
 falloff: 1.0 0.00025 0.0012
 
 ##UNUSED:

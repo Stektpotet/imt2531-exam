@@ -91,6 +91,9 @@ public:
     static EntityCamera* getActiveCamera();
     static void cycleCameras();
 
+
+    static EntityGlider* getActiveGlider();
+
     static void update(float dt);               // Cass update function for all root entities.
     static void draw(float t);
     static void clean();                        // Deletes all the constructed entities.

@@ -10,7 +10,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd ./texture.png
+map_Kd .\texture.png
 
 newmtl DefaultWhite_alt.png
 Ns 96.078431
@@ -21,7 +21,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd ./alt.png
+map_Kd .\alt.png
 
 newmtl DefaultWhite_asi.png
 Ns 96.078431
@@ -32,7 +32,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd ./asi.png
+map_Kd .\asi.png
 
 newmtl DefaultWhite_chrono.png
 Ns 96.078431
@@ -43,7 +43,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd ./chrono.png
+map_Kd .\chrono.png
 
 newmtl DefaultWhite_compass.png
 Ns 96.078431
@@ -54,7 +54,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd ./compass.png
+map_Kd .\compass.png
 
 newmtl DefaultWhite_cotton_red.png
 Ns 96.078431
@@ -65,7 +65,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd ./cotton_red.png
+map_Kd .\cotton_red.png
 
 newmtl DefaultWhite_interior.png
 Ns 96.078431
@@ -76,7 +76,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd ./interior.png
+map_Kd .\interior.png
 
 newmtl DefaultWhite_panel.png
 Ns 96.078431
@@ -87,7 +87,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd ./panel.png
+map_Kd .\panel.png
 
 newmtl DefaultWhite_panel.png.001
 Ns 96.078431
@@ -98,7 +98,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd ./panel.png
+map_Kd .\panel.png
 
 newmtl DefaultWhite_sc7-top.png
 Ns 96.078431
@@ -109,7 +109,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd ./sc7-top.png
+map_Kd .\sc7-top.png
 
 newmtl DefaultWhite_turn.png
 Ns 96.078431
@@ -120,7 +120,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd ./turn.png
+map_Kd .\turn.png
 
 newmtl DefaultWhite_vario-5stv5.png
 Ns 96.078431
@@ -131,7 +131,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd ./vario-5stv5.png
+map_Kd .\vario-5stv5.png
 
 newmtl transparent
 Ns 96.078431

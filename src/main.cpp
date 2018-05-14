@@ -81,6 +81,8 @@ int main(int argc, char** args)
     }
 
 
+  
+
     float oldT = 0, t = 0, dt = 0;
     
     for(;;)
@@ -95,13 +97,28 @@ int main(int argc, char** args)
         ImGui_ImplGlfwGL3_NewFrame();
         ImGui::SetNextWindowBgAlpha(0.3f);
         ImGui::Begin("Season Data"); 
+        ImGui::BeginGroup();
         ImGui::Text("Season: %f", SeasonSystem::getSeasonTime());
         ImGui::Text("Season: %s", SeasonSystem::getSeasonName().c_str());
         ImGui::Text("Month: %s", SeasonSystem::getMonthName().c_str());
+        ImGui::EndGroup();
+        ImGui::Spacing();
         ImGui::BeginGroup();
         //ImGui::SliderFloat("Season")
         ImGui::Text("Day: %f", SeasonSystem::getDayTime());
         ImGui::Text("Day Phase: %s", SeasonSystem::getDayPhaseName().c_str());
+        ImGui::EndGroup();
+        ImGui::Spacing();
+        ImGui::BeginGroup();
+        //ImGui::SliderFloat("Season")
+        ImGui::Text("Glider Info");
+        EntityGlider* glider = ((EntityGlider*)Scene::getActiveGlider());
+        ImGui::Text("Speed: %.2f KM/H", glider->getSpeed_KMPH());
+        ImGui::Text("Acceleration: %.3f", glider->getAcceleration());
+        ImGui::Text("Position:");
+        ImGui::Text("       X: %0.3f", glider->getPosition().x);
+        ImGui::Text("       Y: %0.3f", glider->getPosition().y);
+        ImGui::Text("       Z: %0.3f", glider->getPosition().z);
         ImGui::EndGroup();
         ImGui::End();
 

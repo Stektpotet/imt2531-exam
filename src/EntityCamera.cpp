@@ -35,6 +35,10 @@ glm::mat4 EntityCamera::getModelToWorldMatrix(glm::mat4 parentModelMatrix)
     {
         model = parentModelMatrix * worldPos * rotation;        
     }
+    else if (m_cameraMode == LOCKED)
+    {
+        model = parentModelMatrix * worldPos * rotation;
+    }
     else if (m_cameraMode == ORBITAL)
     {
         /*glm::vec3 direction = glm::vec3{
@@ -134,6 +138,20 @@ void EntityCamera::checkInput()
                 m_modelSpacePos += glm::vec3(0, C::PanSensitivity, 0);
             }
         break;
+        case LOCKED:
+            if (Input::m_navKeyPressed[N] && m_FOV < glm::radians(150.0f))
+            {
+                m_FOV += glm::radians(0.5f);
+                m_cameraTransform.projectionMatrix = glm::perspective(m_FOV, m_aspectRatio, m_nearClip, m_farClip);
+                LOG_INFO("FOV (in radians): %d", m_FOV);
+            }
+            if (Input::m_navKeyPressed[M] && m_FOV > glm::radians(5.0f))
+            {
+                m_FOV -= glm::radians(0.5f);
+                m_cameraTransform.projectionMatrix = glm::perspective(m_FOV, m_aspectRatio, m_nearClip, m_farClip);
+                LOG_INFO("FOV (in radians): %d", m_FOV);
+            }
+        break;
     }
 }
 
@@ -148,6 +166,10 @@ void EntityCamera::cycleMode()
             break;
 
         case ORBITAL:
+            m_cameraMode = LOCKED;
+            break;
+
+        case LOCKED:
             m_cameraMode = FREELOOK;
             break;
     }

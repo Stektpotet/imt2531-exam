@@ -133,7 +133,7 @@ void Scene::load(std::string sceneFile)
         }
 
         // char  CameraMode.
-        if (auto[key, modes, err] = p.keyEnums("mode", {"freelook", "orbital"}); err)
+        if (auto[key, modes, err] = p.keyEnums("mode", {"freelook", "orbital", "locked"}); err)
         {
             LOG_ERROR("%s error on camera mode key --> %s...", filestring.c_str(), key.data());
         }
@@ -149,7 +149,7 @@ void Scene::load(std::string sceneFile)
             }
             else if ("locked" == modes[0])
             {
-                camMode = ORBITAL;
+                camMode = LOCKED;
             }
             else
             {
@@ -314,7 +314,7 @@ void Scene::load(std::string sceneFile)
             LOG_INFO("%s: (%f, %f, %f)",std::string(key).data(), angVel.x, angVel.y, angVel.z);
         }
 
-        if (modelTag == "obj/glider")
+        if (entityTag == "glider")
         {
             auto glider = new EntityGlider(modelTag,
                 entityTag,
@@ -337,6 +337,18 @@ void Scene::load(std::string sceneFile)
                                 vel,
                                 angVel);
             addEntity((Entity*) nodeEntity);
+            if (entityTag.find("gliderSpawn") != std::string::npos)
+            {
+                if (!m_glider)
+                {
+                    LOG_WARN("No glider has been defined yet! This spawn point can therefore not be used as a spawn point!\nposition it in after the glider entity for it to be registered as a working spawn point.");
+                }
+                else
+                {
+                    m_glider->addSpawnLocation(nodeEntity);
+                }
+            }
+            
         }
         else
         {
@@ -348,7 +360,18 @@ void Scene::load(std::string sceneFile)
                                 scl,
                                 vel,
                                 angVel);
-            addEntity((Entity*) modelEntity);
+            addEntity((Entity*) modelEntity); 
+            if (entityTag.find("gliderSpawn") != std::string::npos)
+            {
+                if (!m_glider)
+                {
+                    LOG_WARN("No glider has been defined yet! This spawn point can therefore not be used as a spawn point!\nposition it in after the glider entity for it to be registered as a working spawn point.");
+                }
+                else
+                {
+                    m_glider->addSpawnLocation(modelEntity);
+                }
+            }
         }
 
     }
@@ -697,6 +720,11 @@ void Scene::load(std::string sceneFile)
     EntityCamera* Scene::getActiveCamera()
     {
         return m_activeCamera;
+    }
+
+    EntityGlider* Scene::getActiveGlider()
+    {
+        return m_glider;
     }
 
     void Scene::cycleCameras()
