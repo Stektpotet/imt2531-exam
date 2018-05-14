@@ -31,7 +31,7 @@ private:
 
 
     static inline const float SEASON_SPEED     = 0.025f;
-    static inline const float DAY_NIGHT_SPEED  = 0.5f;
+    static inline const float DAY_NIGHT_SPEED  = 0.25f;
 
     static inline const C::Tag SEASON_NAME[4] = {
         "Winter","Spring","Summer","Autumn"

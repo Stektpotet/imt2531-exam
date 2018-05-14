@@ -139,11 +139,18 @@ layout(std140) uniform OK_Times{
 };
 #define PI 3.1415926535897932384626433832795
 
+uniform sampler2D seasonSunIntensityRamp;
+uniform sampler2D dayTimeSunColorRamp;
+
 void main() {
+
+	float seasonSunIntensity = texture(seasonSunIntensityRamp, vec2(dayTime*0.5, seasonTime)).r;
+	vec3 dayTimeSunColor = texture(dayTimeSunColorRamp, vec2(0.5*-cos(dayTime * 4 * PI )+0.5, 0.5)).rgb;
+
 
     vec3 sunDirection = vec3(cos(PI+dayTime*PI*2),sin(PI+dayTime*PI*2), 0);
 
-    vec3 lights = OK_DirectionalLight(sun.direction.xyz, sun.intensities.rgb);
+    vec3 lights = OK_DirectionalLight(sunDirection, dayTimeSunColor * seasonSunIntensity * max(0,dot(sunDirection, vec3(0,-1,0))));
     for(int i = 0; i < MAX_LIGHTS; i++)
     {
         lights += OK_PointLight(

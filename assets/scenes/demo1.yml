@@ -76,7 +76,7 @@ entity: gliderSpawn0
 
 entity: gliderSpawn1
     model: axes-gizmo
-    position:   225 10.5 -400
+    position:   200 10.5 -400
     rotation: 0 40 0
 	scale: 1 1 1
     velocity: 0 0 0

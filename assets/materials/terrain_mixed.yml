@@ -1,7 +1,9 @@
-maps: 3
+maps: 5
   mainTex: heightmap_rgb
   aoTex: heightmap_ao
   seasonsRamp: seasons_contour_ramp_hhq
+  seasonSunIntensityRamp: seasons_light_intensity_ramp
+  dayTimeSunColorRamp: daytime_light_color_ramp
 
 values: 1
   specularity: 0
