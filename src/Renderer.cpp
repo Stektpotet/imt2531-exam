@@ -50,6 +50,24 @@ void Renderer::draw(const Model& model, glm::mat4 modelMatrix, float t)
         shader.setMaterial(MaterialSystem::getById(mesh.m_materialID));
         GLCall(glUniformMatrix4fv(shader.getUniformLocation("m2w"), 1, GL_FALSE, glm::value_ptr(modelMatrix)));
         GLCall(glDrawElements(GL_TRIANGLES, mesh.m_ebo.count(), GL_UNSIGNED_INT, nullptr));
+
+        //DIRTY HACK TO GET TRANSPARENCY WORKING SOMEWHAT CORRECTLY, 
+        //WILL BE PUT INTO SHADERPARSING LATER AND SET AS DRAW PROPERTIES FOR AUTOMATIC BINDING
+        if (shader.m_tag == "water" || shader.m_tag == "cloud")
+        {
+            GLCall(glDepthMask(GL_FALSE));
+            GLCall(glEnable(GL_BLEND));
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        }
+
+        GLCall(glDrawElements(GL_TRIANGLES, mesh.m_ebo.count(), GL_UNSIGNED_INT, nullptr));
+
+        if (shader.m_tag == "water" || shader.m_tag == "cloud")
+        {
+            GLCall(glDepthMask(GL_TRUE));
+            GLCall(glDisable(GL_BLEND));
+        }
+
     }
 }
 

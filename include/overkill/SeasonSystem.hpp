@@ -84,13 +84,16 @@ private:
     static bool m_day_night_paused;
 
     static float m_seasonTime;
-    static float m_dayTime;
 
     static int m_currentSeason;
     static int m_currentMonth;
     static int m_currentDayPhase;
 
 public:
+
+    //HACKHACK
+    static float m_dayTime;
+
     //Must be called after other system inits.
     static void Init();
 

@@ -19,17 +19,6 @@ layout(std140) uniform OK_Matrices{
     vec4 view_position;
 };
 
-
-
-mat4 rotate(float x, float y, float z) {
-    return mat4(
-        (cos(y + z) + cos(y - z)) / 2, (-sin(y + z) + sin(y - z)) / 2, -sin(y), 0,
-        (cos(x + y + z) - cos(x - y + z) + cos(x + y - z) - cos(x - y - z) + 2 * sin(x + z) - 2 * sin(x - z)) / 4, (2 * cos(x + z) + 2 * cos(x - z) - sin(x + y + z) + sin(x - y + z) + sin(x + y - z) - sin(x - y - z)) / 4, (-sin(x + y) - sin(x - y)) / 2, 0,
-        (-2 * cos(x + z) + 2 * cos(x - z) + sin(x + y + z) - sin(x - y + z) + sin(x + y - z) - sin(x - y - z)) / 4, (cos(x + y + z) - cos(x - y + z) - cos(x + y - z) + cos(x - y - z) + 2 * sin(x + z) + 2 * sin(x - z)) / 4, (cos(x + y) + cos(x - y)) / 2, 0,
-        0, 0, 0, 1
-    );
-}
-
 out vec3 fragVert;
 out vec3 fragNormal;
 
@@ -39,15 +28,6 @@ vec4 MVP(in vec4 position) {
 
 
 void main() {
-
-    float F = sqrt(position.x*position.x + position.y*position.y + position.z*position.z) * 0.01;
-    mat4 rot = rotate(0, time*F, 0);
-
-    vec4 rotatedNormal = rot * vec4(normal, 1);
-
-    // Pass some variables to the fragment shader
-    //fragNormal = vec3(rotatedNormal);
-    vertex_color_out = rotatedNormal;
     texCoord = uv;
     fragNormal = mat3(transpose(inverse(m2w))) * normal; //http://www.lighthouse3d.com/tutorials/glsl-12-tutorial/the-normal-matrix/
 

@@ -1,6 +1,5 @@
-maps: 2
-  skyTexture: spaceSkybox
+maps: 1
   dayTimeSunColorRamp: daytime_light_color_ramp
 
 values: 1
-  intensity: 1
+  noiseScale: 1

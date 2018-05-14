@@ -275,6 +275,16 @@ void ModelSystem::load()
     Model terrain;
     ModelSystem::makeTerrain("terrain", "terrain_regular", "terrain", "assets/other/height100.png", &terrain);
     ModelSystem::push("terrain", terrain);
+
+
+    Model water;
+    ModelSystem::makePlane("water", "water", "water", 201, 401, &water);
+    ModelSystem::push("water", water);
+
+
+    Model plane;
+    ModelSystem::makePlane("cloud", "cloud", "cloud", 2, 2, &plane);
+    ModelSystem::push("cloud", plane);
 }
 
 
@@ -354,7 +364,6 @@ auto ModelSystem::makeTerrain(const C::Tag& tag, const C::Tag& materialTag, cons
         for (int y = 0; y < height - 1; y++)
         {
             auto baseIndex = x + y * width;
-            auto height = pixels[baseIndex];
 
             appendVertex(baseIndex,             x, y);  //upper left
             appendVertex(baseIndex + width,     x, y);  //lower left
@@ -406,6 +415,119 @@ auto ModelSystem::makeTerrain(const C::Tag& tag, const C::Tag& materialTag, cons
     return 0;
 }
 
+
+auto ModelSystem::makePlane(const C::Tag& tag, const C::Tag& materialTag, const C::Tag& shaderTag, const int widthSubd, const int heightSubd, Model* outModel) -> C::Err
+{
+    srand(time(0));
+    std::vector<Vertex> vertices;
+    vertices.resize(widthSubd*heightSubd);
+    LOG_DEBUG("vertexcount: %d", vertices.size());
+
+
+    std::vector<Triangle> triangles;
+    triangles.reserve((widthSubd - 1) * (heightSubd - 1) * 2);
+
+    auto appendVertex = [&vertices, heightSubd, widthSubd](int index, int x, int y) {
+        auto r = GLubyte(255 * static_cast <float> (rand()) / static_cast <float> (RAND_MAX)); //https://stackoverflow.com/questions/686353/c-random-float-number-generation
+        auto g = GLubyte(255 * static_cast <float> (rand()) / static_cast <float> (RAND_MAX));
+        auto b = GLubyte(255 * static_cast <float> (rand()) / static_cast <float> (RAND_MAX));
+        
+        //REF: https://stackoverflow.com/questions/33736199/calculating-normals-for-a-height-map
+
+        //const auto Ti = (index - heightSubd >= 0) ? index - width : index + width;
+        //const auto Bi = (index + heightSubd < vertices.size()) ? index + width : index - width;
+        //const auto Li = (index - 1 >= 0) ? index - 1 : index + 1;
+        //const auto Ri = (index + 1 < vertices.size()) ? index + 1 : index - 1;
+
+        //const auto T = GLfloat(pixels[Ti]) / 255;
+        //const auto B = GLfloat(pixels[Bi]) / 255;
+        //const auto L = GLfloat(pixels[Li]) / 255;
+        //const auto R = GLfloat(pixels[Ri]) / 255;
+
+        //float xUnit = 1.0f / width;
+        //float yUnit = 1.0f / height;
+
+
+        //auto nrm = glm::normalize(glm::cross(glm::vec3(0, B - T, 2 * yUnit), glm::vec3(2 * xUnit, R - L, 0)));
+
+        //vertices[index].x = x;
+        //vertices[index].y = pixelHeight;
+        //vertices[index].z = y;
+        //
+        //vertices[index].n = Util::packNormal(0, 1, 0);
+        //vertices[index].u = GLushort(65535U * (x / width));
+        //vertices[index].v = GLushort(65535U * (y / width));
+
+        float xNormalized = (float(x) / widthSubd);
+        float yNormalized = (float(y) / heightSubd);
+
+        vertices[index] = Vertex{
+            xNormalized, 0, yNormalized,          //position
+            Util::packNormal(0, 1, 0),                                      //normal - //TODO - heightDiff = glm::abs(a-b);
+            GLushort(65535U * xNormalized), GLushort(65535U * yNormalized),      //uv
+           r,g,b,255
+        };
+    };
+
+    /*auto makeQuad[](int index)->Vertex[4]{
+
+    };*/
+
+
+    //loop through "quad by quad"
+    for (int x = 0; x < widthSubd - 1; x++)
+    {
+        for (int y = 0; y < heightSubd - 1; y++)
+        {
+            auto baseIndex = x + y * widthSubd;
+
+            appendVertex(baseIndex, x, y);  //upper left
+            appendVertex(baseIndex + widthSubd, x, y);  //lower left
+            appendVertex(baseIndex + 1, x, y);  //upper right
+            appendVertex(baseIndex + widthSubd + 1, x, y);  //lower right
+
+                                                        // 1
+                                                        //upper left triangle
+            triangles.push_back(Triangle{
+                GLuint(baseIndex),
+                GLuint(baseIndex + widthSubd),
+                GLuint(baseIndex + 1)
+                });
+            //lower right triangle
+            triangles.push_back(Triangle{
+                GLuint(baseIndex + 1),
+                GLuint(baseIndex + widthSubd),
+                GLuint(baseIndex + widthSubd + 1)
+                });
+
+        }
+    }
+
+    auto vbufLayout = VertexBufferAttribLayout();
+    vbufLayout.push<GL_FLOAT>(3);                       //position -> 0  -> 12 -> 12
+    vbufLayout.pushPacked<GL_INT_2_10_10_10_REV>(4);    //normal   -> 12 -> 16 -> 16
+    vbufLayout.push<GL_UNSIGNED_SHORT>(2, GL_TRUE);     //uv       -> 16 -> 20 -> 24 ?
+    vbufLayout.push<GL_UNSIGNED_BYTE>(4, GL_TRUE);      //color    -> 18 -> 22 -> 20
+
+                                                        // Buffer vertex data to GPU VAO and VBO
+    Model newModel;
+    newModel.m_tag = tag;
+    newModel.m_vbo = VertexBuffer(vertices.data(), vertices.size() * vbufLayout.getStride()); //@NOTE: if there are exploding mesh issues this probably has to do with alignment issues, your GPU preffers data packed 4 by 4 bytes
+    newModel.m_vao.addBuffer(newModel.m_vbo, vbufLayout);
+
+
+    auto newMesh = newModel.m_meshes.emplace_back(
+        Mesh{
+            tag,
+            ElementBuffer((unsigned int*)triangles.data(), triangles.size() * 3),
+            MaterialSystem::getIdByTag(materialTag),
+            ShaderSystem::copyByTag(shaderTag)
+        }
+    );
+
+    *outModel = newModel;
+    return 0;
+}
 
 #include <set>
 

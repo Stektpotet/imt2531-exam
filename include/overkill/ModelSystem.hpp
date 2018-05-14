@@ -48,6 +48,7 @@ public:
     static void push(const std::string& tag, const std::string& filepath);
 
     static auto makeTerrain(const C::Tag & tag, const C::Tag & materialTag, const C::Tag & shaderTag, const std::string & filepath, Model * outModel)->C::Err;
+    static auto makePlane(const C::Tag & tag, const C::Tag & materialTag, const C::Tag & shaderTag, const int width, const int height, Model * outModel)->C::Err;
 
 };
 

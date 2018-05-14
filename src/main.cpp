@@ -105,8 +105,12 @@ int main(int argc, char** args)
         ImGui::Spacing();
         ImGui::BeginGroup();
         //ImGui::SliderFloat("Season")
-        ImGui::Text("Day: %f", SeasonSystem::getDayTime());
+        float dayTime = SeasonSystem::getDayTime();
+        ImGui::Text("Day: %i", int(dayTime));
+        float hour = fmod(dayTime, 1);
+        ImGui::Text("Time: %02d:00", int(hour*24));
         ImGui::Text("Day Phase: %s", SeasonSystem::getDayPhaseName().c_str());
+        ImGui::SliderFloat("Day control:", &SeasonSystem::m_dayTime, 0.0f, 1.0f);
         ImGui::EndGroup();
         ImGui::Spacing();
         ImGui::BeginGroup();

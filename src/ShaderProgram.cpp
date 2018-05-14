@@ -42,6 +42,7 @@ void ShaderProgram::setMaterial(const Material& mat) const
 
 void ShaderProgram::bind() const
 {
+    
     GLCall(glUseProgram(id));
     for (const auto prop : drawProperties[Enable])
     {
@@ -50,7 +51,7 @@ void ShaderProgram::bind() const
     GLCall(glBlendFunc(drawProperties[BlendFunc][0], drawProperties[BlendFunc][1]));
     GLCall(glCullFace(drawProperties[CullFace][0]));
 
-
+    GLCall(glEnable(GL_DEPTH_TEST));
 }
 
 void ShaderProgram::unbind() const
