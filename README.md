@@ -86,7 +86,7 @@ We are also using python3 or above.
 
     git clone https://github.com/Stektpotet/imt2531-exam.git
     
-    cd imt2531-assignment2
+    cd imt2531-exam
     mkdir build
     cd build
 
