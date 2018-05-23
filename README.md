@@ -9,13 +9,13 @@ https://drive.google.com/file/d/13sfWUgYOSYyhzyoRiC0l1G2VHZR38nuW/view
 
 - [x] Combining daylight cycle and season, using a ramp texture where sampling happens on seasonTime and dayTime.
 - [x] dynamic intensities of sunlight (sunrise/sunset) based on real life kelvin temperature values of the sun, applied by sampling a ramp texture on the day/night-time.
-- [x] water shader with effects based on sunlight
+- [x] water shader with effects based on sunlight (due to the blend function and color of terrain underneath the water, this almost looks like some sort of water scattering)
 - [x] shader to dynamically draw the sun on in the skybox. works out of the box with any skybox texture. everything is done on the shader
-- [x] decreased color values in steep areas of the map, further simulating effects of gravity and erotion in the map. (works somewhat ok, the magic values needed has not quite yet been found)
+- [x] decreased color values in steep areas of the map, further simulating effects of gravity and erotion in the map. (works somewhat ok, the magic values needed has not quite yet been found. Turns out, this was also commented out in a commit due to the desaturated color values it caused - FIX: use a smoothstep or other stepping/curve mechanism to evaluate steepness erosion effect) 
 
 
 ## Task 2 Advanced Features:
-- [x] Internals view/cockpit view (although, due to conversion isses between obj and the internal format, none of the textures are applied correctly within the cockpit, so the view is fairly useless)
+- [x] Internals view/cockpit view (although, due to conversion isses between obj and the internal format, none of the textures are applied correctly within the cockpit, so the view is fairly useless - For some reason this works better on Linux, no idea why...)
 - [x] Simulated roll-rotation when rotating arount the yaw axis. 
 
 # Install Instructions
@@ -55,9 +55,14 @@ make
 ```
 
 ## Linux
-Since we are using c++17 features, a newer compiler is necessary.
-We are also using python3 or above.
-```bash
+Since we are using c++17 features, both a newer compiler, and an update of libraries is necessary.
+In order to get the newer C++ libs, run this:
+```
+    # Install updated c++ libraries
+    sudo add-apt-repository ppa:jonathonf/gcc-7.1
+    sudo apt-get update
+    sudo apt-get install gcc-7 g++-7
+    
     # Install Clang++ 5 (allowing c++17 features to be compiled)
     sudo apt-get install clang++-5.0
     # Install python3 (NOTE: a lot of ubuntu distros already come with this)
@@ -103,72 +108,58 @@ We are also using python3 or above.
 
 ## Key bindings
 
+| General | |
+|---------|-|
+| ESC | Quit App |
+| Right Click | Toggle capture cursor (i.e. toggle mouse look-around. Allows for using mouse on UI) |
+| Left mouse drag | Drag UI sliders |
+| Left mouse click | UI interaction |
 
-```
-// ---------------------------------------------------------------------
-// ---------------------------------------------------------------------
-// --------------------
-//    General:
-// --------------------
-//  ESC: quit app
-//
-//   right click: 
-//   toggle capture mouse (i.e. toggle mouse lookaround. Allows for using mouse on UI)
-// -------------------
-//   Time and weather:
-//  -------------------
-//   1: Jump to Winter
-//   2: Jump to Spring
-//   3: Jump to Summer
-//   4: Jump to Autumn
-//   5: Pause Season Cycle
-//
-//   6: Jump to Morning
-//   7: Jump to Noon
-//   8: Jump to Afternoon
-//   9: Jump to Evening
-//   0: Pause Day/Night Cycle
-//
-// ------------------------
-//   Camera:
-// ------------------------
-//   i: forward
-//   k: backward
-//   l: right
-//   j: left
-//   y: up
-//   h: down
-//   space: toggl camera mode [FREELOOK | ORBITAL]  (Specular lights not working correctly in orbital)
-//   tab: cycle through cameras
-//   mouse: look around
-// 
-// -----------------------
-//    Glider:
-// -----------------------  
-//    W: pitch down
-//    S: pitch up
-//    A: yaw left 	(animate roll -sort of)
-//    D: yaw right   (animate roll -sort of) 
-//    F: Switch through different predefined locations
-//    R: Reset to the last position
-//   
-//    comma:  accelerate
-//    period: decelerate
-//
-//
-// -------------------------------
-//    Visualizations:
-// -------------------------------
-//   o: switch heightmap visualizations (i.e. contour variations. - regular/mixed/contour)
-//
-//
-// --------------------------------------
-//    Reload asset files:
-// --------------------------------------
-//   F1:      RELOAD Shaders
-//   F2:      RELOAD Materials
-//   F3:      RELOAD Models
-//   F4:      RELOAD Scene + Config file
-// ---------------------------------------------------------------------
-// ---------------------------------------------------------------------
-```
+| Time & Season | |
+|---------------|-|
+| 1 | Jump to Winter |
+| 2 | Jump to Spring |
+| 3 | Jump to Summer |
+| 4 | Jump to Autumn |
+| 5 | Toggle Season Cycle |
+| 6 | Jump to Morning |
+| 7 | Jump to Noon |
+| 8 | Jump to Afternoon |
+| 9 | Jump to Evening |
+| 0 | Toggle Day/Night Cycle |
+
+| Camera | | |
+|--------|-|-|
+| I | Forward ||
+| K | Backward ||
+| L | Right ||
+| J | Left ||
+| Y | Up ||
+| H | Down ||
+| Space | Toggle Camera Mode [`FREELOOK / RELATIVE FREELOOK` &#124; `ORBITAL` &#124; `LOCKED`] | (Specular lights not working correctly in orbital)
+| Tab | Cycle Cameras in scene | In `demo1` there are two cameras: the glider camera and the freelook camera |
+| Mouse Δ | Look around ||
+
+| Glider | | |
+|--------|-|-|
+| W | Pitch down ||
+| S | Pitch up ||
+| A | Yaw left | "Animates" roll. (This is buggy and hacky as it's based on velocity) |
+| D | Yaw right | "Animates" roll. (This is buggy and hacky as it's based on velocity) |
+| F | "Jump" through predefined locations | in `demo1` there's a predefined location under the map, this can easily be changed in the scene file |
+| R | "Jump" back to last location ||
+| , | Accelerate | Comma |
+| . | Decelerate | Period |
+
+
+| Visualizations | | |
+|----------------|-|-|
+| O | Switch Heightmap Visualization [`REGULAR` &#124; `CONTOUR` &#124; `MIXED`] | Hotswaps material to swap ramp texture |
+
+| MISC - Reloading asset files | | |
+|------------------------------|-|-|
+| F1 | Reload Shaders ||
+| F2 | Reload Materials ||
+| F3 | Reload Models ||
+| F4 | Reload Scene + Config file | swap scene by changing config (`demo1` is the only one for the exam)|
+
