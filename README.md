@@ -1,5 +1,6 @@
 # IMT2531 - Exam
 
+![Gif of sunrise](https://i.imgur.com/0SkJSw2.gif)
 
 # Tasks
 
